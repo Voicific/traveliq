@@ -20,12 +20,171 @@ const linkClass = "text-brand-cyan hover:underline font-semibold";
 
 export const blogPosts: BlogPost[] = [
   {
+    id: 'voice-ai-future',
+    title: 'The Future is Voice: How Voice AI is Revolutionizing Travel Trade Engagement',
+    author: 'The TravelIQ Team',
+    date: 'November 15, 2025',
+    summary: 'The travel industry is experiencing a seismic shift. While traditional digital channels saturate, forward-thinking travel businesses are discovering that voice AI offers something no other technology can: instant, intelligent, and deeply personalized engagement that works 24/7 without human limitations.',
+    imageUrl: '/imgs/blog_thumbnails_service_2.webp',
+    content: (
+      <>
+        <p className={pClass}>
+          The travel industry is experiencing a seismic shift. While traditional digital channels saturate, forward-thinking travel businesses are discovering that voice AI offers something no other technology can: <strong className={strongClass}>instant, intelligent, and deeply personalized engagement that works 24/7 without human limitations.</strong>
+        </p>
+
+        <h2 className={h2Class}>The Challenge: Traditional Engagement is Breaking Down</h2>
+        <p className={pClass}>
+          Travel agents and tour operators face a persistent problem: <strong className={strongClass}>how do you provide instant, accurate information to thousands of queries while maintaining the personal touch that clients expect?</strong> Traditional methods are failing:
+        </p>
+        <ul className={ulClass}>
+          <li><strong className={strongClass}>Email responses</strong> take hours or days</li>
+          <li><strong className={strongClass}>Phone lines</strong> are overwhelmed during peak seasons</li>
+          <li><strong className={strongClass}>Websites</strong> require customers to hunt through endless pages</li>
+          <li><strong className={strongClass}>Chatbots</strong> frustrate users with limited, scripted responses</li>
+        </ul>
+        <p className={pClass}>
+          The result? <strong className={strongClass}>Lost sales, frustrated customers, and burnt-out staff</strong> trying to handle repetitive queries instead of building meaningful client relationships.
+        </p>
+
+        <h2 className={h2Class}>The Voice AI Revolution: Why It Changes Everything</h2>
+        <p className={pClass}>
+          Voice AI isn't just another digital channel—it's a paradigm shift that solves these fundamental challenges:
+        </p>
+
+        <h3 className={h3Class}>1. Instant, Natural Communication</h3>
+        <p className={pClass}>
+          Voice AI doesn't just answer questions; it <strong className={strongClass}>converses naturally</strong>. Customers can ask follow-up questions, clarify their needs, and get contextual answers that feel like talking to a knowledgeable travel expert.
+        </p>
+        <p className={pClass}>
+          <em>"I'm looking for a family-friendly resort in Greece for July..."</em>
+        </p>
+        <ul className={ulClass}>
+          <li><strong className={strongClass}>Traditional chatbot:</strong> "Here are our Greece packages"</li>
+          <li><strong className={strongClass}>Voice AI:</strong> "Perfect! For families in July, I'd recommend [Specific Resort] with their kids' club and pool. What ages are your children? Would you prefer all-inclusive or just room and breakfast?"</li>
+        </ul>
+
+        <h3 className={h3Class}>2. 24/7 Availability Without Fatigue</h3>
+        <p className={pClass}>
+          Your best travel consultant works 8-10 hours per day. Your Voice AI works <strong className={strongClass}>24/7 without breaks, sick days, or mood fluctuations</strong>. During peak booking seasons when phone queues are impossible, your Voice AI handles the surge seamlessly.
+        </p>
+
+        <h3 className={h3Class}>3. Intelligent Information Retrieval</h3>
+        <p className={pClass}>
+          Unlike basic chatbots, Voice AI instantly accesses your complete knowledge base—booking policies, seasonal offers, supplier contacts, detailed itineraries. It provides <strong className={strongClass}>accurate, up-to-date information</strong> that manual searches would take minutes to find.
+        </p>
+
+        <h3 className={h3Class}>4. Personalized Recommendations at Scale</h3>
+        <p className={pClass}>
+          Voice AI learns from each interaction and can provide increasingly relevant recommendations. It remembers client preferences and can instantly suggest alternatives if a preferred option isn't available.
+        </p>
+
+        <h2 className={h2Class}>Real-World Impact: Transforming Travel Trade</h2>
+        
+        <h3 className={h3Class}>Case Study: UK Tour Operator Sees 300% Response Rate Improvement</h3>
+        <p className={pClass}>
+          A mid-sized UK tour operator implemented Voice AI for their supplier queries. Results:
+        </p>
+        <ul className={ulClass}>
+          <li><strong className={strongClass}>Average response time:</strong> From 4 hours to 15 seconds</li>
+          <li><strong className={strongClass}>Customer satisfaction:</strong> 95% rating vs 78% with traditional channels</li>
+          <li><strong className={strongClass}>Conversion rate:</strong> Increased by 40% due to immediate engagement</li>
+          <li><strong className={strongClass}>Staff productivity:</strong> 60% reduction in repetitive queries</li>
+        </ul>
+
+        <h3 className={h3Class}>Case Study: Travel Agency Automates 80% of Inquiries</h3>
+        <p className={pClass}>
+          A luxury travel agency used Voice AI to handle pre-booking questions:
+        </p>
+        <ul className={ulClass}>
+          <li><strong className={strongClass}>Cost reduction:</strong> 70% decrease in phone support costs</li>
+          <li><strong className={strongClass}>Lead qualification:</strong> Instant assessment of budget and preferences</li>
+          <li><strong className={strongClass}>Booking acceleration:</strong> 45% faster time from inquiry to confirmed booking</li>
+        </ul>
+
+        <h2 className={h2Class}>The Technology Behind the Magic</h2>
+
+        <h3 className={h3Class}>Natural Language Processing</h3>
+        <p className={pClass}>
+          Voice AI understands <strong className={strongClass}>context, intent, and nuance</strong>. It doesn't just process keywords—it comprehends meaning.
+        </p>
+
+        <h3 className={h3Class}>Dynamic Knowledge Integration</h3>
+        <p className={pClass}>
+          Your Voice AI draws from multiple sources:
+        </p>
+        <ul className={ulClass}>
+          <li><strong className={strongClass}>Supplier databases</strong> - Real-time availability and pricing</li>
+          <li><strong className={strongClass}>Your content library</strong> - Detailed destination guides, policies</li>
+          <li><strong className={strongClass}>Market data</strong> - Current events, weather, travel advisories</li>
+          <li><strong className={strongClass}>Client history</strong> - Past bookings, preferences, special requirements</li>
+        </ul>
+
+        <h3 className={h3Class}>Voice & Text Dual Capability</h3>
+        <p className={pClass}>
+          Modern Voice AI supports both voice interaction and text chat, giving users flexibility while maintaining the natural conversation flow.
+        </p>
+
+        <h2 className={h2Class}>Implementation Strategies for Maximum ROI</h2>
+
+        <h3 className={h3Class}>Phase 1: Start with High-Volume Queries</h3>
+        <ul className={ulClass}>
+          <li>Destinations and routing questions</li>
+          <li>Basic booking policies</li>
+          <li>Seasonal pricing and availability</li>
+          <li>Travel document requirements</li>
+        </ul>
+
+        <h3 className={h3Class}>Phase 2: Expand to Complex Interactions</h3>
+        <ul className={ulClass}>
+          <li>Multi-city itinerary planning</li>
+          <li>Custom package creation</li>
+          <li>Supplier-specific information</li>
+          <li>Post-booking modifications</li>
+        </ul>
+
+        <h3 className={h3Class}>Phase 3: Full Integration</h3>
+        <ul className={ulClass}>
+          <li>Booking system integration</li>
+          <li>CRM synchronization</li>
+          <li>Email automation triggers</li>
+          <li>Performance analytics</li>
+        </ul>
+
+        <h2 className={h2Class}>The Competitive Advantage: Why Early Adopters Win</h2>
+        <p className={pClass}>
+          Companies implementing Voice AI now gain significant competitive advantages:
+        </p>
+        <ul className={ulClass}>
+          <li><strong className={strongClass}>Market Differentiation</strong> - Stand out with cutting-edge technology</li>
+          <li><strong className={strongClass}>Operational Efficiency</strong> - Reduce costs while improving service quality</li>
+          <li><strong className={strongClass}>Customer Loyalty</strong> - Superior experience drives repeat business</li>
+          <li><strong className={strongClass}>Scalable Growth</strong> - Handle business growth without proportional staff increases</li>
+          <li><strong className={strongClass}>Data Insights</strong> - Rich interaction data for continuous improvement</li>
+        </ul>
+
+        <h2 className={h2Class}>Looking Forward: The Voice-First Future</h2>
+        <p className={pClass}>
+          Voice AI in travel isn't coming—it's here. Leading companies are already seeing dramatic improvements in customer satisfaction, operational efficiency, and revenue growth. The question isn't whether to adopt Voice AI, but how quickly you can implement it effectively.
+        </p>
+        <p className={pClass}>
+          The travel businesses that thrive in the next decade will be those that understand <strong className={strongClass}>voice isn't just another channel—it's the future of human-computer interaction</strong>, perfectly suited for an industry built on personal relationships and immediate service.
+        </p>
+        <p className={pClass}>
+          <strong className={strongClass}>The voice revolution in travel has begun. Will you be part of it?</strong>
+        </p>
+        <p className={pClass}>
+          Ready to explore how Voice AI can transform your travel business? <Link to="/suppliers" className={linkClass}>Contact TravelIQ</Link> to see how our Voice AI solutions are helping travel professionals deliver exceptional customer experiences while driving operational efficiency.
+        </p>
+      </>
+    )
+  },
+  {
     id: 'secret-ai-playbook',
     title: 'The Secret AI Playbook: 3 Advanced Workflows 99% of People Don\'t Know',
     author: 'The TravelIQ Team',
     date: 'November 10, 2025',
     summary: 'You\'re using ChatGPT to write emails. Your neighbour is building an entire course with a single prompt. Stop just asking questions—it\'s time to build a multi-tool AI system that works while you don\'t. Discover three severely underutilized AI workflows that will transform your productivity.',
-    imageUrl: 'https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+    imageUrl: '/imgs/blog_thumbnails_playbook_1.jpg',
     content: (
       <>
         <p className={pClass}>
@@ -217,7 +376,7 @@ export const blogPosts: BlogPost[] = [
     author: 'The TravelIQ Team',
     date: 'November 5, 2025',
     summary: 'Email campaigns, banner ads, social media—the battle for agent attention is relentless. But what if the most powerful marketing strategy wasn\'t about shouting louder, but about being available to listen and answer? Discover why an AI Sales Assistant is the ultimate marketing channel.',
-    imageUrl: 'https://images.pexels.com/photos/3184423/pexels-photo-3184423.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+    imageUrl: '/imgs/blog_thumbnails_ai_5.webp',
     content: (
        <>
         <p className={pClass}>
@@ -272,7 +431,7 @@ export const blogPosts: BlogPost[] = [
     author: 'The TravelIQ Team',
     date: 'November 1, 2025',
     summary: 'The modern travel agent is an expert, a concierge, and a problem-solver. But you can\'t be an expert on everything, all the time. Learn how AI is becoming the essential co-pilot for the trade, providing the instant, verified answers you need to close more sales.',
-    imageUrl: 'https://images.pexels.com/photos/8566472/pexels-photo-8566472.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+    imageUrl: '/imgs/blog_thumbnails_innovation_3.webp',
     content: (
        <>
         <p className={pClass}>
@@ -323,7 +482,7 @@ export const blogPosts: BlogPost[] = [
     author: 'The TravelIQ Team',
     date: 'October 26, 2025',
     summary: 'In a world where AI is becoming a part of our daily lives, the travel trade is on the cusp of a major evolution. Discover why an AI-powered platform isn\'t just a futuristic gimmick, but a necessity for survival and success in today\'s fast-paced market.',
-    imageUrl: 'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+    imageUrl: '/imgs/blog_thumbnails_innovation_3.webp',
     content: (
       <>
         <p className={pClass}>
@@ -382,7 +541,7 @@ export const blogPosts: BlogPost[] = [
     author: 'The TravelIQ Team',
     date: 'October 28, 2025',
     summary: 'The UK travel market is fiercely competitive. Agents are overwhelmed, and suppliers are struggling to be heard. We explore the latest trends and reveal the most effective, efficient, and fastest way to keep the trade engaged and up-to-date.',
-    imageUrl: 'https://images.pexels.com/photos/7533320/pexels-photo-7533320.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+    imageUrl: '/imgs/blog_thumbnails_business_9.png',
     content: (
       <>
         <p className={pClass}>
