@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/images/traveliq-logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- SEO Meta Tags -->
+    <title>TravelIQ | The Intelligent AI Supplier Network for the Travel Trade</title>
+    <meta name="description" content="TravelIQ gives travel agents instant, 24/7 access to AI sales support from airlines, hotels, and travel suppliers. Get intelligent, verified answers, fast." />
+    <meta name="keywords" content="TravelIQ, travel agents, travel intelligence, AI supplier network, travel trade, supplier information, AI travel, voice AI, airlines, hotels, B2B travel, travel technology, AI sales support" />
+    <meta name="author" content="TravelIQ" />
+    <link rel="canonical" href="https://traveliq.com" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://traveliq.com/" />
+    <meta property="og:title" content="TravelIQ | The Intelligent AI Supplier Network for the Travel Trade" />
+    <meta property="og:description" content="Get intelligent, verified answers from the world's leading travel brands, 24/7. The essential tool for the modern travel agent." />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1583565709533-3d44031af127?q=80&w=2070&auto=format&fit=crop" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://traveliq.com/" />
+    <meta property="twitter:title" content="TravelIQ | The Intelligent AI Supplier Network for the Travel Trade" />
+    <meta property="twitter:description" content="Get intelligent, verified answers from the world's leading travel brands, 24/7. The essential tool for the modern travel agent." />
+    <meta property="twitter:image" content="https://images.unsplash.com/photo-1583565709533-3d44031af127?q=80&w=2070&auto=format&fit=crop" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              heading: ['Space Grotesk', 'sans-serif'],
+            },
+            colors: {
+              'brand-primary': '#263AD1',
+              'brand-secondary': '#1D227C',
+              'brand-light': '#F9FAFB', // Very light gray
+              'brand-gray': '#9CA3AF',
+              'brand-cyan': '#06B6D4',
+              'brand-magenta': '#D946EF',
+              'brand-gold': '#FBBF24',
+              'brand-dark': '#111827', // A very dark blue/gray for backgrounds
+              'brand-bg': '#1F2937',   // A slightly lighter background color
+            },
+            animation: {
+              'shimmer': 'shimmer 4s linear infinite',
+              'glow': 'glow 2s ease-in-out infinite alternate',
+              'fade-in': 'fade-in 0.5s ease-out forwards',
+              'slide-in': 'slide-in 0.5s ease-out forwards',
+              'news-scroll': 'news-scroll 60s linear infinite',
+              'logo-scroll': 'logo-scroll 90s linear infinite',
+              'bg-pan': 'bg-pan 40s linear infinite alternate',
+              'gradient-pan': 'gradient-pan 15s ease infinite',
+              'highlight-word': 'highlight-word 0.5s ease-out forwards',
+              'fade-in-up-color-cycle': 'fade-in-up-color-cycle 0.8s ease-out forwards',
+            },
+            keyframes: {
+              shimmer: {
+                '0%': { backgroundPosition: '200% 0' },
+                '100%': { backgroundPosition: '-200% 0' },
+              },
+              glow: {
+                'from': { textShadow: '0 0 5px #fff, 0 0 10px #fff, 0 0 15px #06b6d4, 0 0 20px #06b6d4' },
+                'to': { textShadow: '0 0 10px #fff, 0 0 15px #fff, 0 0 20px #d946ef, 0 0 25px #d946ef' },
+              },
+              'fade-in': {
+                '0%': { opacity: 0, transform: 'translateY(10px)' },
+                '100%': { opacity: 1, transform: 'translateY(0)' },
+              },
+               'slide-in': {
+                '0%': { opacity: 0, transform: 'translateX(-20px)' },
+                '100%': { opacity: 1, transform: 'translateX(0)' },
+              },
+              'news-scroll': {
+                '0%': { transform: 'translateX(0%)' },
+                '100%': { transform: 'translateX(-50%)' },
+              },
+              'logo-scroll': {
+                '0%': { transform: 'translateX(0%)' },
+                '100%': { transform: 'translateX(-50%)' },
+              },
+              'bg-pan': {
+                '0%': { backgroundPosition: '0% 50%' },
+                '100%': { backgroundPosition: '100% 50%' },
+              },
+              'gradient-pan': {
+                '0%': { backgroundPosition: '0% 50%' },
+                '50%': { backgroundPosition: '100% 50%' },
+                '100%': { backgroundPosition: '0% 50%' },
+              },
+              'highlight-word': {
+                'from': { color: '#9CA3AF' },
+                'to': { color: '#F9FAFB' },
+              },
+              'fade-in-up-color-cycle': {
+                '0%': { opacity: 0, transform: 'translateY(20px)', color: '#06B6D4' },
+                '50%': { color: '#D946EF' },
+                '100%': { opacity: 1, transform: 'translateY(0)', color: '#F9FAFB' },
+              },
+            },
+          }
+        }
+      }
+    </script>
+</head>
+  <body class="bg-brand-dark min-h-screen">
+    <div id="root"></div>
+    <script type="module" src="/src/index.tsx"></script>
+  </body>
+</html>
