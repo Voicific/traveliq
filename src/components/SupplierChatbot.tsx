@@ -8,6 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 interface SupplierChatbotProps {
   isOpen: boolean;
   onClose: () => void;
+  avatarUrl?: string;
 }
 
 interface Message {
@@ -15,6 +16,9 @@ interface Message {
   text: string;
   sources?: { title: string; uri: string }[];
 }
+
+// Default fallback if not provided
+const VEE_AVATAR_DEFAULT = "/traveliq-ai-avatar.png";
 
 // --- ICONS ---
 const MicrophoneIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
@@ -88,7 +92,7 @@ const MessageContent: React.FC<{ text: string; onClose: () => void; }> = ({ text
     );
 };
 
-const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose }) => {
+const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avatarUrl = VEE_AVATAR_DEFAULT }) => {
     type ChatMode = 'idle' | 'text' | 'live';
     type LiveStatus = 'idle' | 'connecting' | 'greeting' | 'connected' | 'error';
     type TranscriptEntry = { speaker: 'You' | 'AI'; text: string };
@@ -198,7 +202,7 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose }) =>
 - PROACTIVELY offer to connect them with our team for a demo. If they show any interest (e.g., ask about cost, how it works, or say "I'm interested"), you should direct them to our sales team by saying something like: "That's a great question. I can have our team give you a personalized demo. Please reach out to them via our Contact Us page or email sales@voicific.com."
 
 **General Capabilities:**
-- **Grounding:** You can use Google Search to answer questions about the travel industry, such as recent news or trends. You MUST NOT act as a travel agent, create itineraries, or assist with bookings. Your focus is on the TravelIQ platform and the industry itself. Always cite your sources.
+- **Grounding:** You can use Google Search and Google Maps to answer questions about the travel industry, geography, or recent news. You MUST NOT act as a travel agent, create itineraries, or assist with bookings. Your focus is on the TravelIQ platform and the industry itself. Always cite your sources.
 - **Navigation:** Use markdown links like [Page Name](/page-url) to direct users to key pages such as [Pricing](/pricing), [Suppliers](/suppliers), and our [Blog](/blog).
 
 Your mission is to clearly articulate the value proposition for both audiences and drive them to take the next step.`;
@@ -212,11 +216,11 @@ Your mission is to clearly articulate the value proposition for both audiences a
 
             const config: any = {
                 systemInstruction,
-                tools: [{ googleSearch: {} }],
+                tools: [{ googleSearch: {} }, { googleMaps: {} }],
             };
 
             const response = await ai.models.generateContent({
-                model: "gemini-2.5-flash",
+                model: "gemini-3-pro-preview",
                 contents: contents,
                 config: config,
             });
