@@ -34,7 +34,7 @@ const StopIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 );
 const KeyboardIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
-        <path fillRule="evenodd" d="M1.5 5.625c0-1.036.84-1.875 1.875-1.875h17.25c1.035 0 1.875.84 1.875 1.875v12.75c0 1.035-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 18.375V5.625zM5.25 7.5c.414 0 .75.336.75.75v.008a.75.75 0 00-.75.75H4.5a.75.75 0 00-.75-.75V8.25c0-.414.336-.75.75-.75h.75zM6 9.75A.75.75 0 016.75 9h10.5a.75.75 0 010 1.5H6.75a.75.75 0 01-.75-.75zM6 12.75a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H6.75a.75.75 0 01-.75-.75zM8.25 15.75a.75.75 0 01.75-.75h6a.75.75 0 010 1.5h-6a.75.75 0 01-.75-.75zM4.5 12a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.75a.75.75 0 00.75-.75V12.75a.75.75 0 00-.75-.75H4.5zM4.5 15a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.75a.75.75 0 00.75-.75V15.75a.75.75 0 00-.75-.75H4.5zM7.5 7.5a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V8.25a.75.75 0 00-.75-.75H7.5zM10.5 7.5a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V8.25a.75.75 0 00-.75-.75h-.75zM13.5 7.5a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V8.25a.75.75 0 00-.75-.75h-.75zM16.5 7.5a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V8.25a.75.75 0 00-.75-.75h-.75zM18 12a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V12.75a.75.75 0 00-.75-.75h-.75zM18 15a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V15.75a.75.75 0 00-.75-.75h-.75zM19.5 9a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V9.75a.75.75 0 00-.75-.75h-.75z" clipRule="evenodd" />
+        <path fillRule="evenodd" d="M1.5 5.625c0-1.036.84-1.875 1.875-1.875h17.25c1.035 0 1.875.84 1.875 1.875v12.75c0 1.035-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 18.375V5.625zM5.25 7.5c.414 0 .75.336.75.75v.008a.75.75 0 00-.75.75H4.5a.75.75 0 00-.75-.75V8.25c0-.414.336-.75.75-.75h.75zM6 9.75A.75.75 0 016.75 9h10.5a.75.75 0 010 1.5H6.75a.75.75 0 01-.75-.75zM6 12.75a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H6.75a.75.75 0 01-.75-.75zM8.25 15.75a.75.75 0 01.75-.75h6a.75.75 0 010 1.5h-6a.75.75 0 01-.75-.75zM4.5 12a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.75a.75.75 0 00.75-.75V12.75a.75.75 0 00-.75-.75H4.5zM4.5 15a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.75a.75.75 0 00.75-.75V15.75a.75.75 0 00-.75-.75H4.5zM7.5 7.5a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V8.25a.75.75 0 00-.75-.75H7.5zM10.5 7.5a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V8.25a.75.75 0 00-.75-.75h-.75zM13.5 7.5a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V8.25a.75.75 0 00-.75-.75h-.75zM16.5 7.5a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V8.25a.75.75 0 00-.75-.75h-.75zM18 12a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V12.75a.75.75 0 00-.75-.75h-.75zM18 15a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.75a.75.75 0 00.75-.75V15.75a.75.75 0 00-.75-.75h-.75zM19.5 9a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.75a.75.75 0 00.75-.75V9.75a.75.75 0 00-.75-.75h-.75z" clipRule="evenodd" />
     </svg>
 );
 const SpeakerIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
@@ -144,7 +144,7 @@ const VEE_PERSONALITY = {
             "Your AI reliable smart 24/7 Sales Support"
         ],
         value: "Saves hours, ensures accurate commissionable information, boosts expertise, helps close sales faster",
-        callToAction: "Encourage exploration of suppliers on platform: 'Why not start by exploring our growing list of partners? You can find them on the [Suppliers](link to Suppliers page) page.'"
+        callToAction: "Encourage exploration of suppliers on platform: 'Why not start by exploring our growing list of partners? You can find them on the [Suppliers](/suppliers) page.'"
     },
     
     // Instructions for Travel Suppliers (Paying Partners)
@@ -228,6 +228,7 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
     
     // Lead capture state
     const [showLeadCapture, setShowLeadCapture] = useState(false);
+    const [pendingLeadCapture, setPendingLeadCapture] = useState(false);
 
     const chatEndRef = useRef<HTMLDivElement>(null);
     const sessionPromiseRef = useRef<Promise<any> | null>(null);
@@ -273,6 +274,8 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
         setInputValue('');
         setIsLoading(false);
         setLiveStatus('idle');
+        setShowLeadCapture(false);
+        setPendingLeadCapture(false);
     }, [cleanupLiveSession]);
     
     const handleClose = useCallback(() => {
@@ -288,6 +291,7 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
     const handleLeadCaptureSubmit = useCallback((formData: any) => {
         addLead(formData);
         setShowLeadCapture(false);
+        setPendingLeadCapture(false);
         const thankYouMessage = { 
             sender: 'ai' as const, 
             text: "Thank you! Our team will be in touch within 24 hours to schedule your personalized demo. We're excited to show you how TravelIQ can transform your business." 
@@ -301,7 +305,7 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
         setMode('text');
         const welcomeMessage = { 
             sender: 'ai' as const, 
-            text: `👋 Hello! I'm Vee, your expert AI Sales Ambassador for TravelIQ! I'm here to show you how our revolutionary Voice AI sales support network can transform your travel business. Whether you're a travel agent looking for instant supplier information, or a travel supplier wanting to connect with agents worldwide, I have all the answers. How can I help you today?` 
+            text: `Hi! I'm Vee. Thanks for visiting us. I'm your TravelIQ expert. How can I assist you today?` 
         };
         setConversation([welcomeMessage]);
     };
@@ -313,11 +317,6 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
 
     const handleSendTextMessage = useCallback(async (text: string) => {
         if (!text.trim() || isLoading || !ai) return;
-        
-        // Check for lead capture trigger
-        if (checkForInterest(text)) {
-            setShowLeadCapture(true);
-        }
         
         const userMessage: Message = { sender: 'user', text };
         addMessage({ sender: 'user', text });
@@ -400,6 +399,14 @@ Your mission is to clearly articulate the value proposition for both audiences a
               const aiMessage = { sender: 'ai' as const, text: response.text, sources };
               setConversation(prev => [...prev, aiMessage]);
               addMessage(aiMessage);
+
+              // Check for lead capture interest AFTER AI response is successfully received
+              if (checkForInterest(userMessage.text) && !pendingLeadCapture) {
+                  setPendingLeadCapture(true);
+                  setTimeout(() => {
+                      setShowLeadCapture(true);
+                  }, 2000); // Delay to ensure AI response is displayed first
+              }
             }
 
         } catch (error) {
@@ -408,7 +415,7 @@ Your mission is to clearly articulate the value proposition for both audiences a
         } finally {
             setIsLoading(false);
         }
-    }, [conversation, isLoading, addMessage, addLead, ai]);
+    }, [conversation, isLoading, addMessage, addLead, ai, pendingLeadCapture]);
     
     const handlePlayTTS = async (text: string, index: number) => {
         if (playingMessageIndex === index) {
@@ -475,7 +482,7 @@ Your mission is to clearly articulate the value proposition for both audiences a
             }
             const outputCtx = outputAudioContextRef.current;
 
-            const greetingText = `👋 Hello! I'm Vee, your expert AI Sales Ambassador for TravelIQ! I'm here to show you how our revolutionary Voice AI sales support network can transform your travel business. Whether you're a travel agent looking for instant supplier information, or a travel supplier wanting to connect with agents worldwide, I have all the answers. How can I help you today?`;
+            const greetingText = `Hi! I'm Vee. Thanks for visiting us. I'm your TravelIQ expert. How can I assist you today?`;
             const ttsResponse = await ai.models.generateContent({
                 model: "gemini-2.5-flash-preview-tts",
                 contents: [{ parts: [{ text: greetingText }] }],
@@ -725,7 +732,10 @@ Your mission is to clearly articulate the value proposition for both audiences a
             
             <LeadCaptureModal 
                 isOpen={showLeadCapture}
-                onClose={() => setShowLeadCapture(false)}
+                onClose={() => {
+                    setShowLeadCapture(false);
+                    setPendingLeadCapture(false);
+                }}
                 onSubmit={handleLeadCaptureSubmit}
             />
         </>
