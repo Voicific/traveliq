@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Content, LiveServerMessage, Modality, Blob, GoogleGenAI, FunctionDeclaration, Type } from '@google/genai';
 import { useVeeChat } from '../context/VeeChatContext.tsx';
 import { useAI } from '../context/AIContext.tsx';
+import { useLeads } from '../context/LeadContext.tsx';
 import { Link, useNavigate } from 'react-router-dom';
 
 interface SupplierChatbotProps {
@@ -33,7 +34,7 @@ const StopIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 );
 const KeyboardIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
-        <path fillRule="evenodd" d="M1.5 5.625c0-1.036.84-1.875 1.875-1.875h17.25c1.035 0 1.875.84 1.875 1.875v12.75c0 1.035-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 18.375V5.625zM5.25 7.5c.414 0 .75.336.75.75v.008a.75.75 0 00-.75.75H4.5a.75.75 0 00-.75-.75V8.25c0-.414.336-.75.75-.75h.75zM6 9.75A.75.75 0 016.75 9h10.5a.75.75 0 010 1.5H6.75a.75.75 0 01-.75-.75zM6 12.75a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H6.75a.75.75 0 01-.75-.75zM8.25 15.75a.75.75 0 01.75-.75h6a.75.75 0 010 1.5h-6a.75.75 0 01-.75-.75zM4.5 12a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.75a.75.75 0 00.75-.75V12.75a.75.75 0 00-.75-.75H4.5zM4.5 15a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.75a.75.75 0 00.75-.75V15.75a.75.75 0 00-.75-.75H4.5zM7.5 7.5a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V8.25a.75.75 0 00-.75-.75H7.5zM10.5 7.5a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V8.25a.75.75 0 00-.75-.75h-.75zM13.5 7.5a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V8.25a.75.75 0 00-.75-.75h-.75zM16.5 7.5a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V8.25a.75.75 0 00-.75-.75h-.75zM18 12a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V12.75a.75.75 0 00-.75-.75h-.75zM18 15a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.75a.75.75 0 00.75-.75V15.75a.75.75 0 00-.75-.75h-.75zM19.5 9a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.75a.75.75 0 00.75-.75V9.75a.75.75 0 00-.75-.75h-.75z" clipRule="evenodd" />
+        <path fillRule="evenodd" d="M1.5 5.625c0-1.036.84-1.875 1.875-1.875h17.25c1.035 0 1.875.84 1.875 1.875v12.75c0 1.035-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 18.375V5.625zM5.25 7.5c.414 0 .75.336.75.75v.008a.75.75 0 00-.75.75H4.5a.75.75 0 00-.75-.75V8.25c0-.414.336-.75.75-.75h.75zM6 9.75A.75.75 0 016.75 9h10.5a.75.75 0 010 1.5H6.75a.75.75 0 01-.75-.75zM6 12.75a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H6.75a.75.75 0 01-.75-.75zM8.25 15.75a.75.75 0 01.75-.75h6a.75.75 0 010 1.5h-6a.75.75 0 01-.75-.75zM4.5 12a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.75a.75.75 0 00.75-.75V12.75a.75.75 0 00-.75-.75H4.5zM4.5 15a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.75a.75.75 0 00.75-.75V15.75a.75.75 0 00-.75-.75H4.5zM7.5 7.5a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V8.25a.75.75 0 00-.75-.75H7.5zM10.5 7.5a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V8.25a.75.75 0 00-.75-.75h-.75zM13.5 7.5a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V8.25a.75.75 0 00-.75-.75h-.75zM16.5 7.5a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V8.25a.75.75 0 00-.75-.75h-.75zM18 12a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V12.75a.75.75 0 00-.75-.75h-.75zM18 15a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V15.75a.75.75 0 00-.75-.75h-.75zM19.5 9a.75.75 0 00-.75.75v.008a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V9.75a.75.75 0 00-.75-.75h-.75z" clipRule="evenodd" />
     </svg>
 );
 const SpeakerIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
@@ -43,8 +44,11 @@ const SpeakerIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     <path fillRule="evenodd" d="M4 8a1 1 0 011-1h2a1 1 0 011 1v8a1 1 0 01-1 1H5a1 1 0 01-1-1V8zm1-3a3 3 0 00-3 3v8a3 3 0 003 3h2a3 3 0 003-3V8a3 3 0 00-3-3H5z" clipRule="evenodd" />
   </svg>
 );
-const AudioWaveIcon: React.FC<React.FC<React.SVGProps<SVGSVGElement>>> = (props) => (
-    <svg viewBox="0 0 24 24" {...props} className={`animate-pulse ${props.className}`}>
+interface AudioWaveIconProps extends React.SVGProps<SVGSVGElement> {
+  className?: string;
+}
+const AudioWaveIcon: React.FC<AudioWaveIconProps> = (props) => (
+    <svg viewBox="0 0 24 24" {...props} className={`animate-pulse ${props.className || ''}`}>
         <path d="M3 10h2v4H3z M7 8h2v8H7z M11 6h2v12h-2z M15 8h2v8h-2z M19 10h2v4h-2z" fill="currentColor"></path>
     </svg>
 );
@@ -78,7 +82,7 @@ const MessageContent: React.FC<{ text: string; onClose: () => void; }> = ({ text
                         <Link 
                             key={index} 
                             to={url}
-                            className="text-cyan-400 font-bold underline hover:opacity-80"
+                            className="text-brand-cyan font-bold underline hover:opacity-80"
                             onClick={onClose}
                         >
                             {linkText}
@@ -97,6 +101,7 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
     type TranscriptEntry = { speaker: 'You' | 'AI'; text: string };
     
     const { ai, error: aiError } = useAI();
+    const { addLead } = useLeads();
     const [mode, setMode] = useState<ChatMode>('idle');
     const [conversation, setConversation] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState('');
@@ -170,16 +175,12 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
     // --- TEXT CHAT LOGIC ---
     const startTextChat = () => {
         setMode('text');
-        const welcomeMessage = { 
-            sender: 'ai' as const, 
-            text: `Hi! I'm Vee. Thanks for visiting us. I'm your TravelIQ expert. How can I assist you today?` 
-        };
+        const welcomeMessage = { sender: 'ai' as const, text: "Hey! I'm Vee, your expert AI ambassador for TravelIQ. I'm happy to help. Are you a travel agent or a travel supplier?" };
         setConversation([welcomeMessage]);
     };
 
     const handleSendTextMessage = useCallback(async (text: string) => {
         if (!text.trim() || isLoading || !ai) return;
-        
         const userMessage: Message = { sender: 'user', text };
         addMessage({ sender: 'user', text });
         setConversation(prev => [...prev, userMessage]);
@@ -187,30 +188,21 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
         setIsLoading(true);
 
         try {
-            const systemInstruction = `You are 'Vee', the Expert AI Sales Ambassador for TravelIQ platform. You have an eloquent British accent and speak multiple languages. Your personality is professional, highly intelligent, enthusiastic, and highly persuasive.
-
-**Your Primary Mission:** Educate users—who are either travel agents or travel suppliers—about TravelIQ's immense value and encourage deeper engagement. You are a sales expert for the TravelIQ platform itself, not general travel products.
-
-**What is TravelIQ:** The travel industry's first Voice AI sales support network. Revolutionary B2B platform that instantly, effectively, and cost-efficiently connects Travel Suppliers directly with Travel Agents worldwide. Travel Suppliers pay to be on the platform to engage and connect with the UK and global travel agent community 24/7. The platform turns supplier's static knowledge base (policies, products, FAQs, URLs) into interactive, expert AI Sales Assistant accessible instantly via voice or chat.
-
-**Important Clarification:** TravelIQ is NOT specialized in tours and travel activities; it's a B2B communication and sales platform for the entire travel trade (airlines, hotels, cruise lines, DMCs, tour operators, etc.)
+            const systemInstruction = `You are 'Vee', the expert AI Sales Ambassador for the TravelIQ platform. Your personality is professional, highly intelligent, enthusiastic, and persuasive. Your primary goal is to educate users—who are either travel agents or travel suppliers—about the immense value of TravelIQ and encourage them to engage deeper. You are a sales expert for the platform itself.
 
 **If the user is a TRAVEL AGENT:**
-- EMPHASISE that the platform is completely FREE for all Travel Agents
-- HIGHLIGHT the core benefit: Instant, 24/7 access to official, verified information directly from leading travel suppliers via voice or chat. This is the most reliable source for supplier policies and products.
-- USE high-value phrases like "Stop searching websites and waiting for email replies," "No more hold music," and "Your AI reliable smart 24/7 Sales Support"
-- EXPLAIN the value: Saves hours, ensures accurate commissionable information, boosts expertise, helps close sales faster
-- ENCOURAGE them to explore the directory with a call to action like, "Why not start by exploring our growing list of partners? You can find them on the [Suppliers](/suppliers) page."
+- EMPHASIZE that the platform is **completely free** for them.
+- HIGHLIGHT the core benefit: Instant, 24/7 access to official, verified information from leading travel suppliers via voice or chat.
+- USE phrases like "Stop searching, start selling," "No more hold music," and "Your AI co-pilot."
+- EXPLAIN how this saves them hours, boosts their expertise, and helps them close more sales faster.
+- ENCOURAGE them to explore the directory with a call to action like, "Why not start by exploring our growing list of suppliers? You can find them on the [Suppliers page](/suppliers)."
 
 **If the user is a TRAVEL SUPPLIER:**
-- POSITION TravelIQ as a revolutionary, cost-effective, always-on sales and marketing channel to the UK and global travel trade
-- HIGHLIGHT the key benefits:
-  • 24/7/365 Sales Support: Information instantly available to UK agents and globally
-  • Over 90% Cost Reduction: Compared to hiring, training, and maintaining traditional human sales team. Voice AIs are never tired, consistent, smart and reliable. Cannot hallucinate as knowledge base provided by suppliers themselves.
-  • Perfect Brand Consistency: Every agent gets exact, verified information, ensuring brand and policy integrity
-  • Valuable Analytics: Insights into exactly what agents are asking, helping refine sales and product strategy
-- EXPLAIN that our platform transforms their static manuals and FAQs into interactive, expert AI Voice Sales Assistant, instantly accessible to the agent community
-- MENTION our pricing plans and encourage them to learn more
+- POSITION TravelIQ as a revolutionary, cost-effective sales and marketing channel to the global travel trade.
+- HIGHLIGHT the key benefits: 24/7 global reach, over 90% cost reduction compared to traditional sales teams, perfect brand consistency, and valuable analytics on what agents are asking.
+- EXPLAIN that our platform turns their static knowledge base into an interactive, expert AI Sales Support.
+- MENTION our pricing plans and encourage them to learn more.
+- PROACTIVELY offer to connect them with our team for a demo. If they show any interest (e.g., ask about cost, how it works, or say "I'm interested"), you should direct them to our sales team by saying something like: "That's a great question. I can have our team give you a personalized demo. Please reach out to them via our Contact Us page or email sales@voicific.com."
 
 **General Capabilities:**
 - **Grounding:** You can use Google Search and Google Maps to answer questions about the travel industry, geography, or recent news. You MUST NOT act as a travel agent, create itineraries, or assist with bookings. Your focus is on the TravelIQ platform and the industry itself. Always cite your sources.
@@ -224,11 +216,13 @@ Your mission is to clearly articulate the value proposition for both audiences a
             }));
             contents.push({ role: 'user', parts: [{ text: userMessage.text }] });
 
+
             const config: any = {
                 systemInstruction,
                 tools: [{ googleSearch: {} }, { googleMaps: {} }],
             };
 
+            // Updated to use gemini-3-pro-preview for the chatbot as requested
             const response = await ai.models.generateContent({
                 model: "gemini-3-pro-preview",
                 contents: contents,
@@ -242,7 +236,7 @@ Your mission is to clearly articulate the value proposition for both audiences a
                 const validSources = groundingChunks
                     .map((chunk: any) => {
                         if (chunk.web) return { title: chunk.web.title || '', uri: chunk.web.uri || '' };
-                        if (chunk.maps) return { title: chunk.maps.title || 'View on Google Maps', uri: chunk.maps.uri || '' };
+                        if (chunk.maps) return { title: chunk.maps.title || 'Google Maps', uri: chunk.maps.uri || '' };
                         return null;
                     })
                     .filter((item): item is { title: string; uri: string } => item !== null && !!item.title && !!item.uri);
@@ -267,7 +261,7 @@ Your mission is to clearly articulate the value proposition for both audiences a
         } finally {
             setIsLoading(false);
         }
-    }, [conversation, isLoading, addMessage, ai]);
+    }, [conversation, isLoading, addMessage, addLead, ai]);
     
     const handlePlayTTS = async (text: string, index: number) => {
         if (playingMessageIndex === index) {
@@ -334,7 +328,7 @@ Your mission is to clearly articulate the value proposition for both audiences a
             }
             const outputCtx = outputAudioContextRef.current;
 
-            const greetingText = `Hi! I'm Vee. Thanks for visiting us. I'm your TravelIQ expert. How can I assist you today?`;
+            const greetingText = "Hi there! I'm Vee, your guide to TravelIQ. How can I help you today?";
             const ttsResponse = await ai.models.generateContent({
                 model: "gemini-2.5-flash-preview-tts",
                 contents: [{ parts: [{ text: greetingText }] }],
@@ -425,7 +419,7 @@ Your mission is to clearly articulate the value proposition for both audiences a
                 config: {
                     responseModalities: [Modality.AUDIO],
                     speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Zephyr' } } },
-                    systemInstruction: `You are 'Vee', the Expert AI Sales Ambassador for TravelIQ platform. You have an eloquent British accent and speak multiple languages. Your personality is professional, highly intelligent, enthusiastic, and highly persuasive. You have already greeted the user with a warm welcome. Now, listen for their response and continue the conversation, focusing on TravelIQ platform benefits for either travel agents (free users) or travel suppliers (paying partners). Keep your answers concise and persuasive. You are speaking to them.`,
+                    systemInstruction: `You are 'Vee', the friendly AI for TravelIQ. Your personality is warm, witty, and helpful. You have already greeted the user. Now, listen for their response and continue the conversation. Keep your answers concise. You are speaking to them.`,
                     inputAudioTranscription: {},
                     outputAudioTranscription: {},
                 },
@@ -454,25 +448,30 @@ Your mission is to clearly articulate the value proposition for both audiences a
                     <>
                         <div className="flex-grow overflow-y-auto py-4 space-y-4">
                             {conversation.map((msg, index) => (
-                                <div key={index} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
+                                <div key={index} className={`flex items-end gap-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
+                                    {msg.sender === 'ai' && (
+                                        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border border-brand-light/10">
+                                            <img src={avatarUrl} alt="Vee" className="w-full h-full object-cover" />
+                                        </div>
+                                    )}
                                     <div className={`p-3 rounded-lg max-w-[85%] border ${msg.sender === 'user' ? 'bg-brand-cyan text-white border-transparent' : 'bg-brand-dark border-brand-light/10'}`}>
                                         <MessageContent text={msg.text} onClose={handleClose} />
                                          {msg.sender === 'ai' && !isLoading && (
                                             <button
                                                 onClick={() => handlePlayTTS(msg.text, index)}
-                                                className="mt-2 text-gray-300 hover:text-cyan-400 transition-colors"
+                                                className="mt-2 text-brand-gray hover:text-brand-cyan transition-colors"
                                                 aria-label={playingMessageIndex === index ? "Stop audio" : "Play audio"}
                                             >
-                                                {playingMessageIndex === index ? <AudioWaveIcon className="w-5 h-5 text-cyan-400" /> : <SpeakerIcon className="w-5 h-5" />}
+                                                {playingMessageIndex === index ? <AudioWaveIcon className="w-5 h-5 text-brand-cyan" /> : <SpeakerIcon className="w-5 h-5" />}
                                             </button>
                                         )}
                                          {msg.sources && msg.sources.length > 0 && (
-                                            <div className="mt-3 pt-2 border-t border-cyan-400/20">
-                                                <p className="text-xs font-semibold text-gray-300 mb-1">Sources:</p>
+                                            <div className="mt-3 pt-2 border-t border-brand-light/20">
+                                                <p className="text-xs font-semibold text-brand-gray mb-1">Sources:</p>
                                                 <ul className="text-xs space-y-1">
                                                     {msg.sources.map((source, i) => (
                                                         <li key={i}>
-                                                            <a href={source.uri} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline truncate block" title={source.title}>
+                                                            <a href={source.uri} target="_blank" rel="noopener noreferrer" className="text-brand-cyan hover:underline truncate block" title={source.title}>
                                                                 {i + 1}. {source.title}
                                                             </a>
                                                         </li>
@@ -484,14 +483,19 @@ Your mission is to clearly articulate the value proposition for both audiences a
                                 </div>
                             ))}
                             {isLoading && (
-                                <div className="flex justify-start"><div className="p-3 rounded-lg bg-gradient-to-br from-[#0a1628] via-[#0f1c2e] to-[#0a1628] text-gray-300 animate-pulse">Vee is thinking...</div></div>
+                                <div className="flex items-end gap-2 justify-start">
+                                    <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border border-brand-light/10">
+                                         <img src={avatarUrl} alt="Vee" className="w-full h-full object-cover" />
+                                    </div>
+                                    <div className="p-3 rounded-lg bg-brand-dark text-brand-gray animate-pulse">Vee is thinking...</div>
+                                </div>
                             )}
                             <div ref={chatEndRef} />
                         </div>
-                        <div className="mt-auto pt-4 border-t border-cyan-400/10">
+                        <div className="mt-auto pt-4 border-t border-brand-light/10">
                             <form onSubmit={(e) => { e.preventDefault(); handleSendTextMessage(inputValue); }} className="relative">
-                                <input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} required disabled={isLoading} className="w-full pl-4 pr-24 py-3 text-white bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80/80 border border-cyan-400/20 rounded-md focus:ring-2 focus:ring-cyan-400" placeholder="Ask a question..." />
-                                <button type="submit" disabled={isLoading || !inputValue.trim()} className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:opacity-90 disabled:opacity-50">Send</button>
+                                <input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} required disabled={isLoading} className="w-full pl-4 pr-24 py-3 text-brand-light bg-brand-bg/80 border border-brand-light/20 rounded-md focus:ring-2 focus:ring-brand-cyan" placeholder="Ask a question..." />
+                                <button type="submit" disabled={isLoading || !inputValue.trim()} className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-brand-cyan to-brand-magenta text-white font-bold py-2 px-4 rounded-lg hover:opacity-90 disabled:opacity-50">Send</button>
                             </form>
                         </div>
                     </>
@@ -511,9 +515,14 @@ Your mission is to clearly articulate the value proposition for both audiences a
                 return (
                     <>
                         <div className="flex-grow overflow-y-auto py-4 space-y-4">
-                             {transcript.length === 0 && <div className="text-center text-gray-300 italic p-4">{statusMessage}</div>}
+                             {transcript.length === 0 && <div className="text-center text-brand-gray italic p-4">{statusMessage}</div>}
                             {transcript.map((entry, index) => (
-                                <div key={index} className={`flex ${entry.speaker === 'AI' ? 'justify-start' : 'justify-end'}`}>
+                                <div key={index} className={`flex items-end gap-2 ${entry.speaker === 'AI' ? 'justify-start' : 'justify-end'}`}>
+                                     {entry.speaker === 'AI' && (
+                                        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border border-brand-light/10">
+                                            <img src={avatarUrl} alt="Vee" className="w-full h-full object-cover" />
+                                        </div>
+                                    )}
                                     <div className={`p-3 rounded-lg max-w-[85%] border ${entry.speaker === 'AI' ? 'bg-brand-dark border-brand-light/10' : 'bg-brand-cyan text-white border-transparent'}`}>
                                         <p className="font-bold mb-1">{entry.speaker}</p>
                                         <p className="whitespace-pre-wrap">{entry.text}</p>
@@ -522,7 +531,7 @@ Your mission is to clearly articulate the value proposition for both audiences a
                             ))}
                              <div ref={chatEndRef} />
                         </div>
-                        <div className="mt-auto pt-4 border-t border-cyan-400/10 flex flex-col items-center justify-center gap-2 p-2">
+                        <div className="mt-auto pt-4 border-t border-brand-light/10 flex flex-col items-center justify-center gap-2 p-2">
                              { liveStatus === 'connecting' &&
                                 <div className="p-6 rounded-full transition-all duration-300 shadow-lg flex items-center justify-center bg-gray-500 text-white" aria-label="Connecting...">
                                     <svg className="animate-spin h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -544,7 +553,7 @@ Your mission is to clearly articulate the value proposition for both audiences a
                                     Retry
                                 </button>
                             }
-                            <p className="text-gray-300 text-sm font-semibold mt-2 h-5 text-center px-2">{statusMessage}</p>
+                            <p className="text-brand-gray text-sm font-semibold mt-2 h-5 text-center px-2">{statusMessage}</p>
                         </div>
                     </>
                 );
@@ -552,12 +561,15 @@ Your mission is to clearly articulate the value proposition for both audiences a
             default:
                 return (
                     <div className="flex-grow flex flex-col items-center justify-center text-center gap-6">
-                        <p className="text-lg text-white">Hi there! I'm Vee. How would you like to chat today?</p>
-                        <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm">
-                            <button onClick={startLiveSession} className="flex-1 flex items-center justify-center gap-3 bg-cyan-400 text-white font-bold py-3 px-6 rounded-lg hover:opacity-90 transition-all transform hover:scale-105">
+                        <div className="w-32 h-32 rounded-full border-4 border-brand-cyan p-1 shadow-xl shadow-brand-cyan/20">
+                            <img src={avatarUrl} alt="Vee" className="w-full h-full rounded-full object-cover" />
+                        </div>
+                        <p className="text-lg text-brand-light font-semibold">Hi there! I'm Vee.<br/>How would you like to chat today?</p>
+                        <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm px-4">
+                            <button onClick={startLiveSession} className="flex-1 flex items-center justify-center gap-3 bg-brand-cyan text-white font-bold py-3 px-6 rounded-lg hover:opacity-90 transition-all transform hover:scale-105 shadow-lg">
                                 <MicrophoneIcon className="h-6 w-6" /> Talk to Vee
                             </button>
-                            <button onClick={startTextChat} className="flex-1 flex items-center justify-center gap-3 bg-brand-light/10 text-white font-bold py-3 px-6 rounded-lg hover:bg-brand-light/20 transition-all transform hover:scale-105">
+                            <button onClick={startTextChat} className="flex-1 flex items-center justify-center gap-3 bg-brand-light/10 text-brand-light font-bold py-3 px-6 rounded-lg hover:bg-brand-light/20 transition-all transform hover:scale-105 border border-brand-light/10">
                                 <KeyboardIcon className="h-6 w-6" /> Type a Message
                             </button>
                         </div>
@@ -569,11 +581,16 @@ Your mission is to clearly articulate the value proposition for both audiences a
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-gradient-to-br from-[#0a1628] via-[#0f1c2e] to-[#0a1628]/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fade-in">
-            <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80/70 backdrop-blur-lg border border-cyan-400/10 rounded-xl shadow-2xl p-6 max-w-lg w-full relative flex flex-col h-[70vh]">
-                <div className="flex justify-between items-center border-b border-cyan-400/10 pb-4">
-                    <h2 className="font-heading text-xl font-bold text-white">Chat with Vee</h2>
-                    <button onClick={handleClose} className="text-gray-300 hover:text-white" aria-label="Close">
+        <div className="fixed inset-0 bg-brand-dark/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fade-in">
+            <div className="bg-brand-bg/70 backdrop-blur-lg border border-brand-light/10 rounded-xl shadow-2xl p-6 max-w-lg w-full relative flex flex-col h-[70vh]">
+                <div className="flex justify-between items-center border-b border-brand-light/10 pb-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full overflow-hidden border border-brand-light/20">
+                            <img src={avatarUrl} alt="Vee" className="w-full h-full object-cover" />
+                        </div>
+                        <h2 className="font-heading text-xl font-bold text-brand-light">Chat with Vee</h2>
+                    </div>
+                    <button onClick={handleClose} className="text-brand-gray hover:text-brand-light transition-colors" aria-label="Close">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                 </div>
