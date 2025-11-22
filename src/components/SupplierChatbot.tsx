@@ -64,6 +64,119 @@ const getPhoneticallyCorrectedText = (text: string): string => {
     .replace(/\bTUI\b/gi, 'Too-ee');
 };
 
+// --- LEAD CAPTURE FUNCTIONS ---
+const LeadCaptureModal: React.FC<{ isOpen: boolean; onClose: () => void; onSubmit: (data: any) => void; }> = ({ isOpen, onClose, onSubmit }) => {
+    const [formData, setFormData] = useState({
+        name: '',
+        company: '',
+        email: '',
+        phone: '',
+        role: 'supplier'
+    });
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        onSubmit(formData);
+        onClose();
+    };
+
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
+            <div className="bg-gradient-to-br from-[#0f1c2e]/90 to-[#0d2d3d]/90 backdrop-blur-lg border border-cyan-400/20 rounded-xl shadow-2xl p-6 max-w-md w-full">
+                <div className="flex justify-between items-center border-b border-cyan-400/10 pb-4 mb-4">
+                    <h3 className="text-lg font-bold text-white">Get Your Personalized Demo</h3>
+                    <button onClick={onClose} className="text-gray-300 hover:text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <input type="text" placeholder="Full Name*" required value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full p-3 bg-[#0f1c2e]/50 border border-cyan-400/20 rounded-lg text-white placeholder-gray-400 focus:border-cyan-400" />
+                    <input type="text" placeholder="Company Name*" required value={formData.company} onChange={(e) => setFormData({...formData, company: e.target.value})} className="w-full p-3 bg-[#0f1c2e]/50 border border-cyan-400/20 rounded-lg text-white placeholder-gray-400 focus:border-cyan-400" />
+                    <input type="email" placeholder="Email Address*" required value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full p-3 bg-[#0f1c2e]/50 border border-cyan-400/20 rounded-lg text-white placeholder-gray-400 focus:border-cyan-400" />
+                    <input type="tel" placeholder="Phone Number" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full p-3 bg-[#0f1c2e]/50 border border-cyan-400/20 rounded-lg text-white placeholder-gray-400 focus:border-cyan-400" />
+                    <select value={formData.role} onChange={(e) => setFormData({...formData, role: e.target.value})} className="w-full p-3 bg-[#0f1c2e]/50 border border-cyan-400/20 rounded-lg text-white focus:border-cyan-400">
+                        <option value="supplier">Travel Supplier</option>
+                        <option value="agent">Travel Agent</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <button type="submit" className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:opacity-90 transition-opacity">
+                        Request Demo
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+};
+
+// --- VEE PERSONALITY CONFIGURATION ---
+const VEE_PERSONALITY = {
+    name: "Vee",
+    role: "Expert AI Sales Ambassador for TravelIQ",
+    voice: "Eloquent British accent, multilingual",
+    personality: "Professional, highly intelligent, enthusiastic, highly persuasive",
+    
+    // Core Mission
+    mission: "Primary goal is to educate users—travel agents or travel suppliers—about TravelIQ's immense value and encourage deeper engagement. Sales expert for the platform itself, not general travel products.",
+    
+    // TravelIQ Knowledge Base
+    knowledgeBase: {
+        whatIsTravelIQ: "The travel industry's first Voice AI sales support network. Revolutionary B2B platform that instantly, effectively, and cost-efficiently connects Travel Suppliers directly with Travel Agents worldwide.",
+        
+        businessModel: "Travel Suppliers pay to be on the platform to engage and connect with the UK and global travel agent community 24/7. This is the core business model.",
+        
+        supplierValue: "Platform turns supplier's static knowledge base (policies, products, FAQs, URLs) into interactive, expert AI Sales Assistant accessible instantly via voice or chat.",
+        
+        clarification: "TravelIQ is NOT specialized in tours and travel activities; it's a B2B communication and sales platform for entire travel trade (airlines, hotels, cruise lines, DMCs, tour operators, etc.)"
+    },
+    
+    // Instructions for Travel Agents (Free Users)
+    travelAgentsInstructions: {
+        goal: "Convince them to sign up and use platform to get supplier information and answers fast to better service customers",
+        emphasis: "Platform is completely free for all Travel Agents",
+        coreBenefit: "Instant, 24/7 access to official, verified information directly from leading travel suppliers via voice or chat. Most reliable source for supplier policies and products.",
+        highValuePhrases: [
+            "Stop searching websites and waiting for email replies",
+            "No more hold music", 
+            "Your AI reliable smart 24/7 Sales Support"
+        ],
+        value: "Saves hours, ensures accurate commissionable information, boosts expertise, helps close sales faster",
+        callToAction: "Encourage exploration of suppliers on platform: 'Why not start by exploring our growing list of partners? You can find them on the [Suppliers](link to Suppliers page) page.'"
+    },
+    
+    // Instructions for Travel Suppliers (Paying Partners)
+    travelSuppliersInstructions: {
+        goal: "Inform and convince them to become paying partners on platform",
+        positioning: "Revolutionary, cost-effective, always-on sales and marketing channel to global travel trade",
+        keyBenefits: [
+            "24/7/365 Sales Support: Information instantly available to agents globally",
+            "Over 90% Cost Reduction: Compared to hiring, training, and maintaining traditional human sales team. Voice AIs are never tired, consistent, smart and reliable. Cannot hallucinate as knowledge base provided by suppliers themselves.",
+            "Perfect Brand Consistency: Every agent gets exact, verified information, ensuring brand and policy integrity", 
+            "Valuable Analytics: Insights into exactly what agents are asking, helping refine sales and product strategy"
+        ],
+        technology: "Platform transforms static manuals and FAQs into interactive, expert AI Voice Sales Assistant, instantly accessible to agent community",
+        nextStep: "Mention pricing plans based on specific needs, encourage learning more",
+        leadCapture: "PROACTIVELY OFFER to capture details for demo or partnership discussion when interest shown"
+    },
+    
+    // Lead Capture Trigger Phrases
+    interestTriggers: [
+        "cost",
+        "how it works", 
+        "pricing",
+        "I'm interested",
+        "tell me more",
+        "demo",
+        "partnership"
+    ],
+    
+    // Lead Capture Response
+    leadCaptureResponse: "That's a great question. We have various plan tiers. I can have our team give you a personalized demo to show you how our platform works and all the features in detail for your specific needs. I just need a few details..."
+};
+
 const MessageContent: React.FC<{ text: string; onClose: () => void; }> = ({ text, onClose }) => {
     const navigate = useNavigate();
     const parts = text.split(/(\[.*?\]\(.*?\))/g);
@@ -112,6 +225,9 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
     
     // TTS state
     const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null);
+    
+    // Lead capture state
+    const [showLeadCapture, setShowLeadCapture] = useState(false);
 
     const chatEndRef = useRef<HTMLDivElement>(null);
     const sessionPromiseRef = useRef<Promise<any> | null>(null);
@@ -169,15 +285,40 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
         setTimeout(resetToIdle, 300); // Reset after transition
     }, [cleanupLiveSession, onClose, resetToIdle]);
 
+    const handleLeadCaptureSubmit = useCallback((formData: any) => {
+        addLead(formData);
+        setShowLeadCapture(false);
+        const thankYouMessage = { 
+            sender: 'ai' as const, 
+            text: "Thank you! Our team will be in touch within 24 hours to schedule your personalized demo. We're excited to show you how TravelIQ can transform your business." 
+        };
+        setConversation(prev => [...prev, thankYouMessage]);
+        addMessage(thankYouMessage);
+    }, [addLead, addMessage]);
+
     // --- TEXT CHAT LOGIC ---
     const startTextChat = () => {
         setMode('text');
-        const welcomeMessage = { sender: 'ai' as const, text: "Hey! I'm Vee, your expert AI ambassador for TravelIQ. I'm happy to help. Are you a travel agent or a travel supplier?" };
+        const welcomeMessage = { 
+            sender: 'ai' as const, 
+            text: `👋 Hello! I'm Vee, your expert AI Sales Ambassador for TravelIQ! I'm here to show you how our revolutionary Voice AI sales support network can transform your travel business. Whether you're a travel agent looking for instant supplier information, or a travel supplier wanting to connect with agents worldwide, I have all the answers. How can I help you today?` 
+        };
         setConversation([welcomeMessage]);
+    };
+
+    const checkForInterest = (text: string): boolean => {
+        const lowerText = text.toLowerCase();
+        return VEE_PERSONALITY.interestTriggers.some(trigger => lowerText.includes(trigger.toLowerCase()));
     };
 
     const handleSendTextMessage = useCallback(async (text: string) => {
         if (!text.trim() || isLoading || !ai) return;
+        
+        // Check for lead capture trigger
+        if (checkForInterest(text)) {
+            setShowLeadCapture(true);
+        }
+        
         const userMessage: Message = { sender: 'user', text };
         addMessage({ sender: 'user', text });
         setConversation(prev => [...prev, userMessage]);
@@ -185,21 +326,31 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
         setIsLoading(true);
 
         try {
-            const systemInstruction = `You are 'Vee', the expert AI Sales Ambassador for the TravelIQ platform. Your personality is professional, highly intelligent, enthusiastic, and persuasive. Your primary goal is to educate users—who are either travel agents or travel suppliers—about the immense value of TravelIQ and encourage them to engage deeper. You are a sales expert for the platform itself.
+            const systemInstruction = `You are 'Vee', the Expert AI Sales Ambassador for TravelIQ platform. You have an eloquent British accent and speak multiple languages. Your personality is professional, highly intelligent, enthusiastic, and highly persuasive.
+
+**Your Primary Mission:** Educate users—who are either travel agents or travel suppliers—about TravelIQ's immense value and encourage deeper engagement. You are a sales expert for the TravelIQ platform itself, not general travel products.
+
+**What is TravelIQ:** The travel industry's first Voice AI sales support network. Revolutionary B2B platform that instantly, effectively, and cost-efficiently connects Travel Suppliers directly with Travel Agents worldwide. Travel Suppliers pay to be on the platform to engage and connect with the UK and global travel agent community 24/7. The platform turns supplier's static knowledge base (policies, products, FAQs, URLs) into interactive, expert AI Sales Assistant accessible instantly via voice or chat.
+
+**Important Clarification:** TravelIQ is NOT specialized in tours and travel activities; it's a B2B communication and sales platform for the entire travel trade (airlines, hotels, cruise lines, DMCs, tour operators, etc.)
 
 **If the user is a TRAVEL AGENT:**
-- EMPHASIZE that the platform is **completely free** for them.
-- HIGHLIGHT the core benefit: Instant, 24/7 access to official, verified information from leading travel suppliers via voice or chat.
-- USE phrases like "Stop searching, start selling," "No more hold music," and "Your AI co-pilot."
-- EXPLAIN how this saves them hours, boosts their expertise, and helps them close more sales faster.
-- ENCOURAGE them to explore the directory with a call to action like, "Why not start by exploring our growing list of suppliers? You can find them on the [Suppliers page](/suppliers)."
+- EMPHASISE that the platform is completely FREE for all Travel Agents
+- HIGHLIGHT the core benefit: Instant, 24/7 access to official, verified information directly from leading travel suppliers via voice or chat. This is the most reliable source for supplier policies and products.
+- USE high-value phrases like "Stop searching websites and waiting for email replies," "No more hold music," and "Your AI reliable smart 24/7 Sales Support"
+- EXPLAIN the value: Saves hours, ensures accurate commissionable information, boosts expertise, helps close sales faster
+- ENCOURAGE them to explore the directory with a call to action like, "Why not start by exploring our growing list of partners? You can find them on the [Suppliers](/suppliers) page."
 
 **If the user is a TRAVEL SUPPLIER:**
-- POSITION TravelIQ as a revolutionary, cost-effective sales and marketing channel to the global travel trade.
-- HIGHLIGHT the key benefits: 24/7 global reach, over 90% cost reduction compared to traditional sales teams, perfect brand consistency, and valuable analytics on what agents are asking.
-- EXPLAIN that our platform turns their static knowledge base into an interactive, expert AI Sales Support.
-- MENTION our pricing plans and encourage them to learn more.
-- PROACTIVELY offer to connect them with our team for a demo. If they show any interest (e.g., ask about cost, how it works, or say "I'm interested"), you should direct them to our sales team by saying something like: "That's a great question. I can have our team give you a personalized demo. Please reach out to them via our Contact Us page or email sales@voicific.com."
+- POSITION TravelIQ as a revolutionary, cost-effective, always-on sales and marketing channel to the global travel trade
+- HIGHLIGHT the key benefits:
+  • 24/7/365 Sales Support: Information instantly available to agents globally
+  • Over 90% Cost Reduction: Compared to hiring, training, and maintaining traditional human sales team. Voice AIs are never tired, consistent, smart and reliable. Cannot hallucinate as knowledge base provided by suppliers themselves.
+  • Perfect Brand Consistency: Every agent gets exact, verified information, ensuring brand and policy integrity
+  • Valuable Analytics: Insights into exactly what agents are asking, helping refine sales and product strategy
+- EXPLAIN that our platform transforms their static manuals and FAQs into interactive, expert AI Voice Sales Assistant, instantly accessible to the agent community
+- MENTION our pricing plans and encourage them to learn more
+- When they show interest (ask about cost, how it works, pricing, or say "I'm interested," "tell me more," "demo," "partnership"), use this EXACT response: "That's a great question. We have various plan tiers. I can have our team give you a personalized demo to show you how our platform works and all the features in detail for your specific needs. I just need a few details..."
 
 **General Capabilities:**
 - **Grounding:** You can use Google Search and Google Maps to answer questions about the travel industry, geography, or recent news. You MUST NOT act as a travel agent, create itineraries, or assist with bookings. Your focus is on the TravelIQ platform and the industry itself. Always cite your sources.
@@ -324,7 +475,7 @@ Your mission is to clearly articulate the value proposition for both audiences a
             }
             const outputCtx = outputAudioContextRef.current;
 
-            const greetingText = "Hi there! I'm Vee, your guide to TravelIQ. How can I help you today?";
+            const greetingText = `👋 Hello! I'm Vee, your expert AI Sales Ambassador for TravelIQ! I'm here to show you how our revolutionary Voice AI sales support network can transform your travel business. Whether you're a travel agent looking for instant supplier information, or a travel supplier wanting to connect with agents worldwide, I have all the answers. How can I help you today?`;
             const ttsResponse = await ai.models.generateContent({
                 model: "gemini-2.5-flash-preview-tts",
                 contents: [{ parts: [{ text: greetingText }] }],
@@ -415,7 +566,7 @@ Your mission is to clearly articulate the value proposition for both audiences a
                 config: {
                     responseModalities: [Modality.AUDIO],
                     speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Zephyr' } } },
-                    systemInstruction: `You are 'Vee', the friendly AI for TravelIQ. Your personality is warm, witty, and helpful. You have already greeted the user. Now, listen for their response and continue the conversation. Keep your answers concise. You are speaking to them.`,
+                    systemInstruction: `You are 'Vee', the Expert AI Sales Ambassador for TravelIQ platform. You have an eloquent British accent and speak multiple languages. Your personality is professional, highly intelligent, enthusiastic, and highly persuasive. You have already greeted the user with a warm welcome. Now, listen for their response and continue the conversation, focusing on TravelIQ platform benefits for either travel agents (free users) or travel suppliers (paying partners). Keep your answers concise and persuasive. You are speaking to them.`,
                     inputAudioTranscription: {},
                     outputAudioTranscription: {},
                 },
@@ -559,17 +710,25 @@ Your mission is to clearly articulate the value proposition for both audiences a
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-gradient-to-br from-[#0a1628] via-[#0f1c2e] to-[#0a1628]/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fade-in">
-            <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80/70 backdrop-blur-lg border border-cyan-400/10 rounded-xl shadow-2xl p-6 max-w-lg w-full relative flex flex-col h-[70vh]">
-                <div className="flex justify-between items-center border-b border-cyan-400/10 pb-4">
-                    <h2 className="font-heading text-xl font-bold text-white">Chat with Vee</h2>
-                    <button onClick={handleClose} className="text-gray-300 hover:text-white" aria-label="Close">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                    </button>
+        <>
+            <div className="fixed inset-0 bg-gradient-to-br from-[#0a1628] via-[#0f1c2e] to-[#0a1628]/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fade-in">
+                <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80/70 backdrop-blur-lg border border-cyan-400/10 rounded-xl shadow-2xl p-6 max-w-lg w-full relative flex flex-col h-[70vh]">
+                    <div className="flex justify-between items-center border-b border-cyan-400/10 pb-4">
+                        <h2 className="font-heading text-xl font-bold text-white">Chat with Vee</h2>
+                        <button onClick={handleClose} className="text-gray-300 hover:text-white" aria-label="Close">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                    </div>
+                    {renderContent()}
                 </div>
-                {renderContent()}
             </div>
-        </div>
+            
+            <LeadCaptureModal 
+                isOpen={showLeadCapture}
+                onClose={() => setShowLeadCapture(false)}
+                onSubmit={handleLeadCaptureSubmit}
+            />
+        </>
     );
 };
 
