@@ -107,7 +107,7 @@ const AppContent: React.FC = () => {
           aria-label="Speak to Vee"
         >
           <img 
-            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=512&auto=format&fit=crop" 
+            src="/traveliq-ai-avatar.png"
             alt="Vee, AI Assistant" 
             className="w-12 h-12 rounded-full object-cover border-2 border-brand-cyan"
           />
