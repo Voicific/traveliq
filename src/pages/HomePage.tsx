@@ -379,23 +379,61 @@ const HomePage: React.FC = () => {
 
             <h4 className="text-2xl font-bold font-heading text-cyan-300 mt-12 mb-4 drop-shadow-[0_0_10px_rgba(0,212,255,0.3)]">Common Supplier Objections & Our Responses</h4>
 
-            <FAQItem question="💰 Cost Objection: 'This sounds expensive, and we already have a support team.'">
+            <FAQItem question={
+              <div className="flex items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 text-cyan-400 drop-shadow-[0_0_8px_rgba(0,212,255,0.6)]">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+                </svg>
+                <span>Cost Objection: 'This sounds expensive, and we already have a support team.'</span>
+              </div>
+            }>
               <p>I understand cost is a priority. Think of Travel IQ not as an expense, but as a direct cost-saving and revenue-generating investment. While your human team manages complex or urgent issues, the AI handles 80% of repetitive, high-volume queries 24/7. This dramatically reduces your operational costs per interaction and frees your sales team to focus purely on high-value selling, guaranteeing a rapid ROI far exceeding the platform fee.</p>
             </FAQItem>
 
-            <FAQItem question="🤖 Human Touch Objection: 'Travel is a personal business. Will this AI erode the human connection we have with our agents?'">
+            <FAQItem question={
+              <div className="flex items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 text-cyan-400 drop-shadow-[0_0_8px_rgba(0,212,255,0.6)]">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-4.68c.34-1.017.64-2.09.87-3.186a11.03 11.03 0 00.13-1.014c0-1.113-.285-2.16-.786-3.07m-3.672 8.422A3.723 3.723 0 017.5 15.75c0-1.52.923-2.834 2.226-3.411a3.723 3.723 0 014.288 0c1.303.577 2.226 1.891 2.226 3.411a3.723 3.723 0 01-1.258 2.654l-3.022.043z" />
+                </svg>
+                <span>Human Touch Objection: 'Travel is a personal business. Will this AI erode the human connection we have with our agents?'</span>
+              </div>
+            }>
               <p>Absolutely not. Travel IQ is designed to enhance, not replace, your human interaction. We eliminate the frustration agents feel waiting for basic information, meaning when they do connect with your human representative, the conversation is focused, productive, and based on relationship building—not just query answering. We handle the trivia so your team can handle the vital relationship management.</p>
             </FAQItem>
 
-            <FAQItem question="🔒 Data Security Objection: 'How do we know our proprietary data and our agents' data are secure on a new platform?'">
+            <FAQItem question={
+              <div className="flex items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 text-cyan-400 drop-shadow-[0_0_8px_rgba(0,212,255,0.6)]">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v-3.75m-3.75 3.75H12m0 0h3.75m-3.75 0V15m0-3.75a3 3 0 10-6 0v3.75a3 3 0 106 0v-3.75zm0 0a3 3 0 106 0v3.75a3 3 0 10-6 0v-3.75z" />
+                </svg>
+                <span>Data Security Objection: 'How do we know our proprietary data and our agents' data are secure on a new platform?'</span>
+              </div>
+            }>
               <p>Security and privacy are paramount. Your knowledge base data is ring-fenced and used only to train your dedicated Voice AI instance—it is never shared or used to train other models. Furthermore, Travel IQ is strictly a sales and information support tool; we do not handle bookings or collect sensitive agent PII. We are focused on maintaining the integrity and confidentiality of your supplier knowledge, giving you control over what the AI shares.</p>
             </FAQItem>
 
-            <FAQItem question="🧪 Trust Objection: 'The platform is new. Why should we trust this technology or your company?'">
+            <FAQItem question={
+              <div className="flex items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 text-cyan-400 drop-shadow-[0_0_8px_rgba(0,212,255,0.6)]">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.286zm0 13.036h.008v.008h-.008v-.008z" />
+                </svg>
+                <span>Trust Objection: 'The platform is new. Why should we trust this technology or your company?'</span>
+              </div>
+            }>
               <p>We are addressing a clear gap in the market by being the UK's first to offer this dedicated, AI-driven B2B travel support. We are confident because our model is built on two core principles: transparency and results. We start by working with you to ingest and verify your information, giving you full control over the AI's knowledge base. Your low investment secures you a first-mover advantage, positioning you as a forward-thinking, 24/7 reliable partner to the UK travel trade immediately.</p>
             </FAQItem>
 
-            <FAQItem question="❓ AI Accuracy Objection: 'We cannot risk the AI giving out incorrect information—that could damage our brand.'">
+            <FAQItem question={
+              <div className="flex items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 text-cyan-400 drop-shadow-[0_0_8px_rgba(0,212,255,0.6)]">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                <span>AI Accuracy Objection: 'We cannot risk the AI giving out incorrect information—that could damage our brand.'</span>
+              </div>
+            }>
               <p>That is a crucial point, and it's precisely why our model eliminates that risk. Unlike general AI chatbots, the Travel IQ Voice AI is a closed-loop system. It is only trained and fed from the verified knowledge base you provide. If the answer is not in your data, the AI is trained to simply state it cannot answer or direct the agent to a human contact, ensuring every piece of information it delivers is accurate, consistent, and directly controlled by your brand.</p>
             </FAQItem>
           </div>
