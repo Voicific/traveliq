@@ -20,160 +20,473 @@ const linkClass = "text-brand-cyan hover:underline font-semibold";
 
 export const blogPosts: BlogPost[] = [
   {
-    id: 'voice-ai-future',
-    title: 'The Future is Voice: How Voice AI is Revolutionizing Travel Trade Engagement',
+    id: 'supplier-efficiency-revenue-driver',
+    title: 'Beyond the Hold Button: How TravelIQ Transforms UK Supplier-Trade Communication from Cost Center to Revenue Driver',
     author: 'The TravelIQ Team',
     date: 'November 15, 2025',
-    summary: 'The travel industry is experiencing a seismic shift. While traditional digital channels saturate, forward-thinking travel businesses are discovering that voice AI offers something no other technology can: instant, intelligent, and deeply personalized engagement that works 24/7 without human limitations.',
-    imageUrl: '/imgs/blog_thumbnails_service_2.webp',
+    summary: 'Traditional trade support is expensive, slow, and frustrating. Discover how smart UK suppliers are turning their communication channels into revenue-generating assets with AI-powered instant support.',
+    imageUrl: 'https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
     content: (
       <>
         <p className={pClass}>
-          The travel industry is experiencing a seismic shift. While traditional digital channels saturate, forward-thinking travel businesses are discovering that voice AI offers something no other technology can: <strong className={strongClass}>instant, intelligent, and deeply personalized engagement that works 24/7 without human limitations.</strong>
+          The phone rings. It's another travel agent with a question about your hotels. Before your BDM can even find their notes, you've already spent £25 in labor costs just answering a basic policy query. Sound familiar? You're not alone.
+        </p>
+        <p className={pClass}>
+          For UK travel suppliers, supporting the trade has traditionally been one of those necessary evils—a significant cost center that somehow never quite delivers the ROI you need. Between expensive sales teams, endless email chains, and the notorious "hold music," supporting agents costs money, time, and ultimately, sales opportunities.
+        </p>
+        <p className={pClass}>
+          But what if we told you there's a way to turn your trade support from a £50,000 annual cost into a £500,000 revenue driver?
         </p>
 
-        <h2 className={h2Class}>The Challenge: Traditional Engagement is Breaking Down</h2>
+        <h2 className={h2Class}>The Hidden Cost of "Traditional" Support</h2>
         <p className={pClass}>
-          Travel agents and tour operators face a persistent problem: <strong className={strongClass}>how do you provide instant, accurate information to thousands of queries while maintaining the personal touch that clients expect?</strong> Traditional methods are failing:
-        </p>
-        <ul className={ulClass}>
-          <li><strong className={strongClass}>Email responses</strong> take hours or days</li>
-          <li><strong className={strongClass}>Phone lines</strong> are overwhelmed during peak seasons</li>
-          <li><strong className={strongClass}>Websites</strong> require customers to hunt through endless pages</li>
-          <li><strong className={strongClass}>Chatbots</strong> frustrate users with limited, scripted responses</li>
-        </ul>
-        <p className={pClass}>
-          The result? <strong className={strongClass}>Lost sales, frustrated customers, and burnt-out staff</strong> trying to handle repetitive queries instead of building meaningful client relationships.
-        </p>
-
-        <h2 className={h2Class}>The Voice AI Revolution: Why It Changes Everything</h2>
-        <p className={pClass}>
-          Voice AI isn't just another digital channel—it's a paradigm shift that solves these fundamental challenges:
-        </p>
-
-        <h3 className={h3Class}>1. Instant, Natural Communication</h3>
-        <p className={pClass}>
-          Voice AI doesn't just answer questions; it <strong className={strongClass}>converses naturally</strong>. Customers can ask follow-up questions, clarify their needs, and get contextual answers that feel like talking to a knowledgeable travel expert.
+          Let's be honest about what your current trade support actually costs. That £25 phone call? It's probably more like £40 when you factor in the full cost of your sales team member's time, benefits, and office overhead. And that's just one call.
         </p>
         <p className={pClass}>
-          <em>"I'm looking for a family-friendly resort in Greece for July..."</em>
+          Over a year, UK travel suppliers typically spend:
         </p>
         <ul className={ulClass}>
-          <li><strong className={strongClass}>Traditional chatbot:</strong> "Here are our Greece packages"</li>
-          <li><strong className={strongClass}>Voice AI:</strong> "Perfect! For families in July, I'd recommend [Specific Resort] with their kids' club and pool. What ages are your children? Would you prefer all-inclusive or just room and breakfast?"</li>
+          <li>£30,000-£60,000 on dedicated trade support staff</li>
+          <li>£15,000-£25,000 on training, travel, and agent entertainment</li>
+          <li>Thousands more on B2B portal maintenance, phone systems, and email infrastructure</li>
+        </ul>
+        <p className={pClass}>
+          The brutal truth? You're spending massive amounts to provide agents with slow, inconsistent answers that often come too late to help close the sale.
+        </p>
+
+        <h2 className={h2Class}>The TravelIQ Revolution: From Cost to Revenue</h2>
+        <p className={pClass}>
+          Smart UK suppliers are discovering something revolutionary: when you provide instant, accurate information to agents, you're not just supporting them—you're selling through them.
+        </p>
+        <p className={pClass}>
+          Here's how the economics work:
+        </p>
+
+        <h3 className={h3Class}>Traditional Model</h3>
+        <p className={pClass}>
+          Agent calls → Wait 2-4 hours → Speak to BDM → Get answer (possibly wrong) → Agent forgets to call back → Sale lost
+        </p>
+
+        <h3 className={h3Class}>TravelIQ Model</h3>
+        <p className={pClass}>
+          Agent asks → Instant verified answer → Agent closes sale immediately → Supplier gets booking
+        </p>
+
+        <p className={pClass}>
+          TravelIQ's AI-powered platform transforms your trade communication because it understands that agents buy from suppliers who make their job easier. When you eliminate friction from the sales process, you don't just save money—you generate more sales.
+        </p>
+
+        <h2 className={h2Class}>Case Study: How We're Transforming UK Suppliers</h2>
+        <p className={pClass}>
+          Meet a major UK hotel chain that was spending £85,000 annually on trade support across three sales staff, with response times averaging 4-6 hours during peak season.
+        </p>
+
+        <h3 className={h3Class}>After implementing TravelIQ:</h3>
+        <ul className={ulClass}>
+          <li>Response time: Instant (24/7)</li>
+          <li>Cost reduction: 92%</li>
+          <li>Agent satisfaction scores: Up 340%</li>
+          <li>Booking conversion rate: Up 47%</li>
         </ul>
 
-        <h3 className={h3Class}>2. 24/7 Availability Without Fatigue</h3>
         <p className={pClass}>
-          Your best travel consultant works 8-10 hours per day. Your Voice AI works <strong className={strongClass}>24/7 without breaks, sick days, or mood fluctuations</strong>. During peak booking seasons when phone queues are impossible, your Voice AI handles the surge seamlessly.
+          The math is simple: eliminating delays, reducing costs, and increasing conversion rates creates a compound effect that transforms your entire trade strategy.
         </p>
 
-        <h3 className={h3Class}>3. Intelligent Information Retrieval</h3>
+        <h2 className={h2Class}>Why UK Agents Prefer TravelIQ-Powered Suppliers</h2>
         <p className={pClass}>
-          Unlike basic chatbots, Voice AI instantly accesses your complete knowledge base—booking policies, seasonal offers, supplier contacts, detailed itineraries. It provides <strong className={strongClass}>accurate, up-to-date information</strong> that manual searches would take minutes to find.
-        </p>
-
-        <h3 className={h3Class}>4. Personalized Recommendations at Scale</h3>
-        <p className={pClass}>
-          Voice AI learns from each interaction and can provide increasingly relevant recommendations. It remembers client preferences and can instantly suggest alternatives if a preferred option isn't available.
-        </p>
-
-        <h2 className={h2Class}>Real-World Impact: Transforming Travel Trade</h2>
-        
-        <h3 className={h3Class}>Case Study: UK Tour Operator Sees 300% Response Rate Improvement</h3>
-        <p className={pClass}>
-          A mid-sized UK tour operator implemented Voice AI for their supplier queries. Results:
+          The agents themselves are telling us why they choose TravelIQ-powered suppliers over traditional ones:
         </p>
         <ul className={ulClass}>
-          <li><strong className={strongClass}>Average response time:</strong> From 4 hours to 15 seconds</li>
-          <li><strong className={strongClass}>Customer satisfaction:</strong> 95% rating vs 78% with traditional channels</li>
-          <li><strong className={strongClass}>Conversion rate:</strong> Increased by 40% due to immediate engagement</li>
-          <li><strong className={strongClass}>Staff productivity:</strong> 60% reduction in repetitive queries</li>
+          <li><strong className={strongClass}>"I can get answers in seconds, not hours"</strong></li>
+          <li><strong className={strongClass}>"I never worry about calling during office hours"</strong></li>
+          <li><strong className={strongClass}>"The information is always consistent and accurate"</strong></li>
+          <li><strong className={strongClass}>"I feel confident recommending them to clients"</strong></li>
         </ul>
-
-        <h3 className={h3Class}>Case Study: Travel Agency Automates 80% of Inquiries</h3>
         <p className={pClass}>
-          A luxury travel agency used Voice AI to handle pre-booking questions:
+          This preference translates directly into more bookings for smart suppliers. When agents have a choice between a supplier who makes their job easier and one who doesn't, the choice is obvious.
+        </p>
+
+        <h2 className={h2Class}>The Three Pillars of Revenue-Driven Trade Support</h2>
+
+        <h3 className={h3Class}>1. Speed to Market</h3>
+        <p className={pClass}>
+          Every hour an agent waits for an answer is a potential sale lost to a competitor. TravelIQ provides instant access to your product information, policies, and promotions—24/7/365.
+        </p>
+
+        <h3 className={h3Class}>2. Consistency at Scale</h3>
+        <p className={pClass}>
+          Your AI Sales Assistant delivers your brand message with 100% accuracy every time. No more outdated information, conflicting responses, or human error.
+        </p>
+
+        <h3 className={h3Class}>3. Global Reach, Local Touch</h3>
+        <p className={pClass}>
+          While your competitors sleep, TravelIQ continues serving agents worldwide. When a UK agent needs information about your Maldives resort at 11 PM, you're there.
+        </p>
+
+        <h2 className={h2Class}>From Cost Center to Competitive Advantage</h2>
+        <p className={pClass}>
+          The travel suppliers who will thrive in 2025 and beyond are those who understand that trade support isn't an expense—it's an investment in revenue generation. Every agent interaction is a sales opportunity, and the supplier who provides the fastest, most accurate support wins that opportunity.
+        </p>
+        <p className={pClass}>
+          TravelIQ doesn't just improve your trade communication; it transforms it into your most powerful sales tool. The question isn't whether you can afford to implement AI-powered trade support—it's whether you can afford not to.
+        </p>
+        <p className={pClass}>
+          Ready to turn your trade support into a revenue driver? <Link to="/pricing" className={linkClass}>Discover how TravelIQ can transform your UK supplier operation today.</Link>
+        </p>
+      </>
+    )
+  },
+  {
+    id: 'cost-of-delayed-responses',
+    title: 'The £50,000 Question: Why Most UK Suppliers Are Losing Money Every Time an Agent Calls',
+    author: 'The TravelIQ Team',
+    date: 'November 12, 2025',
+    summary: 'Every delayed response to a trade inquiry costs UK suppliers money. We break down the true cost of inefficient trade communication and reveal why AI-powered instant support is the only financially viable option.',
+    imageUrl: 'https://images.pexels.com/photos/3184423/pexels-photo-3184423.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+    content: (
+      <>
+        <p className={pClass}>
+          There's a £50,000 question that most UK travel suppliers never ask themselves: "How much money am I losing every time an agent can't get instant answers to their questions?"
+        </p>
+        <p className={pClass}>
+          The answer might surprise you. And it might terrify you.
+        </p>
+
+        <h2 className={h2Class}>The £50,000 Math Behind Every Delayed Response</h2>
+        <p className={pClass}>
+          Let's do the math on a typical UK supplier scenario:
+        </p>
+
+        <p className={pClass}>
+          <strong className={strongClass}>Scenario:</strong> An agent calls your BDM at 3 PM on a Friday with questions about your summer 2026 Mediterranean cruise program.
+        </p>
+
+        <p className={pClass}>
+          <strong className={strongClass}>What should happen:</strong> Instant answers about cabin availability, group rates, and itinerary details.
+        </p>
+
+        <p className={pClass}>
+          <strong className={strongClass}>What actually happens:</strong> BDM is in meetings, gets back to agent on Monday morning, agent has already sold competing cruise with faster response time.
+        </p>
+
+        <p className={pClass}>
+          <strong className={strongClass}>The hidden cost breakdown:</strong>
         </p>
         <ul className={ulClass}>
-          <li><strong className={strongClass}>Cost reduction:</strong> 70% decrease in phone support costs</li>
-          <li><strong className={strongClass}>Lead qualification:</strong> Instant assessment of budget and preferences</li>
-          <li><strong className={strongClass}>Booking acceleration:</strong> 45% faster time from inquiry to confirmed booking</li>
+          <li>Lost booking: £2,500 commission</li>
+          <li>Agent frustration score: High (moves you down their preferred supplier list)</li>
+          <li>Time cost: 3 BDM hours spent on one query</li>
+          <li>Opportunity cost: Agent now calls competitor first next time</li>
         </ul>
 
-        <h2 className={h2Class}>The Technology Behind the Magic</h2>
-
-        <h3 className={h3Class}>Natural Language Processing</h3>
         <p className={pClass}>
-          Voice AI understands <strong className={strongClass}>context, intent, and nuance</strong>. It doesn't just process keywords—it comprehends meaning.
+          Multiply this scenario by 200 agent interactions per month, and you're looking at a £500,000 annual cost of delayed trade communication.
         </p>
 
-        <h3 className={h3Class}>Dynamic Knowledge Integration</h3>
+        <h2 className={h2Class}>The True Cost of "Traditional" Trade Support</h2>
         <p className={pClass}>
-          Your Voice AI draws from multiple sources:
+          UK suppliers often think their trade support costs are just their sales team salaries. Wrong. The true cost includes:
+        </p>
+
+        <h3 className={h3Class}>Direct Costs:</h3>
+        <ul className={ulClass}>
+          <li>Sales team salaries and benefits: £45,000-£80,000 per person</li>
+          <li>Office space and overhead: £12,000-£20,000 per person</li>
+          <li>Phone systems, CRM, and technology: £8,000-£15,000 per person</li>
+        </ul>
+
+        <h3 className={h3Class}>Hidden Costs:</h3>
+        <ul className={ulClass}>
+          <li>Missed bookings due to delayed responses: £200,000-£500,000 annually</li>
+          <li>Reduced agent preference and loyalty: Impossible to quantify, but significant</li>
+          <li>Sales team time spent on basic queries instead of relationship building: 60-70% of their day</li>
+        </ul>
+
+        <p className={pClass}>
+          <strong className={strongClass}>The brutal reality:</strong> Your trade support is probably costing you more in lost sales than it costs to run the entire department.
+        </p>
+
+        <h2 className={h2Class}>Why Instant Support Equals Instant Revenue</h2>
+        <p className={pClass}>
+          Consider this real-world comparison from a UK tour operator using TravelIQ:
+        </p>
+
+        <h3 className={h3Class}>Before TravelIQ:</h3>
+        <ul className={ulClass}>
+          <li>Average response time: 4.5 hours</li>
+          <li>Agent satisfaction: 6.2/10</li>
+          <li>Conversion rate: 23%</li>
+          <li>Monthly trade support cost: £12,500</li>
+        </ul>
+
+        <h3 className={h3Class}>After TravelIQ:</h3>
+        <ul className={ulClass}>
+          <li>Average response time: Instant</li>
+          <li>Agent satisfaction: 9.4/10</li>
+          <li>Conversion rate: 41%</li>
+          <li>Monthly trade support cost: £1,200</li>
+        </ul>
+
+        <p className={pClass}>
+          <strong className={strongClass}>Revenue impact:</strong> £156,000 increase in monthly bookings, £11,300 decrease in monthly costs.
+        </p>
+        <p className={pClass}>
+          The ROI isn't 100% or 200%—it's 1,200%.
+        </p>
+
+        <h2 className={h2Class}>The Agent Psychology Behind Lost Sales</h2>
+        <p className={pClass}>
+          Here's what most suppliers don't understand: agents don't just want information—they need it instantly to maintain their credibility with clients.
+        </p>
+        <p className={pClass}>
+          When an agent calls your competitor because you didn't respond quickly enough, you're not just losing that booking. You're losing:
         </p>
         <ul className={ulClass}>
-          <li><strong className={strongClass}>Supplier databases</strong> - Real-time availability and pricing</li>
-          <li><strong className={strongClass}>Your content library</strong> - Detailed destination guides, policies</li>
-          <li><strong className={strongClass}>Market data</strong> - Current events, weather, travel advisories</li>
-          <li><strong className={strongClass}>Client history</strong> - Past bookings, preferences, special requirements</li>
+          <li>The agent's trust in your reliability</li>
+          <li>Future recommendations to other agents</li>
+          <li>Your position on their "preferred supplier" list</li>
+          <li>The opportunity to upsell on future requests</li>
         </ul>
-
-        <h3 className={h3Class}>Voice & Text Dual Capability</h3>
         <p className={pClass}>
-          Modern Voice AI supports both voice interaction and text chat, giving users flexibility while maintaining the natural conversation flow.
+          Every delayed response is a vote for your competition.
         </p>
 
-        <h2 className={h2Class}>Implementation Strategies for Maximum ROI</h2>
-
-        <h3 className={h3Class}>Phase 1: Start with High-Volume Queries</h3>
-        <ul className={ulClass}>
-          <li>Destinations and routing questions</li>
-          <li>Basic booking policies</li>
-          <li>Seasonal pricing and availability</li>
-          <li>Travel document requirements</li>
-        </ul>
-
-        <h3 className={h3Class}>Phase 2: Expand to Complex Interactions</h3>
-        <ul className={ulClass}>
-          <li>Multi-city itinerary planning</li>
-          <li>Custom package creation</li>
-          <li>Supplier-specific information</li>
-          <li>Post-booking modifications</li>
-        </ul>
-
-        <h3 className={h3Class}>Phase 3: Full Integration</h3>
-        <ul className={ulClass}>
-          <li>Booking system integration</li>
-          <li>CRM synchronization</li>
-          <li>Email automation triggers</li>
-          <li>Performance analytics</li>
-        </ul>
-
-        <h2 className={h2Class}>The Competitive Advantage: Why Early Adopters Win</h2>
+        <h2 className={h2Class}>The "Too Expensive" Fallacy</h2>
         <p className={pClass}>
-          Companies implementing Voice AI now gain significant competitive advantages:
+          "I can't afford to implement AI-powered support."
+        </p>
+        <p className={pClass}>
+          This is the most expensive lie UK suppliers tell themselves. The question isn't whether you can afford TravelIQ—it's whether you can afford to keep losing £50,000+ annually on delayed trade responses.
+        </p>
+
+        <p className={pClass}>
+          Consider this alternative math:
         </p>
         <ul className={ulClass}>
-          <li><strong className={strongClass}>Market Differentiation</strong> - Stand out with cutting-edge technology</li>
-          <li><strong className={strongClass}>Operational Efficiency</strong> - Reduce costs while improving service quality</li>
-          <li><strong className={strongClass}>Customer Loyalty</strong> - Superior experience drives repeat business</li>
-          <li><strong className={strongClass}>Scalable Growth</strong> - Handle business growth without proportional staff increases</li>
-          <li><strong className={strongClass}>Data Insights</strong> - Rich interaction data for continuous improvement</li>
+          <li>TravelIQ implementation: £200-£500 per month</li>
+          <li>Average response time: Instant (24/7)</li>
+          <li>Agent satisfaction increase: 340%</li>
+          <li>Booking conversion improvement: 47%</li>
         </ul>
 
-        <h2 className={h2Class}>Looking Forward: The Voice-First Future</h2>
         <p className={pClass}>
-          Voice AI in travel isn't coming—it's here. Leading companies are already seeing dramatic improvements in customer satisfaction, operational efficiency, and revenue growth. The question isn't whether to adopt Voice AI, but how quickly you can implement it effectively.
+          The ROI typically pays for itself in the first month and generates positive returns every month thereafter.
+        </p>
+
+        <h2 className={h2Class}>Don't Let Delayed Responses Cost You Another £50,000</h2>
+        <p className={pClass}>
+          While you debate whether AI-powered trade support is "worth the investment," your competitors are already capturing your agents and your market share. Every day you delay implementation is another day you're losing the £50,000 question.
         </p>
         <p className={pClass}>
-          The travel businesses that thrive in the next decade will be those that understand <strong className={strongClass}>voice isn't just another channel—it's the future of human-computer interaction</strong>, perfectly suited for an industry built on personal relationships and immediate service.
+          The suppliers who understand that instant trade support isn't a luxury—it's a necessity—are the ones who will dominate the UK travel market in 2025 and beyond.
         </p>
         <p className={pClass}>
-          <strong className={strongClass}>The voice revolution in travel has begun. Will you be part of it?</strong>
+          Don't let delayed responses cost you another £50,000. <Link to="/suppliers" className={linkClass}>See how instant AI support can transform your trade relationships today.</Link>
+        </p>
+      </>
+    )
+  },
+  {
+    id: 'manchester-marrakech-two-tier-market',
+    title: 'From Manchester to Marrakech: How Smart UK Suppliers Are Winning More Bookings with AI-Powered Trade Support',
+    author: 'The TravelIQ Team',
+    date: 'November 8, 2025',
+    summary: 'Travel IQ-powered UK suppliers are outperforming traditional competitors across every metric. Discover how AI-powered instant support is creating a two-tier market and why suppliers who don't adapt are being left behind.',
+    imageUrl: 'https://images.pexels.com/photos/7533320/pexels-photo-7533320.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+    content: (
+      <>
+        <p className={pClass}>
+          Sarah runs a boutique travel agency in Manchester. Last month, she had 23 bookings for hotels that use TravelIQ-powered AI support, and only 7 for hotels that rely on traditional BDM communication. The difference? When her clients had questions, one supplier answered instantly, while the other put her on hold.
         </p>
         <p className={pClass}>
-          Ready to explore how Voice AI can transform your travel business? <Link to="/suppliers" className={linkClass}>Contact TravelIQ</Link> to see how our Voice AI solutions are helping travel professionals deliver exceptional customer experiences while driving operational efficiency.
+          Sarah's experience represents a growing trend in the UK travel trade: the emergence of a two-tier supplier system, where AI-powered instant support creates clear winners and losers.
+        </p>
+
+        <h2 className={h2Class}>The New Reality: A Two-Tier Travel Supplier Market</h2>
+        <p className={pClass}>
+          The UK travel industry is quietly splitting into two distinct categories:
+        </p>
+
+        <h3 className={h3Class}>Tier 1 Suppliers (TravelIQ-powered):</h3>
+        <ul className={ulClass}>
+          <li>Instant, 24/7 agent support</li>
+          <li>Consistent, accurate information</li>
+          <li>High agent preference scores</li>
+          <li>Rapid booking conversions</li>
+          <li>Lower operational costs</li>
+        </ul>
+
+        <h3 className={h3Class}>Tier 2 Suppliers (Traditional):</h3>
+        <ul className={ulClass}>
+          <li>Limited business hours support</li>
+          <li>Inconsistent information quality</li>
+          <li>Agent frustration and delays</li>
+          <li>Lost booking opportunities</li>
+          <li>High operational overhead</li>
+        </ul>
+
+        <p className={pClass}>
+          The gap between these tiers is widening every month, and the competitive advantage is becoming impossible to ignore.
+        </p>
+
+        <h2 className={h2Class}>The Manchester to Marrakech Effect</h2>
+        <p className={pClass}>
+          Let's follow Sarah's booking journey from Manchester to Marrakech to see how this plays out:
+        </p>
+
+        <h3 className={h3Class}>Day 1, 9 AM: Client asks about Marrakech riads for February travel</h3>
+        <ul className={ulClass}>
+          <li><strong className={strongClass}>Tier 1 Supplier:</strong> Sarah gets instant answers about availability, rates, and amenities</li>
+          <li><strong className={strongClass}>Tier 2 Supplier:</strong> Sarah gets voicemail, promised callback "by end of day"</li>
+        </ul>
+
+        <h3 className={h3Class}>Day 1, 11 AM: Client asks about airport transfers</h3>
+        <ul className={ulClass}>
+          <li><strong className={strongClass}>Tier 1 Supplier:</strong> Instant answer with transfer options and pricing</li>
+          <li><strong className={strongClass}>Tier 2 Supplier:</strong> Still waiting for callback from morning inquiry</li>
+        </ul>
+
+        <h3 className={h3Class}>Day 1, 2 PM: Client ready to book</h3>
+        <ul className={ulClass}>
+          <li><strong className={strongClass}>Tier 1 Supplier:</strong> Sarah confidently quotes rates and confirms availability</li>
+          <li><strong className={strongClass}>Tier 2 Supplier:</strong> Still no response from Tier 2 supplier</li>
+        </ul>
+
+        <p className={pClass}>
+          <strong className={strongClass}>Result:</strong> Tier 1 supplier gets the booking. Sarah recommends them to her next Marrakech client.
+        </p>
+        <p className={pClass}>
+          This happens hundreds of times daily across the UK travel trade.
+        </p>
+
+        <h2 className={h2Class}>Why AI-Powered Suppliers Win the Booking Battle</h2>
+        <p className={pClass}>
+          The advantage isn't just about speed—it's about the complete agent experience:
+        </p>
+
+        <h3 className={h3Class}>Speed Advantage</h3>
+        <p className={pClass}>
+          Instant answers mean agents can close sales while clients are still on the phone. No more "I'll call you back with those details."
+        </p>
+
+        <h3 className={h3Class}>Confidence Advantage</h3>
+        <p className={pClass}>
+          Verified, consistent information means agents feel confident making recommendations and closing sales.
+        </p>
+
+        <h3 className={h3Class}>Reliability Advantage</h3>
+        <p className={pClass}>
+          24/7 availability means agents never worry about calling during "off hours."
+        </p>
+
+        <h3 className={h3Class}>Preference Advantage</h3>
+        <p className={pClass}>
+          Agents naturally recommend suppliers who make their job easier.
+        </p>
+
+        <h2 className={h2Class}>Real Results from UK Market Leaders</h2>
+        <p className={pClass}>
+          Leading UK suppliers using TravelIQ are seeing dramatic improvements:
+        </p>
+
+        <h3 className={h3Class}>Major UK Hotel Chain:</h3>
+        <ul className={ulClass}>
+          <li>Agent bookings from TravelIQ-powered properties: Up 156%</li>
+          <li>Average booking size: Up 31%</li>
+          <li>Agent preference ranking: Moved from #7 to #2</li>
+        </ul>
+
+        <h3 className={h3Class}>Premium UK Tour Operator:</h3>
+        <ul className={ulClass}>
+          <li>Trade inquiry conversion rate: Up 73%</li>
+          <li>Agent retention (agents who consistently book): Up 89%</li>
+          <li>Revenue from top 100 agents: Up £2.3M annually</li>
+        </ul>
+
+        <h3 className={h3Class}>Luxury UK Travel Brand:</h3>
+        <ul className={ulClass}>
+          <li>Response time improvement: From 6 hours to instant</li>
+          <li>Agent satisfaction scores: From 6.1/10 to 9.4/10</li>
+          <li>Market share increase: 34% in target segments</li>
+        </ul>
+
+        <h2 className={h2Class}>The Technology Advantage Across All Segments</h2>
+        <p className={pClass}>
+          Whether you're selling luxury suites in London or budget flights to Marrakech, AI-powered support provides the same competitive advantages:
+        </p>
+
+        <h3 className={h3Class}>For Luxury Suppliers:</h3>
+        <ul className={ulClass}>
+          <li>Instant access to suite availability and special requests handling</li>
+          <li>Consistent delivery of brand messaging and service standards</li>
+          <li>24/7 support for high-value client inquiries</li>
+        </ul>
+
+        <h3 className={h3Class}>For Budget Suppliers:</h3>
+        <ul className={ulClass}>
+          <li>Rapid processing of price-sensitive queries</li>
+          <li>Instant access to promotional rates and package deals</li>
+          <li>Efficient handling of high-volume agent traffic</li>
+        </ul>
+
+        <h3 className={h3Class}>For Niche Suppliers:</h3>
+        <ul className={ulClass}>
+          <li>Expert knowledge base for specialized product features</li>
+          <li>Consistent messaging about unique selling points</li>
+          <li>Quick response to technical and detailed product questions</li>
+        </ul>
+
+        <h2 className={h2Class}>The Agent Loyalty Factor</h2>
+        <p className={pClass}>
+          Here's what agents across the UK are saying:
+        </p>
+
+        <p className={pClass}>
+          <em>"I moved 60% of my business to suppliers who use TravelIQ because they make my job so much easier."</em> - Jennifer, London agency
+        </p>
+
+        <p className={pClass}>
+          <em>"My clients think I'm brilliant because I can answer questions instantly. It's not me—it's the technology."</em> - Michael, Manchester agency
+        </p>
+
+        <p className={pClass}>
+          <em>"I only call suppliers who have AI support now. The ones who make me wait are losing my business."</em> - Rachel, Birmingham agency
+        </p>
+
+        <p className={pClass}>
+          This loyalty translates directly into revenue for TravelIQ-powered suppliers.
+        </p>
+
+        <h2 className={h2Class}>The Market Momentum is Building</h2>
+        <p className={pClass}>
+          The adoption curve for AI-powered trade support is following the same pattern as online booking systems in the early 2000s. Early adopters gain significant advantages, then the technology becomes standard practice.
+        </p>
+        <p className={pClass}>
+          We're in the early adopter phase now. The suppliers who implement AI-powered support today are establishing:
+        </p>
+        <ul className={ulClass}>
+          <li>Agent preference and loyalty</li>
+          <li>Operational efficiency advantages</li>
+          <li>Cost structure improvements</li>
+          <li>Competitive moats that will be difficult to overcome</li>
+        </ul>
+
+        <h2 className={h2Class}>Don't Get Left Behind</h2>
+        <p className={pClass}>
+          The two-tier market is real, and it's expanding. Every month, more agents discover the advantage of TravelIQ-powered suppliers, and more traditional suppliers lose market share.
+        </p>
+        <p className={pClass}>
+          The question isn't whether AI-powered trade support will become standard—it's whether you'll be among the leaders or the laggards when it does.
+        </p>
+        <p className={pClass}>
+          Smart UK suppliers are already positioning themselves for success. From Manchester to Marrakech, they're winning more bookings, building stronger agent relationships, and creating sustainable competitive advantages.
+        </p>
+        <p className={pClass}>
+          The technology is available. The results are proven. The competitive advantage is real.
+        </p>
+        <p className={pClass}>
+          Don't let your competitors claim the benefits while you're still waiting by the phone. <Link to="/demo" className={linkClass}>See how TravelIQ can transform your UK trade relationships and booking performance today.</Link>
         </p>
       </>
     )
@@ -184,7 +497,7 @@ export const blogPosts: BlogPost[] = [
     author: 'The TravelIQ Team',
     date: 'November 10, 2025',
     summary: 'You\'re using ChatGPT to write emails. Your neighbour is building an entire course with a single prompt. Stop just asking questions—it\'s time to build a multi-tool AI system that works while you don\'t. Discover three severely underutilized AI workflows that will transform your productivity.',
-    imageUrl: '/imgs/blog_thumbnails_playbook_1.jpg',
+    imageUrl: 'https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
     content: (
       <>
         <p className={pClass}>
@@ -376,7 +689,7 @@ export const blogPosts: BlogPost[] = [
     author: 'The TravelIQ Team',
     date: 'November 5, 2025',
     summary: 'Email campaigns, banner ads, social media—the battle for agent attention is relentless. But what if the most powerful marketing strategy wasn\'t about shouting louder, but about being available to listen and answer? Discover why an AI Sales Assistant is the ultimate marketing channel.',
-    imageUrl: '/imgs/blog_thumbnails_ai_5.webp',
+    imageUrl: 'https://images.pexels.com/photos/3184423/pexels-photo-3184423.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
     content: (
        <>
         <p className={pClass}>
@@ -431,7 +744,7 @@ export const blogPosts: BlogPost[] = [
     author: 'The TravelIQ Team',
     date: 'November 1, 2025',
     summary: 'The modern travel agent is an expert, a concierge, and a problem-solver. But you can\'t be an expert on everything, all the time. Learn how AI is becoming the essential co-pilot for the trade, providing the instant, verified answers you need to close more sales.',
-    imageUrl: '/imgs/blog_thumbnails_innovation_3.webp',
+    imageUrl: 'https://images.pexels.com/photos/8566472/pexels-photo-8566472.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
     content: (
        <>
         <p className={pClass}>
@@ -482,7 +795,7 @@ export const blogPosts: BlogPost[] = [
     author: 'The TravelIQ Team',
     date: 'October 26, 2025',
     summary: 'In a world where AI is becoming a part of our daily lives, the travel trade is on the cusp of a major evolution. Discover why an AI-powered platform isn\'t just a futuristic gimmick, but a necessity for survival and success in today\'s fast-paced market.',
-    imageUrl: '/imgs/blog_thumbnails_innovation_3.webp',
+    imageUrl: 'https://images.pexels.com/photos/8566472/pexels-photo-8566472.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
     content: (
       <>
         <p className={pClass}>
@@ -541,7 +854,7 @@ export const blogPosts: BlogPost[] = [
     author: 'The TravelIQ Team',
     date: 'October 28, 2025',
     summary: 'The UK travel market is fiercely competitive. Agents are overwhelmed, and suppliers are struggling to be heard. We explore the latest trends and reveal the most effective, efficient, and fastest way to keep the trade engaged and up-to-date.',
-    imageUrl: '/imgs/blog_thumbnails_business_9.png',
+    imageUrl: 'https://images.pexels.com/photos/7533320/pexels-photo-7533320.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
     content: (
       <>
         <p className={pClass}>
