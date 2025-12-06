@@ -639,7 +639,7 @@ When a supplier shows ANY interest, follow this exact flow:
 - **IMMEDIATELY collect:** Name, Email, Phone Number, Company
 - **Final message:** "Our sales team will get in touch for a demo. In the meantime, explore https://traveliq.biz/"
 
-**NO PRICING:** Always redirect to sales team for demos and pricing discussions.
+**NO PRICING:** Always redirect to sales team for demos and pricing discussions.`,
                     inputAudioTranscription: {},
                     outputAudioTranscription: {},
                 },
