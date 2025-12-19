@@ -23,7 +23,7 @@ interface Message {
 const VEE_AVATAR_DEFAULT = "/traveliq-ai-avatar.png";
 
 // ElevenLabs Voice IDs
-const ELEVENLABS_VEE_VOICE_ID = 'agent_9701k60px56gezba55q83jamzhbk';
+const VEE_ELEVENLABS_VOICE_ID = 'agent_9701k60px56gezba55q83jamzhbk';
 
 // --- ICONS ---
 const MicrophoneIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
@@ -105,190 +105,407 @@ const extractContactDetails = (conversationText: string): ExtractedLead => {
   }
   
   // Company patterns
-  const companyMatch = conversationText.match(/(?:i work for|company|agency)\s+([A-Z][a-zA-Z\s&.-]+)/i);
-  if (companyMatch) lead.company = companyMatch[1].trim();
+  const companyPatterns = [
+    /(?:company is|work (?:at|for)|from)\s+([A-Z][A-Za-z\s&]+?)(?:\.|,|$|\s+and|\s+my)/i,
+    /(?:company[:\s]+)([A-Z][A-Za-z\s&]+?)(?:\.|,|$)/i
+  ];
+  for (const pattern of companyPatterns) {
+    const match = conversationText.match(pattern);
+    if (match) {
+      lead.company = match[1].trim();
+      break;
+    }
+  }
   
   return lead;
 };
 
-// --- SPEECH GENERATION WITH ELEVENLABS INTEGRATION ---
-const generateSpeech = async (text: string, supplierId?: string): Promise<string> => {
-  try {
-    // For main Vee chatbot (when no supplierId provided)
-    if (!supplierId) {
-      console.log('Using ElevenLabs for main Vee chatbot');
-      return await elevenLabsService.generateSpeech(text, ELEVENLABS_VEE_VOICE_ID);
-    }
+const MessageContent: React.FC<{ text: string; onClose: () => void; }> = ({ text, onClose }) => {
+    const navigate = useNavigate();
+    const parts = text.split(/(\[.*?\]\(.*?\))/g);
 
-    // For specific supplier
-    const supplier = SEED_SUPPLIERS.find(s => s.id === supplierId);
-    
-    if (!supplier) {
-      throw new Error('Supplier not found');
-    }
-
-    // Check if supplier uses ElevenLabs
-    if (supplier.useElevenLabs && supplier.elevenLabsVoiceId) {
-      try {
-        console.log(`Using ElevenLabs for ${supplier.name}`);
-        const audioUrl = await elevenLabsService.generateSpeech(
-          text,
-          supplier.elevenLabsVoiceId
-        );
-        return audioUrl;
-      } catch (error) {
-        console.error(`ElevenLabs failed for ${supplier.name}, falling back to Gemini:`, error);
-        // Fallback to Gemini if ElevenLabs fails
-      }
-    }
-
-    // Fallback to Gemini for other suppliers
-    return generateGeminiSpeech(text, supplier.geminiVoiceName);
-  } catch (error) {
-    console.error('Speech generation failed:', error);
-    throw error;
-  }
-};
-
-// Gemini fallback function
-const generateGeminiSpeech = async (text: string, voiceName: string): Promise<string> => {
-  // Your existing Gemini implementation
-  try {
-    // This would be your existing Gemini TTS logic
-    // For now, we'll return an empty string to maintain compatibility
-    return '';
-  } catch (error) {
-    console.error('Gemini speech generation failed:', error);
-    throw error;
-  }
-};
-
-// --- COMPONENT ---
-const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avatarUrl }) => {
-  const [mode, setMode] = useState<'chat' | 'live'>('chat');
-  const [messages, setMessages] = useState<Message[]>([
-    { 
-      sender: 'ai', 
-      text: `Hello! I'm Vee, your AI assistant for TravelIQ. I'm here to help you connect with travel suppliers instantly. How can I assist you today?` 
-    }
-  ]);
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [liveStatus, setLiveStatus] = useState<'connecting' | 'connected' | 'error'>('connecting');
-  const [transcript, setTranscript] = useState<Array<{speaker: 'user' | 'ai', text: string}>>([]);
-  const [isRecording, setIsRecording] = useState(false);
-  const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null);
-  
-  const { addLead } = useLeads();
-  const { isVeeChatOpen, closeVeeChat } = useUI();
-  const ai = useAI();
-  
-  const navigate = useNavigate();
-  const inputAudioContextRef = useRef<AudioContext | null>(null);
-  const outputAudioContextRef = useRef<AudioContext | null>(null);
-  const audioStreamRef = useRef<MediaStream | null>(null);
-  const ttsCurrentAudioSourceRef = useRef<AudioBufferSourceNode | null>(null);
-  const nextStartTimeRef = useRef<number>(0);
-  const inputBufferRef = useRef<Int16Array[]>([]);
-  const scriptProcessorRef = useRef<ScriptProcessorNode | null>(null);
-
-  const handleClose = useCallback(() => {
-    // Clean up audio resources
-    if (audioStreamRef.current) {
-      audioStreamRef.current.getTracks().forEach(track => track.stop());
-      audioStreamRef.current = null;
-    }
-    if (inputAudioContextRef.current && inputAudioContextRef.current.state !== 'closed') {
-      inputAudioContextRef.current.close().catch(e => console.error("Error closing input audio context:", e));
-      inputAudioContextRef.current = null;
-    }
-    if (outputAudioContextRef.current && outputAudioContextRef.current.state !== 'closed') {
-      outputAudioContextRef.current.close().catch(e => console.error("Error closing output audio context:", e));
-      outputAudioContextRef.current = null;
-    }
-    if (scriptProcessorRef.current) {
-      scriptProcessorRef.current.disconnect();
-      scriptProcessorRef.current = null;
-    }
-    
-    // Stop any playing audio
-    if (ttsCurrentAudioSourceRef.current) {
-      try {
-        ttsCurrentAudioSourceRef.current.stop();
-      } catch (e) {
-        // Audio might already be stopped
-      }
-      ttsCurrentAudioSourceRef.current = null;
-    }
-    
-    setPlayingMessageIndex(null);
-    onClose();
-  }, [onClose]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || isLoading) return;
-
-    const userMessage: Message = { sender: 'user', text: input };
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
-    setIsLoading(true);
-
-    try {
-      const fullConversation = [...messages, userMessage].map(m => `${m.sender}: ${m.text}`).join('\n');
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: [{ parts: [{ text: fullConversation }] }],
-      });
-      
-      const aiText = response.text;
-      const aiMessage: Message = { sender: 'ai', text: aiText };
-      setMessages(prev => [...prev, aiMessage]);
-
-      // Extract lead information if present
-      const lead = extractContactDetails(aiText);
-      if (lead.email || lead.name || lead.phone) {
-        const leadData: Omit<import('../context/LeadContext.tsx').Lead, 'timestamp'> = {
-          type: 'Agent Chat',
-          name: lead.name || 'Unknown',
-          email: lead.email || 'no-email-provided@example.com',
-          agency: lead.company,
-          message: `Phone: ${lead.phone || 'N/A'} | Captured via Vee chat`,
-        };
-        addLead(leadData);
-        console.log('Lead captured from Vee chat conversation:', lead);
-      }
-    } catch (error) {
-      console.error('Chat error:', error);
-      setMessages(prev => [...prev, { sender: 'ai', text: 'I apologize, but I encountered an error. Please try again.' }]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-    const playAudioMessage = useCallback(async (text: string, index: number) => {
-        if (playingMessageIndex === index) {
-            // Stop current audio
-            if (ttsCurrentAudioSourceRef.current) {
-                try {
-                    ttsCurrentAudioSourceRef.current.stop();
-                } catch (e) {
-                    // Audio might already be stopped
+    return (
+        <p className="whitespace-pre-wrap">
+            {parts.map((part, index) => {
+                const match = part.match(/\[(.*?)\]\((.*?)\)/);
+                if (match) {
+                    const linkText = match[1];
+                    const url = match[2];
+                    return (
+                        <Link 
+                            key={index} 
+                            to={url}
+                            className="text-brand-cyan font-bold underline hover:opacity-80"
+                            onClick={onClose}
+                        >
+                            {linkText}
+                        </Link>
+                    );
                 }
-                ttsCurrentAudioSourceRef.current = null;
+                return <span key={index}>{part}</span>;
+            })}
+        </p>
+    );
+};
+
+// Hybrid speech generation function
+const generateSpeech = async (text: string, voiceName?: string, supplierId?: string): Promise<string> => {
+  try {
+    const correctedText = getPhoneticallyCorrectedText(text);
+    
+    // Check if we should use ElevenLabs
+    if (supplierId) {
+      // Find supplier configuration
+      const supplier = SEED_SUPPLIERS.find(s => s.id === supplierId);
+      if (supplier?.useElevenLabs && supplier.elevenLabsVoiceId) {
+        console.log(`Using ElevenLabs for supplier: ${supplier.name}`);
+        return await elevenLabsService.generateSpeech(correctedText, supplier.elevenLabsVoiceId);
+      }
+    } else if (voiceName === 'Vee') {
+      // Use ElevenLabs for main Vee chatbot
+      console.log('Using ElevenLabs for main Vee chatbot');
+      return await elevenLabsService.generateSpeech(correctedText, VEE_ELEVENLABS_VOICE_ID);
+    }
+    
+    // Fallback to Gemini TTS
+    console.log('Using Gemini TTS');
+    throw new Error('Using Gemini TTS as fallback');
+  } catch (error) {
+    console.log('ElevenLabs not available, using Gemini TTS');
+    throw error;
+  }
+};
+
+const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avatarUrl = VEE_AVATAR_DEFAULT }) => {
+    type ChatMode = 'idle' | 'text' | 'live';
+    type LiveStatus = 'idle' | 'connecting' | 'greeting' | 'connected' | 'error';
+    type TranscriptEntry = { speaker: 'You' | 'AI'; text: string };
+    
+    const { ai, error: aiError } = useAI();
+    
+    // Show AI initialization error if present
+    useEffect(() => {
+        if (aiError) {
+            console.error('AI Service Error:', aiError);
+            // Don't crash the component, just log the error
+        }
+    }, [aiError]);
+    const { addLead } = useLeads();
+    const [mode, setMode] = useState<ChatMode>('idle');
+    const [conversation, setConversation] = useState<Message[]>([]);
+    const [inputValue, setInputValue] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [leadCaptured, setLeadCaptured] = useState(false);
+    const lastCheckedLengthRef = useRef(0);
+
+    // Effect to detect and capture leads from conversation
+    useEffect(() => {
+      if (conversation.length <= lastCheckedLengthRef.current || leadCaptured) return;
+      lastCheckedLengthRef.current = conversation.length;
+      
+      // Only check user messages for contact details
+      const userMessages = conversation.filter(m => m.sender === 'user');
+      if (userMessages.length < 2) return; // Need at least a few messages
+      
+      const fullConversation = userMessages.map(m => m.text).join(' ');
+      const extracted = extractContactDetails(fullConversation);
+      
+      // Capture lead if we have at least an email or phone
+      if (extracted.email || extracted.phone) {
+        const lead = {
+          type: 'AI Lead Capture' as const,
+          name: extracted.name || '',
+          email: extracted.email || '',
+          agency: extracted.company || '',
+          message: `Phone: ${extracted.phone || 'N/A'} | Captured via Vee chatbot`,
+        };
+        addLead(lead);
+        setLeadCaptured(true);
+        console.log('Lead captured from Vee conversation:', lead);
+      }
+    }, [conversation, leadCaptured, addLead]);
+
+    // Live session state
+    const [liveStatus, setLiveStatus] = useState<LiveStatus>('idle');
+    const [transcript, setTranscript] = useState<TranscriptEntry[]>([]);
+
+    // Effect to detect and capture leads from live transcript
+    useEffect(() => {
+      if (transcript.length < 2 || leadCaptured) return;
+      
+      const userMessages = transcript.filter(t => t.speaker === 'You');
+      if (userMessages.length < 2) return;
+      
+      const fullTranscript = userMessages.map(t => t.text).join(' ');
+      const extracted = extractContactDetails(fullTranscript);
+      
+      if (extracted.email || extracted.phone) {
+        const lead = {
+          type: 'AI Lead Capture' as const,
+          name: extracted.name || '',
+          email: extracted.email || '',
+          agency: extracted.company || '',
+          message: `Phone: ${extracted.phone || 'N/A'} | Captured via Vee voice chat`,
+        };
+        addLead(lead);
+        setLeadCaptured(true);
+        console.log('Lead captured from Vee voice conversation:', lead);
+      }
+    }, [transcript, leadCaptured, addLead]);
+    const [isAiSpeaking, setIsAiSpeaking] = useState(false);
+    const { addMessage } = useVeeChat();
+    
+    // TTS state
+    const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null);
+
+    const chatEndRef = useRef<HTMLDivElement>(null);
+    const sessionPromiseRef = useRef<Promise<any> | null>(null);
+    const audioStreamRef = useRef<MediaStream | null>(null);
+    const scriptProcessorRef = useRef<ScriptProcessorNode | null>(null);
+    const inputAudioContextRef = useRef<AudioContext | null>(null);
+    const outputAudioContextRef = useRef<AudioContext | null>(null);
+    const outputSourcesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
+    const nextStartTimeRef = useRef<number>(0);
+    const ttsCurrentAudioSourceRef = useRef<AudioBufferSourceNode | null>(null);
+
+    useEffect(() => {
+        chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [conversation, isLoading, transcript]);
+    
+    const cleanupLiveSession = useCallback(async () => {
+        if (sessionPromiseRef.current) {
+            try {
+                const session = await sessionPromiseRef.current;
+                session.close();
+            } catch (e) { console.error("Error closing session:", e); }
+        }
+        if (scriptProcessorRef.current) { scriptProcessorRef.current.disconnect(); scriptProcessorRef.current = null; }
+        audioStreamRef.current?.getTracks().forEach(track => track.stop());
+        audioStreamRef.current = null;
+        if (inputAudioContextRef.current && inputAudioContextRef.current.state !== 'closed') {
+            try { await inputAudioContextRef.current.close(); } catch (e) { console.error("Error closing input audio context:", e); }
+        }
+        inputAudioContextRef.current = null;
+        // Do not close output context here, let it be reused
+        outputSourcesRef.current.forEach(source => { try { source.stop(); } catch(e){} });
+        outputSourcesRef.current.clear();
+        nextStartTimeRef.current = 0;
+        sessionPromiseRef.current = null;
+        setIsAiSpeaking(false);
+    }, []);
+
+    const resetToIdle = useCallback(() => {
+        cleanupLiveSession();
+        setMode('idle');
+        setConversation([]);
+        setTranscript([]);
+        setInputValue('');
+        setIsLoading(false);
+        setLiveStatus('idle');
+        setLeadCaptured(false);
+        lastCheckedLengthRef.current = 0;
+    }, [cleanupLiveSession]);
+    
+    const handleClose = useCallback(() => {
+        cleanupLiveSession();
+        if (outputAudioContextRef.current && outputAudioContextRef.current.state !== 'closed') {
+            outputAudioContextRef.current.close().catch(e => console.error("Error closing output audio context:", e));
+            outputAudioContextRef.current = null;
+        }
+        onClose();
+        setTimeout(resetToIdle, 300); // Reset after transition
+    }, [cleanupLiveSession, onClose, resetToIdle]);
+
+    // --- TEXT CHAT LOGIC ---
+    const startTextChat = () => {
+        setMode('text');
+        
+        // Check if AI service is available
+        if (!ai) {
+            const errorMessage = { 
+                sender: 'ai' as const, 
+                text: "I apologize, but I'm currently unavailable. The AI service needs to be configured. Please contact support to get this resolved." 
+            };
+            setConversation([errorMessage]);
+            return;
+        }
+        
+        const welcomeMessage = { sender: 'ai' as const, text: "Glad you're here at TravelIQ, I'm Vee, how can I assist you today?" };
+        setConversation([welcomeMessage]);
+    };
+
+    const handleSendTextMessage = useCallback(async (text: string) => {
+        if (!text.trim() || isLoading) return;
+        
+        // Check if AI service is available
+        if (!ai) {
+            const errorMessage = { 
+                sender: 'ai' as const, 
+                text: "I apologize, but I'm currently unavailable. Please ensure the AI service is properly configured. Try refreshing the page or contact support." 
+            };
+            setConversation(prev => [...prev, errorMessage]);
+            return;
+        }
+        const userMessage: Message = { sender: 'user', text };
+        addMessage({ sender: 'user', text });
+        setConversation(prev => [...prev, userMessage]);
+        setInputValue('');
+        setIsLoading(true);
+
+        try {
+            const systemInstruction = `You are 'Vee', the Lead Capture Specialist and Platform Expert for TravelIQ. Your personality is warm, helpful, professional, and deeply knowledgeable about TravelIQ. You will greet users with - 'Glad you're here at TravelIQ, I'm Vee, how can I assist you today?'
+
+**Your Primary Mission:** Be the ultimate TravelIQ platform expert while capturing leads by collecting contact details from visitors and directing them to our sales team for personalized demos. You are NOT a sales agent - you are the knowledgeable first point of contact who combines platform expertise with lead generation.
+
+## 🧠 TravelIQ Knowledge Base & Core Identity
+
+**WHO WE ARE:**
+We are TravelIQ, the **First Voice AI Platform** built specifically for the travel trade. We provide an **Intelligent Answer, Instantly**, connecting suppliers and agents via **on-demand Voice AI.** Our main USP is offering **dedicated supplier Voice AI support**, allowing agents to simply **talk** to the product experts—no typing (unless they choose to chat).
+
+**CORE PROBLEM WE SOLVE:**
+The travel industry relies on slow, inefficient communication (hold music, emails, clunky portals). 
+
+**OUR SOLUTION:**
+We provide **Intelligent Answer, Instantly**, connecting suppliers and agents via **on-demand Voice AI.**
+
+**Website:** https://traveliq.biz/
+
+## 🔥 Value Proposition for Travel Suppliers (The Paying Customer)
+
+**Ultra-Fast Onboarding:** Joining is incredibly easy. All you need to provide is your existing knowledge base (FAQs, policies, product sheets). **We train your dedicated Voice AI fast.**
+
+**Go-Live Speed:** You can join our platform **today**, and your dedicated Voice AI Sales Assistant can be ready to go **live tomorrow.**
+
+**Cost Reduction:** Drastically lower the cost per agent interaction (**by over 90%**). Supplement, not replace, your existing sales team.
+
+**Global Reach:** Provide **24/7/365, global support** to every agent, in any time zone.
+
+**Consistency:** Your custom-trained AI ensures your brand message is **always consistent** and your information is **always current** and **reliable.**
+
+**Market Insight:** Powerful real-time analytics to understand **what the trade is asking for**, helping capture qualified leads automatically.
+
+**Basic Plan:** Our basic plan is to hire a **dedicated Voice AI sales support** trained with their static knowledge base.
+
+## Value Proposition for Travel Agents (Operational Guidelines)
+
+**Platform Value:** The platform is **completely FREE**. Agents get instant, verified expertise by **simply talking** to their supplier's dedicated Voice AI.
+
+**Support Scope:** The AI will **only** answer TravelIQ-specific questions (e.g., "How do I sign up?", "Which suppliers are on the platform?").
+
+**Product Questions:** **Do not answer supplier-specific questions** (e.g., "What is the pet policy for Hotel X?").
+
+**Redirection:** Always direct the agent back to the platform to find the supplier they need: "I can't answer that specific supplier question. TravelIQ's purpose is to connect you **directly to the supplier's dedicated Voice AI** so you can ask them for instant, verified answers. Would you like me to check if that supplier is live on our platform?"
+
+## Standard Engagement & Call to Action (CTA)
+
+**Initial Greeting:** "Hi I'm Vee. Welcome to TravelIQ, the first Voice AI platform for the travel trade! Are you a **Travel Agent** or a **Supplier**?"
+
+**For TRAVEL AGENTS:**
+- Explain: TravelIQ is completely FREE for travel agents - instant 24/7 access to supplier information via voice or chat
+- Direct them to explore our [Suppliers](/suppliers) page
+- If they have questions, direct them to the contact forms in the website footer or our [Contact](/contact) page
+
+**For TRAVEL SUPPLIERS (Lead Capture Focus):**
+- **After detailing value:** "We can get your Voice AI Sales Assistant live tomorrow. To schedule a demo and receive a custom offer based on your needs, may I please take your **Name, Email, Phone Number, and Company** so our sales team can reach out?" or direct to supplier contact form at the foot of our website
+
+**Final CTA:** Direct to Traveliq.biz or confirm contact: "Please email us at **Hey@travelIQ.biz**."
+
+## Lead Capture Workflow for Suppliers
+
+When a supplier shows ANY interest, follow this exact flow:
+1. Thank them for their interest
+2. Explain: "Our sales team will get in touch for a demo and answer all your questions in detail."
+3. Ask: "To connect you with the right person, may I have your name, company, phone number, and email?"
+4. Collect each piece of information
+5. Confirm the details back to them
+6. Assure them: "Our sales team will reach out shortly. In the meantime, feel free to explore our website at https://traveliq.biz/ or fill out the contact form in our footer."
+
+**Handling Pricing Questions:**
+- DO NOT discuss specific pricing, packages, or service quantities
+- If they ask about pricing, say: "Our sales team will be happy to discuss pricing options during your personalized demo. May I get your contact details so they can reach out to you?"
+
+## What you MUST NEVER do:
+- Discuss detailed pricing or service packages in detail
+- Ask about what products/services they offer
+- Ask about quantities or volumes for pricing purposes
+- Handle bookings, reservations, or transactions
+- Act as a travel agent or supplier customer service
+- Provide detailed technical specifications
+- Make sales promises or commitments
+
+**What you SHOULD do:**
+- Be warm, friendly, and helpful
+- Focus on collecting contact information
+- Direct to contact forms and website footer
+- Mention our smart instant Voice AI supplier sales support offering
+- Assure them our sales team will provide personalized demos
+
+**Navigation:** Use markdown links: [Partnership](/partnership), [Suppliers](/suppliers), [Contact](/contact), [Blog](/blog)
+
+**Remember:** Your success is measured by leads captured, not sales made. Every conversation should aim to collect contact details for our sales team follow-up.`;
+            
+            const contents: Content[] = [...conversation].map(msg => ({
+                role: msg.sender === 'user' ? 'user' : 'model',
+                parts: [{ text: msg.text }]
+            }));
+            contents.push({ role: 'user', parts: [{ text: userMessage.text }] });
+
+
+            const config: any = {
+                systemInstruction,
+                tools: [{ googleSearch: {} }, { googleMaps: {} }],
+            };
+
+            // Updated to use gemini-3-pro-preview for the chatbot as requested
+            const response = await ai.models.generateContent({
+                model: "gemini-3-pro-preview",
+                contents: contents,
+                config: config,
+            });
+
+            // Handle Text and Source response
+            const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
+            let sources: { title: string; uri: string }[] | undefined = undefined;
+            if (groundingChunks && groundingChunks.length > 0) {
+                const validSources = groundingChunks
+                    .map((chunk: any) => {
+                        if (chunk.web) return { title: chunk.web.title || '', uri: chunk.web.uri || '' };
+                        if (chunk.maps) return { title: chunk.maps.title || 'Google Maps', uri: chunk.maps.uri || '' };
+                        return null;
+                    })
+                    .filter((item): item is { title: string; uri: string } => item !== null && !!item.title && !!item.uri);
+
+                const sourceMap = new Map<string, { title: string; uri: string; }>(validSources.map(item => [item.uri, item]));
+                const uniqueSources = Array.from(sourceMap.values());
+
+                if (uniqueSources.length > 0) {
+                    sources = uniqueSources;
+                }
             }
+            
+            if (response.text) {
+              const aiMessage = { sender: 'ai' as const, text: response.text, sources };
+              setConversation(prev => [...prev, aiMessage]);
+              addMessage(aiMessage);
+            }
+
+        } catch (error) {
+            console.error("Text chat error:", error);
+            setConversation(prev => [...prev, { sender: 'ai', text: "Sorry, I'm having trouble connecting." }]);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [conversation, isLoading, addMessage, addLead, ai]);
+    
+    const handlePlayTTS = async (text: string, index: number) => {
+        if (playingMessageIndex === index) {
+            ttsCurrentAudioSourceRef.current?.stop();
             setPlayingMessageIndex(null);
             return;
         }
-
+        if (!ai) return;
+        setPlayingMessageIndex(index);
         try {
-            setPlayingMessageIndex(index);
-            
-            // Initialize output audio context if needed
             if (!outputAudioContextRef.current || outputAudioContextRef.current.state === 'closed') {
                 outputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
             }
@@ -298,15 +515,35 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
             
             const correctedText = getPhoneticallyCorrectedText(text);
 
-            // Use ElevenLabs for main Vee chatbot
-            const audioUrl = await generateSpeech(correctedText);
+            // Try ElevenLabs first for Vee chatbot
+            try {
+                const audioUrl = await generateSpeech(correctedText, 'Vee');
+                // Create audio element and play
+                const audio = new Audio(audioUrl);
+                audio.onended = () => setPlayingMessageIndex(null);
+                audio.onerror = () => {
+                    console.error('Audio playback error');
+                    setPlayingMessageIndex(null);
+                };
+                await audio.play();
+                return;
+            } catch (elevenLabsError) {
+                console.log('ElevenLabs failed, falling back to Gemini TTS');
+            }
+
+            // Fallback to Gemini TTS
+            const response = await ai.models.generateContent({
+                model: "gemini-2.5-flash-preview-tts",
+                contents: [{ parts: [{ text: correctedText }] }],
+                config: {
+                    responseModalities: [Modality.AUDIO],
+                    speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Zephyr' } } },
+                },
+            });
             
-            if (audioUrl) {
-                // Fetch and play ElevenLabs audio
-                const response = await fetch(audioUrl);
-                const arrayBuffer = await response.arrayBuffer();
-                const audioBuffer = await outputAudioContextRef.current!.decodeAudioData(arrayBuffer);
-                
+            const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+            if (base64Audio) {
+                const audioBuffer = await decodeAudioData(decode(base64Audio), outputAudioContextRef.current!, 24000, 1);
                 const source = outputAudioContextRef.current!.createBufferSource();
                 source.buffer = audioBuffer;
                 source.connect(outputAudioContextRef.current!.destination);
@@ -317,37 +554,13 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
                 source.start();
                 ttsCurrentAudioSourceRef.current = source;
             } else {
-                // Fallback to Gemini TTS for other suppliers
-                const response = await ai.models.generateContent({
-                    model: "gemini-2.5-flash-preview-tts",
-                    contents: [{ parts: [{ text: correctedText }] }],
-                    config: {
-                        responseModalities: [Modality.AUDIO],
-                        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Zephyr' } } },
-                    },
-                });
-                
-                const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-                if (base64Audio) {
-                    const audioBuffer = await decodeAudioData(decode(base64Audio), outputAudioContextRef.current!, 24000, 1);
-                    const source = outputAudioContextRef.current!.createBufferSource();
-                    source.buffer = audioBuffer;
-                    source.connect(outputAudioContextRef.current!.destination);
-                    source.onended = () => {
-                        setPlayingMessageIndex(null);
-                        ttsCurrentAudioSourceRef.current = null;
-                    };
-                    source.start();
-                    ttsCurrentAudioSourceRef.current = source;
-                } else {
-                    setPlayingMessageIndex(null);
-                }
+                setPlayingMessageIndex(null);
             }
         } catch (error) {
             console.error("TTS Error:", error);
             setPlayingMessageIndex(null);
         }
-    }, [playingMessageIndex, ai]);
+    };
 
 
     // --- LIVE CHAT LOGIC ---
@@ -364,235 +577,308 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
             if (outputAudioContextRef.current.state === 'suspended') {
                 await outputAudioContextRef.current.resume();
             }
+            const outputCtx = outputAudioContextRef.current;
+
+            const greetingText = "Glad you're here at TravelIQ, I'm Vee, how can I assist you today?";
             
-            // Play greeting using ElevenLabs
-            const greetingText = "Welcome to TravelIQ! I'm Vee, your AI assistant. I'm here to help you connect with travel suppliers instantly. How can I assist you today?";
-            const greetingAudioUrl = await generateSpeech(greetingText);
-            
-            if (greetingAudioUrl) {
-                const response = await fetch(greetingAudioUrl);
+            // Try ElevenLabs first for greeting
+            let audioBuffer: AudioBuffer;
+            try {
+                const audioUrl = await generateSpeech(greetingText, 'Vee');
+                const response = await fetch(audioUrl);
                 const arrayBuffer = await response.arrayBuffer();
-                const audioBuffer = await outputAudioContextRef.current!.decodeAudioData(arrayBuffer);
-                const source = outputAudioContextRef.current!.createBufferSource();
-                source.buffer = audioBuffer;
-                source.connect(outputAudioContextRef.current!.destination);
-                source.start();
-                setLiveStatus('connected');
-            } else {
-                setLiveStatus('connected');
+                audioBuffer = await outputCtx.decodeAudioData(arrayBuffer);
+            } catch (elevenLabsError) {
+                // Fallback to Gemini TTS
+                const ttsResponse = await ai.models.generateContent({
+                    model: "gemini-2.5-flash-preview-tts",
+                    contents: [{ parts: [{ text: greetingText }] }],
+                    config: {
+                        responseModalities: [Modality.AUDIO],
+                        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Zephyr' } } },
+                    },
+                });
+
+                const base64Audio = ttsResponse.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+                if (!base64Audio) throw new Error("TTS greeting generation failed to return audio.");
+                
+                audioBuffer = await decodeAudioData(decode(base64Audio), outputCtx, 24000, 1);
             }
 
-            // Get microphone access
+            setLiveStatus('greeting');
+            setIsAiSpeaking(true);
+            const source = outputCtx.createBufferSource();
+            source.buffer = audioBuffer;
+            
+            const greetingFinishedPromise = new Promise<void>(resolve => {
+                source.onended = () => { setIsAiSpeaking(false); resolve(); };
+            });
+            source.connect(outputCtx.destination);
+            source.start();
+            await greetingFinishedPromise;
+
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             audioStreamRef.current = stream;
-
-            if (!inputAudioContextRef.current || inputAudioContextRef.current.state === 'closed') {
-                inputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
-            }
-            if (inputAudioContextRef.current.state === 'suspended') {
-                await inputAudioContextRef.current.resume();
-            }
-
-            const source = inputAudioContextRef.current.createMediaStreamSource(stream);
-            const scriptProcessor = inputAudioContextRef.current.createScriptProcessor(4096, 1, 1);
-            scriptProcessorRef.current = scriptProcessor;
-
-            source.connect(scriptProcessor);
-            scriptProcessor.connect(inputAudioContextRef.current.destination);
-
-            scriptProcessor.onaudioprocess = async (event) => {
-                const inputBuffer = event.inputBuffer.getChannelData(0);
-                const int16Buffer = new Int16Array(inputBuffer.length);
-                for (let i = 0; i < inputBuffer.length; i++) {
-                    int16Buffer[i] = Math.max(-32768, Math.min(32767, inputBuffer[i] * 32768));
-                }
-                inputBufferRef.current.push(int16Buffer);
-
-                if (inputBufferRef.current.length >= 10) {
-                    const audioData = new Int16Array(inputBufferRef.current.reduce((acc, buffer) => acc + buffer.length, 0));
-                    let offset = 0;
-                    for (const buffer of inputBufferRef.current) {
-                        audioData.set(buffer, offset);
-                        offset += buffer.length;
-                    }
-
-                    const base64Audio = createBlob(new Float32Array(audioData.buffer));
-                    
-                    try {
-                        const response = await ai.models.generateContent({
-                            model: 'gemini-2.5-flash-native-audio-preview-09-2025',
-                            contents: [{ parts: [{ inlineData: base64Audio }] }],
-                            config: {
-                                responseModalities: [Modality.AUDIO],
-                                speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Zephyr' } } },
-                            },
-                        });
-
-                        const base64ResponseAudio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-                        if (base64ResponseAudio) {
-                            const audioBuffer = await decodeAudioData(decode(base64ResponseAudio), outputAudioContextRef.current!, 24000, 1);
-                            const source = outputAudioContextRef.current!.createBufferSource();
-                            source.buffer = audioBuffer;
-                            source.connect(outputAudioContextRef.current!.destination);
-                            nextStartTimeRef.current += audioBuffer.duration;
-                            source.start(nextStartTimeRef.current);
+            inputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
+            await inputAudioContextRef.current.resume();
+            
+            sessionPromiseRef.current = ai.live.connect({
+                model: 'gemini-2.5-flash-native-audio-preview-09-2025',
+                callbacks: {
+                    onopen: () => {
+                        setLiveStatus('connected');
+                        const sourceNode = inputAudioContextRef.current!.createMediaStreamSource(stream);
+                        const scriptProcessor = inputAudioContextRef.current!.createScriptProcessor(4096, 1, 1);
+                        scriptProcessorRef.current = scriptProcessor;
+                        scriptProcessor.onaudioprocess = (event) => {
+                            const pcmBlob = createBlob(event.inputBuffer.getChannelData(0));
+                            sessionPromiseRef.current?.then(session => session.sendRealtimeInput({ media: pcmBlob })).catch(console.error);
+                        };
+                        sourceNode.connect(scriptProcessor);
+                        scriptProcessor.connect(inputAudioContextRef.current!.destination);
+                    },
+                    onmessage: async (message: LiveServerMessage) => {
+                        if (message.serverContent?.inputTranscription || message.serverContent?.outputTranscription) {
+                            const isInput = !!message.serverContent.inputTranscription;
+                            const text = isInput ? message.serverContent.inputTranscription!.text : message.serverContent.outputTranscription!.text;
+                            setTranscript(prev => {
+                                const newT = [...prev];
+                                const last = newT[newT.length - 1];
+                                if (last && last.speaker === (isInput ? 'You' : 'AI')) {
+                                    last.text += text;
+                                } else {
+                                    newT.push({ speaker: isInput ? 'You' : 'AI', text });
+                                }
+                                return newT;
+                            });
                         }
-                    } catch (error) {
-                        console.error('Live session error:', error);
-                    }
+                        const base64Audio = message.serverContent?.modelTurn?.parts[0]?.inlineData?.data;
+                        if (base64Audio) {
+                            setIsAiSpeaking(true);
+                            nextStartTimeRef.current = Math.max(nextStartTimeRef.current, outputCtx.currentTime);
+                            const responseAudioBuffer = await decodeAudioData(decode(base64Audio), outputCtx, 24000, 1);
+                            const source = outputCtx.createBufferSource();
+                            source.buffer = responseAudioBuffer;
+                            source.connect(outputCtx.destination);
+                            source.addEventListener('ended', () => {
+                                outputSourcesRef.current.delete(source);
+                                if (outputSourcesRef.current.size === 0) setIsAiSpeaking(false);
+                            });
+                            source.start(nextStartTimeRef.current);
+                            nextStartTimeRef.current += responseAudioBuffer.duration;
+                            outputSourcesRef.current.add(source);
+                        }
+                    },
+                    onerror: (e: ErrorEvent) => { 
+                        console.error('Session error:', e); 
+                        setLiveStatus('error');
+                        cleanupLiveSession();
+                    },
+                    onclose: () => {
+                        cleanupLiveSession();
+                        if (mode === 'live') resetToIdle();
+                    },
+                },
+                config: {
+                    responseModalities: [Modality.AUDIO],
+                    speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Zephyr' } } },
+                    systemInstruction: `You are 'Vee', the Lead Capture Specialist and Platform Expert for TravelIQ. You have already greeted the user. 
 
-                    inputBufferRef.current = [];
-                }
-            };
+**WHO WE ARE:** TravelIQ, the **First Voice AI Platform** built specifically for the travel trade. We provide **Intelligent Answer, Instantly**, connecting suppliers and agents via **on-demand Voice AI.**
 
-            // Play greeting response
-            const greetingText = "Welcome to TravelIQ! I'm Vee, your AI assistant. I'm here to help you connect with travel suppliers instantly. How can I assist you today?";
-            
-            // Use ElevenLabs for greeting
-            const greetingAudioUrl = await generateSpeech(greetingText);
-            
-            if (greetingAudioUrl) {
-                const response = await fetch(greetingAudioUrl);
-                const arrayBuffer = await response.arrayBuffer();
-                const audioBuffer = await outputAudioContextRef.current!.decodeAudioData(arrayBuffer);
-                const source = outputAudioContextRef.current!.createBufferSource();
-                source.buffer = audioBuffer;
-                source.connect(outputAudioContextRef.current!.destination);
-                source.start();
-            }
+**CORE VALUE:** Dedicated supplier Voice AI support, allowing agents to simply **talk** to the product experts.
+
+**Your Mission:** Be the platform expert while capturing leads from suppliers.
+
+**For TRAVEL AGENTS:**
+- TravelIQ is completely FREE - instant 24/7 access to supplier information
+- Direct them to [Suppliers](/suppliers) page
+- DO NOT answer product questions - direct to specific suppliers
+
+**For TRAVEL SUPPLIERS (Lead Capture Focus):**
+- **Value Props:** Ultra-fast onboarding, go-live tomorrow, 90% cost reduction, 24/7/365 global support, consistent brand messaging
+- **Basic Plan:** Dedicated Voice AI sales support trained with your knowledge base
+- **IMMEDIATELY collect:** Name, Email, Phone Number, Company
+- **Final message:** "Our sales team will get in touch for a demo. In the meantime, explore https://traveliq.biz/"
+
+**NO PRICING:** Always redirect to sales team for demos and pricing discussions.`,
+                    inputAudioTranscription: {},
+                    outputAudioTranscription: {},
+                },
+            });
 
         } catch (error) {
-            console.error('Live session error:', error);
+            console.error('Failed to start session:', error);
             setLiveStatus('error');
+            setIsAiSpeaking(false);
         }
-    }, [ai]);
-
-    const stopLiveSession = useCallback(() => {
-        if (audioStreamRef.current) {
-            audioStreamRef.current.getTracks().forEach(track => track.stop());
-            audioStreamRef.current = null;
-        }
-        if (scriptProcessorRef.current) {
-            scriptProcessorRef.current.disconnect();
-            scriptProcessorRef.current = null;
-        }
-        setMode('chat');
-        setLiveStatus('connecting');
-        setTranscript([]);
-    }, []);
-
-    const toggleRecording = useCallback(() => {
-        if (isRecording) {
-            stopLiveSession();
-        } else {
-            startLiveSession();
-        }
-    }, [isRecording, startLiveSession, stopLiveSession]);
-
-    // Audio wave indicator for live mode
-    const renderAudioWave = () => (
-        <div className="flex items-center justify-center h-32 bg-brand-bg/30 rounded-lg border border-brand-light/10">
-            <AudioWaveIcon className="w-8 h-8 text-brand-cyan" />
-        </div>
-    );
-
-    // --- RENDERING LOGIC ---
+    }, [cleanupLiveSession, resetToIdle, ai, mode]);
+    
     const renderContent = () => {
+        if (aiError) {
+          return (
+            <div className="flex-grow flex flex-col items-center justify-center text-center gap-4 text-red-400">
+                <h3 className="text-lg font-bold">AI Connection Error</h3>
+                <p className="text-sm max-w-sm">{aiError}</p>
+            </div>
+          );
+        }
+
         switch (mode) {
-            case 'chat':
+            case 'text':
                 return (
-                    <div className="flex flex-col h-full">
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                            {messages.map((message, index) => (
-                                <div key={index} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                    <div className={`max-w-[80%] rounded-lg p-3 ${
-                                        message.sender === 'user' 
-                                            ? 'bg-brand-primary text-white' 
-                                            : 'bg-brand-bg/50 text-brand-light border border-brand-light/10'
-                                    }`}>
-                                        <p className="text-sm">{message.text}</p>
-                                        {message.sender === 'ai' && (
+                    <>
+                        <div className="flex-grow overflow-y-auto py-4 space-y-4">
+                            {conversation.map((msg, index) => (
+                                <div key={index} className={`flex items-end gap-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
+                                    {msg.sender === 'ai' && (
+                                        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border border-brand-light/10">
+                                            <img src={avatarUrl} alt="Vee" className="w-full h-full object-cover" />
+                                        </div>
+                                    )}
+                                    <div className={`p-3 rounded-lg max-w-[85%] border ${msg.sender === 'user' ? 'bg-brand-cyan text-white border-transparent' : 'bg-brand-dark border-brand-light/10'}`}>
+                                        <MessageContent text={msg.text} onClose={handleClose} />
+                                         {msg.sender === 'ai' && !isLoading && (
                                             <button
-                                                onClick={() => playAudioMessage(message.text, index)}
-                                                className="mt-2 text-xs text-brand-cyan hover:text-brand-cyan-light transition-colors flex items-center gap-1"
+                                                onClick={() => handlePlayTTS(msg.text, index)}
+                                                className="mt-2 text-brand-gray hover:text-brand-cyan transition-colors"
                                                 aria-label={playingMessageIndex === index ? "Stop audio" : "Play audio"}
                                             >
-                                                <SpeakerIcon className="w-3 h-3" />
-                                                {playingMessageIndex === index ? 'Stop' : 'Listen'}
+                                                {playingMessageIndex === index ? <AudioWaveIcon className="w-5 h-5 text-brand-cyan" /> : <SpeakerIcon className="w-5 h-5" />}
                                             </button>
+                                        )}
+                                         {msg.sources && msg.sources.length > 0 && (
+                                            <div className="mt-3 pt-2 border-t border-brand-light/20">
+                                                <p className="text-xs font-semibold text-brand-gray mb-1">Sources:</p>
+                                                <ul className="text-xs space-y-1">
+                                                    {msg.sources.map((source, i) => (
+                                                        <li key={i}>
+                                                            <a href={source.uri} target="_blank" rel="noopener noreferrer" className="text-brand-cyan hover:underline truncate block" title={source.title}>
+                                                                {i + 1}. {source.title}
+                                                            </a>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
                                         )}
                                     </div>
                                 </div>
                             ))}
                             {isLoading && (
-                                <div className="flex justify-start">
-                                    <div className="bg-brand-bg/50 text-brand-light border border-brand-light/10 rounded-lg p-3">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-2 h-2 bg-brand-cyan rounded-full animate-bounce"></div>
-                                            <div className="w-2 h-2 bg-brand-cyan rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                                            <div className="w-2 h-2 bg-brand-cyan rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                                        </div>
+                                <div className="flex items-end gap-2 justify-start">
+                                    <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border border-brand-light/10">
+                                         <img src={avatarUrl} alt="Vee" className="w-full h-full object-cover" />
                                     </div>
+                                    <div className="p-3 rounded-lg bg-brand-dark text-brand-gray animate-pulse">Vee is thinking...</div>
                                 </div>
                             )}
+                            <div ref={chatEndRef} />
                         </div>
-                        <form onSubmit={handleSubmit} className="border-t border-brand-light/10 p-4">
-                            <div className="flex gap-2">
-                                <input
-                                    type="text"
-                                    value={input}
-                                    onChange={handleInputChange}
-                                    placeholder="Ask about travel suppliers..."
-                                    className="flex-1 bg-brand-bg/50 border border-brand-light/20 rounded-lg px-4 py-2 text-brand-light placeholder-brand-gray focus:outline-none focus:border-brand-cyan"
-                                    disabled={isLoading}
-                                />
-                                <button
-                                    type="submit"
-                                    disabled={isLoading || !input.trim()}
-                                    className="bg-brand-primary hover:bg-brand-primary/80 disabled:opacity-50 text-white px-6 py-2 rounded-lg transition-colors"
-                                >
-                                    Send
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                        <div className="mt-auto pt-4 border-t border-brand-light/10">
+                            <form onSubmit={(e) => { e.preventDefault(); handleSendTextMessage(inputValue); }} className="relative">
+                                <input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} required disabled={isLoading} className="w-full pl-4 pr-24 py-3 text-brand-light bg-brand-bg/80 border border-brand-light/20 rounded-md focus:ring-2 focus:ring-brand-cyan" placeholder="Ask a question..." />
+                                <button type="submit" disabled={isLoading || !inputValue.trim()} className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-brand-cyan to-brand-magenta text-white font-bold py-2 px-4 rounded-lg hover:opacity-90 disabled:opacity-50">Send</button>
+                            </form>
+                        </div>
+                    </>
                 );
             case 'live':
+                const getStatusMessage = () => {
+                    switch (liveStatus) {
+                        case 'greeting': return 'Vee is greeting you...';
+                        case 'connected': return isAiSpeaking ? 'Vee is speaking...' : 'Listening...';
+                        case 'connecting': return 'Starting session...';
+                        case 'error': return 'Connection error. Please retry.';
+                        default: return 'Live Conversation';
+                    }
+                };
+                const statusMessage = getStatusMessage();
+
                 return (
-                    <div className="flex flex-col h-full">
-                        <div className="flex-1 p-4">
-                            <div className="mb-4">
-                                <div className="flex items-center justify-between mb-2">
-                                    <h3 className="font-heading text-lg font-semibold text-brand-light">Live Voice Chat</h3>
-                                    <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                                        liveStatus === 'connected' ? 'bg-green-500/20 text-green-400' :
-                                        liveStatus === 'connecting' ? 'bg-yellow-500/20 text-yellow-400' :
-                                        'bg-red-500/20 text-red-400'
-                                    }`}>
-                                        {liveStatus === 'connected' ? 'Connected' : 
-                                         liveStatus === 'connecting' ? 'Connecting...' : 'Error'}
+                    <>
+                        <div className="flex-grow overflow-y-auto py-4 space-y-4">
+                             {transcript.length === 0 && <div className="text-center text-brand-gray italic p-4">{statusMessage}</div>}
+                            {transcript.map((entry, index) => (
+                                <div key={index} className={`flex items-end gap-2 ${entry.speaker === 'AI' ? 'justify-start' : 'justify-end'}`}>
+                                     {entry.speaker === 'AI' && (
+                                        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border border-brand-light/10">
+                                            <img src={avatarUrl} alt="Vee" className="w-full h-full object-cover" />
+                                        </div>
+                                    )}
+                                    <div className={`p-3 rounded-lg max-w-[85%] border ${entry.speaker === 'AI' ? 'bg-brand-dark border-brand-light/10' : 'bg-brand-cyan text-white border-transparent'}`}>
+                                        <p className="font-bold mb-1">{entry.speaker}</p>
+                                        <p className="whitespace-pre-wrap">{entry.text}</p>
                                     </div>
                                 </div>
-                                <p className="text-sm text-brand-gray">
-                                    Speak naturally and I'll respond with voice. Click the microphone to start or stop.
-                                </p>
-                            </div>
-                            
-                            {renderAudioWave()}
-                            
-                            <div className="mt-4 flex justify-center">
-                                <button
-                                    onClick={toggleRecording}
-                                    className={`flex items-center gap-2 px-6 py-3 rounded-full transition-colors ${
-                                        isRecording 
-                                            ? 'bg-red-500 hover:bg-red-600 text-white' 
-                                            : 'bg-brand-primary hover:bg-brand-primary/80 text-white'
-                                    }`}
-                                >
-                                    {isRecording ? <StopIcon className="w-5 h-5" /> : <MicrophoneIcon className="w-5 h-5" />}
-                                    {isRecording ? 'Stop Recording' : 'Start Voice Chat'}
+                            ))}
+                             <div ref={chatEndRef} />
+                        </div>
+                        <div className="mt-auto pt-4 border-t border-brand-light/10 flex flex-col items-center justify-center gap-2 p-2">
+                             { liveStatus === 'connecting' &&
+                                <div className="p-6 rounded-full transition-all duration-300 shadow-lg flex items-center justify-center bg-gray-500 text-white" aria-label="Connecting...">
+                                    <svg className="animate-spin h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                </div>
+                            }
+                             { (liveStatus === 'connected' || liveStatus === 'greeting') &&
+                                <button type="button" onClick={resetToIdle} className="p-6 rounded-full transition-all duration-300 transform hover:scale-110 shadow-lg flex items-center justify-center bg-red-500 text-white animate-pulse" aria-label="Stop Session">
+                                    <StopIcon className="h-8 w-8" />
                                 </button>
+                            }
+                            { liveStatus === 'error' &&
+                                <button type="button" onClick={startLiveSession} className="bg-yellow-500 text-white font-bold py-3 px-5 rounded-lg hover:bg-yellow-600 transition-colors flex items-center gap-2" aria-label="Retry Connection">
+                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h5M23 12a9 9 0 11-3.37-6.95" />
+                                     </svg>
+                                    Retry
+                                </button>
+                            }
+                            <p className="text-brand-gray text-sm font-semibold mt-2 h-5 text-center px-2">{statusMessage}</p>
+                        </div>
+                    </>
+                );
+            case 'idle':
+            default:
+                return (
+                    <div className="flex-grow flex flex-col items-center justify-center text-center gap-6">
+                        <div className="w-32 h-32 rounded-full border-4 border-brand-cyan p-1 shadow-xl shadow-brand-cyan/20">
+                            <img src={avatarUrl} alt="Vee" className="w-full h-full rounded-full object-cover" />
+                        </div>
+                        <p className="text-lg text-brand-light font-semibold">Hi there! I'm Vee.<br/>How would you like to chat today?</p>
+                        
+                        {/* Show error message if AI service is unavailable */}
+                        {aiError && (
+                            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 max-w-md">
+                                <p className="text-red-400 text-sm font-semibold mb-2">⚠️ AI Service Configuration Error</p>
+                                <p className="text-red-300 text-xs">The AI service is not properly configured. Please contact support.</p>
                             </div>
+                        )}
+                        
+                        <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm px-4">
+                            <button 
+                                onClick={startLiveSession} 
+                                disabled={!!aiError}
+                                className={`flex-1 flex items-center justify-center gap-3 font-bold py-3 px-6 rounded-lg transition-all transform shadow-lg ${
+                                    aiError 
+                                        ? 'bg-gray-500 text-gray-300 cursor-not-allowed' 
+                                        : 'bg-brand-cyan text-white hover:opacity-90 hover:scale-105'
+                                }`}
+                            >
+                                <MicrophoneIcon className="h-6 w-6" /> Talk to Vee
+                            </button>
+                            <button 
+                                onClick={startTextChat} 
+                                disabled={!!aiError}
+                                className={`flex-1 flex items-center justify-center gap-3 font-bold py-3 px-6 rounded-lg transition-all transform border ${
+                                    aiError 
+                                        ? 'bg-gray-500/10 text-gray-300 cursor-not-allowed border-gray-500/20' 
+                                        : 'bg-brand-light/10 text-brand-light hover:bg-brand-light/20 hover:scale-105 border-brand-light/10'
+                                }`}
+                            >
+                                <KeyboardIcon className="h-6 w-6" /> Type a Message
+                            </button>
                         </div>
                     </div>
                 );
@@ -607,7 +893,7 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
                 <div className="flex justify-between items-center border-b border-brand-light/10 pb-4">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full overflow-hidden border border-brand-light/20">
-                            <img src={avatarUrl || VEE_AVATAR_DEFAULT} alt="Vee" className="w-full h-full object-cover" />
+                            <img src={avatarUrl} alt="Vee" className="w-full h-full object-cover" />
                         </div>
                         <h2 className="font-heading text-xl font-bold text-brand-light">Chat with Vee</h2>
                     </div>
