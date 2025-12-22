@@ -5,7 +5,7 @@ import { useAI } from '../context/AIContext.tsx';
 import { useLeads } from '../context/LeadContext.tsx';
 import { Link, useNavigate } from 'react-router-dom';
 import { elevenLabsService } from '../services/elevenLabsVoiceService.ts';
-import { SEED_SUPPLIERS } from '../constants.ts';
+import { SEED_SUPPLIERS, VEE_ELEVENLABS_AGENT_ID } from '../constants.ts';
 
 interface SupplierChatbotProps {
   isOpen: boolean;
@@ -22,8 +22,7 @@ interface Message {
 // Default fallback if not provided
 const VEE_AVATAR_DEFAULT = "/traveliq-ai-avatar.png";
 
-// ElevenLabs Voice IDs
-const VEE_ELEVENLABS_VOICE_ID = 'agent_9701k60px56gezba55q83jamzhbk';
+// ElevenLabs Agent IDs - imported from constants
 
 // --- ICONS ---
 const MicrophoneIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
@@ -157,14 +156,14 @@ const generateSpeech = async (text: string, voiceName?: string, supplierId?: str
     if (supplierId) {
       // Find supplier configuration
       const supplier = SEED_SUPPLIERS.find(s => s.id === supplierId);
-      if (supplier?.useElevenLabs && supplier.elevenLabsVoiceId) {
+      if (supplier?.useElevenLabs && supplier.elevenLabsAgentId) {
         console.log(`Using ElevenLabs for supplier: ${supplier.name}`);
-        return await elevenLabsService.generateSpeech(correctedText, supplier.elevenLabsVoiceId);
+        return await elevenLabsService.generateSpeech(correctedText, supplier.elevenLabsAgentId);
       }
     } else if (voiceName === 'Vee') {
       // Use ElevenLabs for main Vee chatbot
       console.log('Using ElevenLabs for main Vee chatbot');
-      return await elevenLabsService.generateSpeech(correctedText, VEE_ELEVENLABS_VOICE_ID);
+      return await elevenLabsService.generateSpeech(correctedText, VEE_ELEVENLABS_AGENT_ID);
     }
     
     // Fallback to Gemini TTS
