@@ -23,7 +23,7 @@ export const SEED_SUPPLIERS: Supplier[] = [
     type: SupplierType.Airline,
     logoUrl: '/images/el-al-logo.png',
     bannerUrl: 'https://images.unsplash.com/photo-1543699539-a6022c73c5a7?q=80&w=2070&auto=format&fit=crop',
-    shortDescription: 'Israel's national airline, known for world-class security, nonstop routes from London Heathrow and London Luton to Tel Aviv, and tailored service.',
+    shortDescription: 'Israel\'s national airline, known for world-class security, nonstop routes from London Heathrow and London Luton to Tel Aviv, and tailored service.',
     longDescription: 'EL AL Israel Airlines is the national carrier of Israel, celebrated for its stringent security protocols and direct flights to Tel Aviv from major cities worldwide. It offers a range of services for both business and leisure travelers, including a frequent flyer program, Matmid. Our AI can provide details on flight schedules, baggage policies, and special assistance services.',
     avatarImageUrl: '/images/el-al-logo.png',
     websiteUrl: 'https://www.elal.com/eng/uk',
