@@ -18,7 +18,7 @@ const SupplierCarousel: React.FC = () => {
               <img
                 src={supplier.logoUrl}
                 alt={`${supplier.name} logo`}
-                className="h-12 w-auto object-contain transition-all duration-300 transform group-hover:scale-110 group-hover:opacity-90"
+               className="h-12 w-auto object-contain transition-all duration-300 transform group-hover:scale-110 group-hover:opacity-90 bg-white/90 p-2 rounded-lg"
               />
             </Link>
           </li>
