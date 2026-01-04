@@ -1,6 +1,6 @@
-import { Supplier, SupplierType } from './types.ts'; 
+import { Supplier, SupplierType } from './types.ts';
 
-export const VEE_ELEVENLABS_AGENT_ID = 'agent_9701k60px56gezba55q83jamzhbk'; 
+export const VEE_ELEVENLABS_AGENT_ID = 'agent_9701k60px56gezba55q83jamzhbk';
 
 export const SEED_SUPPLIERS: Supplier[] = [
   {
@@ -22,9 +22,9 @@ export const SEED_SUPPLIERS: Supplier[] = [
     name: 'EL AL Israel Airlines',
     type: SupplierType.Airline,
     logoUrl: '/images/el-al-logo.png',
-    bannerUrl: 'https://instasize.com/p/a0d698af4172bd56611865cc1a1946e4c251e9137d8adf23e0d08613585a0312',
+    bannerUrl: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2074&auto=format&fit=crop',
     shortDescription: 'Israel\'s national airline, known for world-class security, nonstop routes from London Heathrow and London Luton to Tel Aviv, and tailored service.',
-    longDescription: 'EL AL Israel Airlines is the national carrier of Israel, celebrated for its stringent security protocols and direct flights to Tel Aviv from major cities worldwide. It offers a range of services for both business and leisure travelers, including a frequent flyer program, Matmid. Our AI can provide details on flight schedules, baggage policies, and special assistance services.',
+    longDescription: 'EL AL Israel Airlines is the national carrier of Israel, celebrated for its stringent security protocols, reliability and direct flights from London Heathrow and London Luton from the UK to Tel Aviv and from major cities worldwide. It offers a range of services for both business and leisure travelers, including a frequent flyer program, Matmid. Our AI can provide details on sales related issues for the travel trade.',
     avatarImageUrl: '/images/el-al-logo.png',
     websiteUrl: 'https://www.elal.com/eng/uk',
     knowledgeBaseUrl: '',
@@ -82,7 +82,7 @@ export const SEED_SUPPLIERS: Supplier[] = [
     logoUrl: '/images/malaysia-airlines-logo.png',
     bannerUrl: 'https://images.unsplash.com/photo-1596779350144-124c9c7457d5?q=80&w=2070&auto=format&fit=crop',
     shortDescription: 'Experience Malaysian Hospitality with world-class service to destinations across the globe.',
-    longDescription: 'Malaysia Airlines is the national carrier of Malaysia, famed for its signature Malaysian Hospitality. Operating from its main hub in Kuala Lumpur International Airport (KLIA), it is a member of the oneworld alliance, offering seamless connectivity to a vast network of destinations across Asia, Australia, Europe, and the Middle East.',
+    longDescription: 'Malaysia Airlines is the national carrier of Malaysia, famed for its signature Malaysian Hospitality. Operating from its main hub in Kuala Lumpur International Airport (KLIA), it is a member of the oneworld alliance, offering seamless connectivity to a vast network of destinations across Asia, Australia, Europe, and the Middle East. The airline provides a range of cabin classes including the luxurious Business Suite, a comfortable Business Class with lie-flat seats and a Chef-on-Call dining service, and a welcoming Economy Class. Key information for travel agents includes: The Enrich loyalty program allows members to earn and redeem miles for flights, upgrades, and other lifestyle rewards. For passenger queries, baggage allowance varies by fare type and destination. Check-in is available online, via mobile app, or at the airport. The airline offers comprehensive special assistance for passengers with specific needs, including medical requirements and special dietary meals. For up-to-date flight schedules, booking management, and detailed FAQ answers on topics like flight changes or refunds, the official website, malaysiaairlines.com, is the primary resource. The core of the experience is Malaysian Hospitality, ensuring a warm and welcoming journey for all passengers.',
     avatarImageUrl: 'https://picsum.photos/seed/malaysia_avatar/512/512',
     websiteUrl: 'https://www.malaysiaairlines.com',
     knowledgeBaseUrl: '',
@@ -121,7 +121,7 @@ export const SEED_SUPPLIERS: Supplier[] = [
     id: 'four-seasons',
     name: 'Four Seasons',
     type: SupplierType.Hotel,
-    logoUrl: '/images/four-seasons-logo.jpg',
+    logoUrl: '/images/four-seasons-logo.png',
     bannerUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop',
     shortDescription: 'World-renowned luxury hospitality, offering exceptional service and experiences in premier global destinations.',
     longDescription: 'Four Seasons Hotels and Resorts is a global leader in luxury hospitality, operating a portfolio of more than 100 hotels and resorts in major city centers and resort destinations in 47 countries. Known for its highly personalized 24-hour service, elegant accommodations, and focus on guest experience, Four Seasons is a preferred choice for discerning travelers. Our AI can provide details on specific properties, the Four Seasons Preferred Partner program, and exclusive amenities for agents to offer clients.',
@@ -152,11 +152,25 @@ export const SEED_SUPPLIERS: Supplier[] = [
     logoUrl: '/images/prima-hotels-logo.jpeg',
     bannerUrl: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=2070&auto=format&fit=crop',
     shortDescription: 'Leading Israeli hotel chain offering premium accommodations and exceptional service in prime locations across Israel.',
-    longDescription: 'Prima Hotels is one of Israel\'s premier hotel chains, with a distinguished portfolio of properties in Tel Aviv, Jerusalem, Eilat, and other key destinations throughout Israel.',
+    longDescription: 'Prima Hotels is one of Israel\'s premier hotel chains, with a distinguished portfolio of properties in Tel Aviv, Jerusalem, Eilat, and other key destinations throughout Israel. The Prima Hotels Group combines modern hospitality with authentic Israeli warmth, catering to both business and leisure travelers. Their diverse range of hotels includes city hotels, boutique properties, and resort accommodations, each designed to provide guests with comfort, convenience, and personalized service. The chain is renowned for its strategic locations, contemporary design, and commitment to excellence. Prima Hotels offers comprehensive amenities including business centers, fitness facilities, spa services, and fine dining options. For travel agents, Prima Hotels provides competitive rates, group booking capabilities, and dedicated support for organizing conferences, events, and group travel. The hotels are well-connected to major tourist attractions, business districts, and transportation hubs, making them an ideal choice for travelers seeking quality accommodations in Israel. Prima Hotels is committed to sustainable tourism practices and actively supports local communities.',
     avatarImageUrl: 'https://picsum.photos/seed/prima_avatar/512/512',
     websiteUrl: 'https://www.prima-hotels-israel.com',
     knowledgeBaseUrl: '',
     knowledgeBaseText: '',
     geminiVoiceName: 'Puck',
+  },
+  {
+    id: 'msc-cruises',
+    name: 'MSC Cruises',
+    type: SupplierType.Cruise,
+    logoUrl: '/images/msc-cruises-logo.png',
+    bannerUrl: 'https://images.unsplash.com/photo-1548574505-5e239809ee19?q=80&w=2070&auto=format&fit=crop',
+    shortDescription: 'World-class cruise line offering unforgettable Mediterranean and worldwide voyages with Italian style and hospitality.',
+    longDescription: 'MSC Cruises is the world\'s third largest cruise brand and the leader in Europe, South America, and Southern Africa. Based in Geneva, Switzerland, with headquarters in Italy, MSC Cruises is known for its elegant European style, exceptional dining, and innovative entertainment. The fleet of modern ships sails to over 100 destinations across the Mediterranean, Northern Europe, the Caribbean, South America, South Africa, and beyond. MSC offers the MSC Yacht Club, an exclusive ship-within-a-ship concept providing butler service and private amenities. Our AI can provide details on ship classes, itineraries, the MSC Voyagers Club loyalty program, and booking information for travel agents.',
+    avatarImageUrl: 'https://picsum.photos/seed/msc_avatar/512/512',
+    websiteUrl: 'https://www.msccruises.co.uk',
+    knowledgeBaseUrl: '',
+    knowledgeBaseText: '',
+    geminiVoiceName: 'Charon',
   },
 ];
