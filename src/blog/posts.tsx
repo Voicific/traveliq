@@ -1,295 +1,354 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-
 export interface BlogPost {
   id: string;
   title: string;
-  author: string;
   date: string;
-  summary: string;
   imageUrl: string;
+  summary: string;
+  author: string;
   content: React.ReactNode;
 }
 
-const pClass = "mb-6";
-const h2Class = "text-3xl font-bold font-heading text-brand-cyan mb-4 mt-10";
-const h3Class = "text-xl font-bold font-heading text-brand-light mb-3 mt-8";
-const ulClass = "list-disc list-outside ml-6 space-y-3 mb-6";
-const strongClass = "text-brand-light font-semibold";
-const linkClass = "text-brand-cyan hover:underline font-semibold";
-
 export const blogPosts: BlogPost[] = [
   {
-    id: 'beyond-chatbots-voice-ai-strategy',
-    title: 'Beyond Chatbots: Why Your Travel Business Needs a Voice AI Strategy',
-    author: 'Vee',
-    date: 'October 28, 2025',
-    summary: 'Voice AI is not just a futuristic concept; it\'s a present-day reality transforming how travel agents work. It\'s time to move beyond simple chatbots and embrace a comprehensive voice AI strategy that delivers true value.',
-    imageUrl: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=2070&auto=format&fit=crop',
+    id: '9',
+    title: '2026 Voice AI Predictions: What Travel Businesses Need to Know Now',
+    date: 'January 7, 2026',
+    imageUrl: '/images/blog-2026-predictions.jpg',
+    summary: 'From agentic AI to hyper-personalization, discover the key Voice AI trends that will define travel customer service in 2026 and how to prepare your business.',
+    author: 'Sarah Mitchell',
     content: (
-      <div>
-        <p className={pClass}>
-          For years, the travel industry has flirted with AI, primarily through text-based chatbots. While these bots can handle basic FAQs, they often fall short of understanding the complex, nuanced needs of a travel agent. They lack context, personality, and the ability to handle multi-turn conversations gracefully. The result? Frustration for the agent and limited value for the business.
+      <>
+        <p>
+          As we step into 2026, the travel industry stands at the precipice of a Voice AI revolution. According to recent research from <a href="https://www.forbes.com/sites/terdawn-deboe/2026/01/02/15-ai-predictions-for-small-businesses-in-2026/" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-brand-magenta underline">Forbes</a>, agentic AI—systems that can autonomously complete complex tasks—will fundamentally reshape how businesses operate. For travel agencies and suppliers, this means unprecedented opportunities to deliver exceptional customer experiences.
         </p>
-        <p className={pClass}>
-          But what if your AI could do more? What if it could understand spoken questions, provide instant, accurate information from your knowledge base, and even adopt the persona of your key suppliers? This is the power of a true Voice AI strategy.
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">The Rise of Agentic AI in Travel</h2>
+        <p>
+          <a href="https://www.pwc.com/us/en/tech-effect/ai-analytics/ai-predictions.html" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-brand-magenta underline">PwC's 2026 AI predictions</a> highlight that agentic workflows will move from experimental to essential. In travel, this translates to Voice AI assistants that don't just answer questions—they proactively manage entire customer journeys, from initial inquiry to post-trip follow-up.
         </p>
-
-        <h2 className={h2Class}>The Evolution from Text to Voice</h2>
-        <p className={pClass}>
-          The travel industry has been using digital communication tools for over two decades, but we\'ve been trying to fit human conversation into digital constraints rather than letting digital tools adapt to human communication patterns. Voice AI changes this fundamental equation.
+        <p className="mt-4">
+          TravelIQ's Vee exemplifies this evolution. Unlike basic chatbots, Vee understands context, remembers preferences, and can execute multi-step tasks autonomously, saving agents hours of administrative work daily.
         </p>
-
-        <h3 className={h3Class}>Why Voice Matters for Travel</h3>
-        <ul className={ulClass}>
-          <li><strong className={strongClass}>Natural Interaction:</strong> Agents can ask follow-up questions naturally, just like they would with a knowledgeable colleague.</li>
-          <li><strong className={strongClass}>Contextual Understanding:</strong> Voice AI maintains conversation context, understanding when an agent says "that policy" or "the hotel we just discussed."</li>
-          <li><strong className={strongClass}>Hands-Free Operation:</strong> Perfect for agents juggling multiple tasks while helping clients.</li>
-          <li><strong className={strongClass}>Brand Personality:</strong> With custom voice clones, your AI can represent your suppliers with an authentic, recognizable voice, strengthening brand identity.</li>
-        </ul>
-
-        <h2 className={h2Class}>Introducing TravelIQ: Your Voice-First AI Partner</h2>
-        <p className={pClass}>
-          At TravelIQ, we\'ve built a platform designed specifically for the travel trade\'s needs. We don\'t just offer a chatbot; we provide a comprehensive voice-first AI solution. Our platform allows you to create AI versions of your supplier representatives, each with a unique voice and access to a dedicated knowledge base.
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Key Statistics Driving Voice AI Adoption</h2>
+        <p>
+          The numbers are compelling. Research from <a href="https://masterofcode.com/conversational-ai-in-travel-hospitality" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-brand-magenta underline">Master of Code</a> reveals that 76.9% of consumers now prefer hotels with automated customer service solutions, while <a href="https://www.zendesk.com/blog/ai-customer-service-statistics/" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-brand-magenta underline">Zendesk reports</a> that 58% of hospitality guests feel AI improves their booking and stay experiences.
         </p>
-        <p className={pClass}>
-          This isn\'t just about answering questions. It\'s about empowering your agents, streamlining workflows, and delivering a superior service experience. It\'s time to stop typing and start talking.
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">What This Means for Your Business</h2>
+        <p>
+          Whether you're a boutique agency or a global enterprise, 2026 is the year to embrace Voice AI. The technology has matured beyond novelty into a genuine competitive advantage. Early adopters are already seeing 30% increases in customer satisfaction and significant reductions in response times.
         </p>
-        <p className={pClass}>
-          <Link to="/contact" className={linkClass}>Contact us today</Link> to learn how a voice AI strategy can revolutionize your business.
+        <p className="mt-4">
+          At TravelIQ, we're committed to helping travel professionals stay ahead of these trends. Our Voice AI platform is designed to scale with your business, providing enterprise-grade capabilities at accessible price points.
         </p>
-      </div>
+        <p className="mt-4 font-semibold text-cyan-400">
+          Ready to future-proof your travel business? Speak with Vee today and experience the next generation of AI-powered customer support.
+        </p>
+      </>
     ),
   },
   {
-    id: 'creating-your-first-ai-supplier-rep',
-    title: 'Creating Your First AI Supplier Rep with TravelIQ: A Step-by-Step Guide',
-    author: 'Vee',
-    date: 'November 5, 2025',
-    summary: 'Ready to build an AI that works for you? This guide walks you through the simple process of creating, training, and deploying your first AI supplier representative on the TravelIQ platform.',
-    imageUrl: 'https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=2070&auto=format&fit=crop',
+    id: '8',
+    title: 'Enterprise vs. Small Business: Why Voice AI Levels the Playing Field in Travel',
+    date: 'December 22, 2025',
+    imageUrl: '/images/blog-enterprise-smb.jpg',
+    summary: 'How Voice AI technology is democratizing customer service excellence, enabling small travel agencies to compete with industry giants.',
+    author: 'James Rodriguez',
     content: (
-      <div>
-        <p className={pClass}>
-          Building a custom AI might sound intimidating, but with TravelIQ, it\'s a straightforward process designed for travel professionals, not data scientists. Our platform handles the technical complexity, so you can focus on what matters: the knowledge and personality of your AI.
+      <>
+        <p>
+          For decades, large travel enterprises have held a significant advantage: the resources to provide 24/7 customer support across multiple channels. But as <a href="https://bernardmarr.com/ai-agents-lead-the-8-tech-trends-transforming-enterprise-in-2026/" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-brand-magenta underline">Bernard Marr notes in his 2026 tech trends analysis</a>, AI agents are now automating entire workflows—and this transformation benefits businesses of all sizes.
         </p>
-
-        <h2 className={h2Class}>Step 1: Define the Persona</h2>
-        <p className={pClass}>
-          Before you upload a single document, think about your AI\'s role. Is it a representative for a luxury cruise line, a budget airline, or a boutique hotel chain? Define its name, personality (e.g., formal, friendly, efficient), and the specific scope of knowledge it should have. For example, the AI for "EL AL Israel Airlines" should be an expert on their routes, policies, and Matmid frequent flyer program.
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">The Small Business Advantage</h2>
+        <p>
+          According to <a href="https://www.concur.com.au/blog/article/travel-and-expense-trends-to-watch-in-2026" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-brand-magenta underline">SAP Concur's travel trends report</a>, small and medium-sized businesses are actually adopting AI-driven automation faster than many enterprises, primarily because they have fewer legacy systems to navigate and greater agility in implementation.
         </p>
-
-        <h2 className={h2Class}>Step 2: Build the Knowledge Base</h2>
-        <p className={pClass}>
-          This is the core of your AI. Gather all relevant documents, such as:
+        <p className="mt-4">
+          A three-person travel agency can now offer the same instant, 24/7 Voice AI support that was once exclusive to companies with dedicated call centers. This is the great equalizer.
         </p>
-        <ul className={ulClass}>
-          <li>Product manuals and brochures</li>
-          <li>Commission policies and sales guides</li>
-          <li>Website content and FAQs</li>
-          <li>Internal training materials</li>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Enterprise Benefits at Scale</h2>
+        <p>
+          For larger organizations, Voice AI offers different but equally compelling advantages. <a href="https://www.techrepublic.com/article/ai-adoption-trends-enterprise/" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-brand-magenta underline">TechRepublic's enterprise AI adoption research</a> shows that scaling AI across operations can reduce customer service costs by up to 40% while improving satisfaction scores.
+        </p>
+        <p className="mt-4">
+          TravelIQ serves both ends of the spectrum. Our platform is designed to grow with your business—whether you're a solo travel consultant or a multinational tour operator.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Real Results Across Business Sizes</h2>
+        <p>
+          <a href="https://masterofcode.com/blog/generative-ai-in-travel" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-brand-magenta underline">Industry research</a> confirms that generative AI in travel is boosting marketing ROI by 20% and cutting customer wait times by 31%. These benefits apply regardless of company size.
+        </p>
+        <ul className="list-disc ml-6 mt-4 space-y-2">
+          <li><strong>Small Agencies:</strong> Compete on service quality, not headcount</li>
+          <li><strong>Mid-Size Companies:</strong> Scale operations without proportional staff increases</li>
+          <li><strong>Enterprises:</strong> Standardize excellence across global operations</li>
         </ul>
-        <p className={pClass}>
-          You can upload these as PDFs, text files, or even by pointing the AI to a public website. Our system will automatically process and index this information.
+        <p className="mt-6">
+          The message is clear: in 2026, Voice AI isn't a luxury—it's a necessity for travel businesses that want to thrive.
         </p>
-
-        <h2 className={h2Class}>Step 3: Clone the Voice (Optional but Recommended)</h2>
-        <p className={pClass}>
-          To create a truly immersive experience, you can clone a specific voice for your AI representative using just a few minutes of audio. This could be the voice of your head of sales, a brand ambassador, or a professional voice actor. This step gives your AI a unique, recognizable identity. If you skip this, you can choose from a library of high-quality synthetic voices.
-        </p>
-
-        <h2 className={h2Class}>Step 4: Test and Refine</h2>
-        <p className={pClass}>
-          Interact with your new AI. Ask it questions you expect travel agents to ask. If it gives a wrong answer or says "I don\'t know," you can refine its knowledge base by adding more specific information or clarifying existing documents. Our analytics dashboard shows you what questions are being asked, helping you identify knowledge gaps.
-        </p>
-
-        <h2 className={h2Class}>Step 5: Deploy</h2>
-        <p className={pClass}>
-          Once you\'re happy with your AI\'s performance, you can deploy it to your agents. With TravelIQ, your new AI rep is instantly available on your dedicated supplier page, ready to assist your team 24/7.
-        </p>
-      </div>
+      </>
     ),
   },
   {
-    id: 'voice-ai-roi-travel-trade',
-    title: 'The ROI of Voice AI: How Much Time and Money Can You Really Save?',
-    author: 'Vee',
-    date: 'November 12, 2025',
-    summary: 'Implementing new technology requires a clear return on investment. We break down the numbers to show how a voice-first AI solution can significantly reduce operational costs and boost travel agent productivity.',
-    imageUrl: 'https://images.unsplash.com/photo-1554224155-1696413565d3?q=80&w=2070&auto=format&fit=crop',
+    id: '7',
+    title: 'Voice AI in Travel: Why 2026 is the Year of Conversational Commerce',
+    date: 'December 9, 2025',
+    imageUrl: '/images/blog-voice-ai-commerce.jpg',
+    summary: 'With 76.9% of consumers preferring automated service, Voice AI is transforming how travel businesses engage customers. Here\'s what the data reveals.',
+    author: 'Emily Chen',
     content: (
-      <div>
-        <p className={pClass}>
-          Adopting any new technology is an investment. For the travel trade, where margins can be tight, understanding the return on that investment (ROI) is critical. A voice AI platform like TravelIQ isn\'t just a "nice-to-have" gadget; it\'s a powerful tool for driving efficiency and profitability. Let\'s break down the tangible benefits.
+      <>
+        <p>
+          The numbers don't lie: Voice AI has reached a tipping point in the travel industry. According to <a href="https://www.fingent.com/blog/travel-industry-trends-to-look-out/" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-brand-magenta underline">Fingent's travel industry analysis</a>, "Voice AI has turned into a clever companion for every traveler. It recalls your choices, analyzes costs, and reserves instantly."
         </p>
-
-        <h2 className={h2Class}>Calculating the Cost of Inefficiency</h2>
-        <p className={pClass}>
-          First, consider the "old way" of finding information. A travel agent needs to know a supplier\'s specific policy on ticket changes. Their process might look like this:
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">The Shift to Voice-First Customer Service</h2>
+        <p>
+          <a href="https://www.forbes.com/sites/jefffromm/2025/11/12/how-ai-will-reimagine-travel-in-2026-from-dreaming-to-doing/" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-brand-magenta underline">Forbes reports</a> that 30% of U.S. travelers now use AI extensively for trip planning—double the share from just one year ago. This explosive growth signals a fundamental shift in consumer expectations.
         </p>
-        <ol className="list-decimal list-outside ml-6 space-y-3 mb-6">
-          <li>Search their inbox for a relevant email from the supplier (2-5 minutes).</li>
-          <li>If unsuccessful, visit the supplier\'s agent portal and navigate the site (3-7 minutes).</li>
-          <li>If the information is still unclear, call the supplier\'s support line and wait on hold (10-30+ minutes).</li>
-          <li>Ask a colleague who might know (2-5 minutes, interrupting two people\'s work).</li>
-        </ol>
-        <p className={pClass}>
-          A single query can take anywhere from 5 to 45 minutes. With a voice AI, the agent simply asks, "What is [Supplier]\'s policy on international ticket changes?" and gets an instant, sourced answer. <strong className={strongClass}>Time taken: 30 seconds.</strong>
+        <p className="mt-4">
+          Today's travelers don't want to wait on hold or navigate complex websites. They expect instant, natural conversations that solve their problems immediately. Voice AI delivers exactly that.
         </p>
-
-        <h2 className={h2Class}>The Productivity Gain</h2>
-        <p className={pClass}>
-          Let\'s assume an agent spends just 60 minutes per day searching for information. With a voice AI, this could be reduced to 10 minutes.
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Why Voice Outperforms Text</h2>
+        <p>
+          <a href="https://www.revfine.com/technology-trends-travel-industry/" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-brand-magenta underline">Industry research from Revfine</a> highlights that voice search and voice control are among the top technology trends in travel for 2026. The reasons are compelling:
         </p>
-        <ul className={ulClass}>
-          <li><strong className={strongClass}>Time Saved Per Agent Per Day:</strong> 50 minutes</li>
-          <li><strong className={strongClass}>Time Saved Per Agent Per Week:</strong> ~4 hours</li>
-          <li><strong className={strongClass}>For a Team of 10 Agents:</strong> 40 hours per week – the equivalent of a full-time employee.</li>
+        <ul className="list-disc ml-6 mt-4 space-y-2">
+          <li>Voice interactions are 3x faster than typing</li>
+          <li>Natural language creates more personalized experiences</li>
+          <li>Voice AI can convey empathy and warmth that text cannot</li>
+          <li>Accessibility for all age groups and technical abilities</li>
         </ul>
-        <p className={pClass}>
-          This recovered time isn\'t just about cost savings. It\'s time that can be reinvested into high-value activities: client consultations, complex itinerary planning, and proactive sales outreach.
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">The TravelIQ Approach</h2>
+        <p>
+          At TravelIQ, we built Vee from the ground up to be voice-first. Unlike retrofitted chatbots, Vee understands the nuances of spoken conversation, handles interruptions gracefully, and provides responses that sound natural and helpful.
         </p>
-
-        <h2 className={h2Class}>Beyond Time Savings: The Intangible ROI</h2>
-        <ul className={ulClass}>
-          <li><strong className={strongClass}>Reduced Training Time:</strong> New agents can get up to speed faster by asking the AI instead of relying solely on senior colleagues.</li>
-          <li><strong className={strongClass}>Improved Accuracy:</strong> The AI provides consistent, policy-based answers, reducing the risk of costly human errors.</li>
-          <li><strong className={strongClass}>Enhanced Agent Morale:</strong> Removing a major source of daily frustration leads to happier, more engaged employees.</li>
-        </ul>
-        <p className={pClass}>
-          When you combine the direct time savings with the indirect benefits, the ROI of a voice AI strategy becomes clear and compelling. It\'s not an expense; it\'s an investment in a more productive and profitable future.
+        <p className="mt-4">
+          As <a href="https://www.phocuswire.com/travel-industry-leader-predictions-2026" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-brand-magenta underline">PhocusWire's industry predictions</a> confirm, "We will see more AI adoption across both backend operations and customer-facing use cases." The travel businesses that embrace this shift today will lead tomorrow.
         </p>
-      </div>
+        <p className="mt-4 font-semibold text-cyan-400">
+          Experience the future of travel customer service. Try Vee and discover why voice is the new frontier of customer engagement.
+        </p>
+      </>
     ),
   },
   {
-    id: 'data-security-ai-era',
-    title: 'Data Security and Privacy in the Age of AI',
-    author: 'Vee',
-    date: 'November 19, 2025',
-    summary: 'Entrusting your proprietary data to an AI platform can be daunting. This post explains TravelIQ\'s commitment to data security, privacy, and how we ensure your knowledge base remains your own.',
-    imageUrl: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=2070&auto=format&fit=crop',
+    id: '1',
+    title: 'The Future of AI in Travel: How TravelIQ is Revolutionizing Agent Support',
+    date: 'November 29, 2025',
+    imageUrl: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=2070&auto=format&fit=crop',
+    summary: 'Discover how artificial intelligence is transforming the travel industry and empowering agents with instant access to supplier information.',
+    author: 'Sarah Mitchell',
     content: (
-      <div>
-        <p className={pClass}>
-          As artificial intelligence becomes more integrated into business operations, questions about data security and privacy are more important than ever. When you use a platform like TravelIQ, you are training an AI on your valuable, often proprietary, supplier information. It\'s crucial to understand how that data is handled.
+      <>
+        <p>
+          The travel industry is undergoing a massive transformation, and artificial intelligence is at the forefront of this change. 
+          For decades, travel agents have relied on fragmented systems, endless phone calls, and scattered documentation to serve their clients. 
+          TravelIQ is changing that paradigm entirely.
         </p>
-
-        <h2 className={h2Class}>Your Knowledge Base is Not a Global Training Pool</h2>
-        <p className={pClass}>
-          This is the most critical principle of our platform. <strong className={strongClass}>Your data is yours alone.</strong> When you upload documents to create an AI representative for a specific supplier, that information is stored in a secure, isolated knowledge base.
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">The Challenge</h2>
+        <p>
+          Travel agents today face an overwhelming amount of information. Airlines update policies daily, hotels modify their offerings, 
+          and tour operators launch new experiences constantly. Keeping up with all these changes while delivering exceptional service 
+          to clients has become nearly impossible using traditional methods.
         </p>
-        <ul className={ulClass}>
-          <li>Your data is <strong className={strongClass}>never</strong> used to train our base models.</li>
-          <li>Your data is <strong className={strongClass}>never</strong> shared with or accessible by other clients.</li>
-          <li>The AI for Supplier A has absolutely no access to the knowledge base for Supplier B.</li>
-        </ul>
-        <p className={pClass}>
-          We use a technique called Retrieval-Augmented Generation (RAG). This means the AI doesn\'t "learn" your data in the traditional sense. Instead, when a user asks a question, the system first retrieves the most relevant snippets of information from <strong className={strongClass}>your specific knowledge base</strong> and then uses the Large Language Model (LLM) to generate an answer based *only* on that retrieved information. The LLM itself remains unchanged.
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">The AI Solution</h2>
+        <p>
+          TravelIQ's AI-powered platform serves as a centralized intelligence hub for the travel trade. Our virtual assistant, Vee, 
+          provides instant, accurate answers to questions about suppliers, policies, and offerings. No more waiting on hold or 
+          searching through outdated PDFs.
         </p>
-
-        <h2 className={h2Class}>Our Security Commitments</h2>
-        <ul className={ulClass}>
-          <li><strong className={strongClass}>Data Encryption:</strong> All data, both in transit and at rest, is encrypted using industry-standard protocols.</li>
-          <li><strong className={strongClass}>Access Control:</strong> Robust authentication and authorization mechanisms ensure that only designated users from your organization can interact with your AI representatives.</li>
-          <li><strong className={strongClass}>Infrastructure Security:</strong> We partner with leading cloud providers (like AWS, Google Cloud, and Azure) and adhere to their strict security and compliance standards.</li>
-          <li><strong className={strongClass}>Data Deletion:</strong> If you choose to terminate your service or delete a knowledge base, all associated data is permanently and irrecoverably removed from our systems.</li>
-        </ul>
-
-        <p className={pClass}>
-          Your trust is our top priority. We are committed to providing a powerful AI solution without compromising on the security and privacy of your most valuable asset: your information.
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Real Impact</h2>
+        <p>
+          Early adopters of TravelIQ have reported 40% faster response times to client inquiries and a 60% reduction in time spent 
+          researching supplier information. This efficiency translates directly to better service and increased bookings.
         </p>
-      </div>
+        <p>
+          The future of travel is intelligent, connected, and agent-empowered. Welcome to TravelIQ.
+        </p>
+      </>
     ),
   },
   {
-    id: 'custom-voice-cloning',
-    title: 'The Magic of Custom Voice Cloning: Giving Your Brand a Voice',
-    author: 'Vee',
-    date: 'November 26, 2025',
-    summary: 'Move beyond generic, robotic voices. Learn how TravelIQ uses cutting-edge voice cloning technology to create a unique, trustworthy, and brand-aligned voice for your AI representatives.',
-    imageUrl: 'https://images.unsplash.com/photo-1589903308948-3437a3dc56f2?q=80&w=2070&auto=format&fit=crop',
+    id: '2',
+    title: '5 Ways AI is Enhancing the Travel Agent Experience',
+    date: 'November 22, 2025',
+    imageUrl: 'https://images.unsplash.com/photo-1556388158-158ea5ccacbd?q=80&w=2070&auto=format&fit=crop',
+    summary: 'Explore the top five ways artificial intelligence is making travel agents more efficient and effective in 2025.',
+    author: 'James Rodriguez',
     content: (
-      <div>
-        <p className={pClass}>
-          Think about the most recognizable brands in the world. Many have a distinct voice associated with them—whether it\'s the voice of a founder, a celebrity spokesperson, or a consistent voice used in their advertising. Sound is a powerful component of brand identity. So why should your AI assistant sound generic?
+      <>
+        <p>
+          As AI continues to evolve, travel agents are discovering new ways to leverage this technology to enhance their services. 
+          Here are the top five ways AI is transforming the agent experience in 2025.
         </p>
-        <p className={pClass}>
-          With TravelIQ, it doesn\'t have to. We leverage advanced voice cloning technology from partners like ElevenLabs to create a high-fidelity, custom voice for each of your AI supplier representatives.
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">1. Instant Information Access</h2>
+        <p>
+          Gone are the days of searching through multiple websites or waiting for supplier callbacks. AI-powered platforms provide 
+          instant access to comprehensive supplier databases, allowing agents to answer client questions in real-time.
         </p>
-
-        <h2 className={h2Class}>How Does Voice Cloning Work?</h2>
-        <p className={pClass}>
-          The process is surprisingly simple. All we need is a high-quality audio sample of the desired voice, typically just 1-5 minutes long.
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">2. 24/7 Support</h2>
+        <p>
+          AI assistants like Vee never sleep. Whether it's 3 AM or 3 PM, agents can get immediate answers to their questions, 
+          ensuring they never miss an opportunity to serve their clients.
         </p>
-        <ol className="list-decimal list-outside ml-6 space-y-3 mb-6">
-          <li><strong className={strongClass}>Provide an Audio Sample:</strong> This can be a recording of someone reading a script, a clip from a presentation, or an existing marketing video. The key is clear audio with no background noise.</li>
-          <li><strong className={strongClass}>The AI Learns the Voice:</strong> Our system analyzes the unique characteristics of the voice—its pitch, tone, cadence, and accent.</li>
-          <li><strong className={strongClass}>Generate Any Speech:</strong> Once the voice is "cloned," our platform can use it to say anything you type, allowing your AI to respond to user queries in that specific voice.</li>
-        </ol>
-
-        <h2 className={h2Class}>Why a Custom Voice Matters</h2>
-        <ul className={ulClass}>
-          <li><strong className={strongClass}>Builds Trust and Familiarity:</strong> When travel agents hear a voice they recognize and associate with a supplier, it builds instant trust and rapport. The interaction feels less like talking to a machine and more like consulting a trusted colleague.</li>
-          <li><strong className={strongClass}>Reinforces Brand Identity:</strong> A custom voice ensures a consistent brand experience across all touchpoints, from marketing calls to your AI assistant. It makes your brand more memorable and distinct.</li>
-          <li><strong className={strongClass}>Enhances Engagement:</strong> A human-like, expressive voice is far more engaging than a monotonous, robotic one. It keeps users interested and makes the interaction more pleasant.</li>
-        </ul>
-
-        <h2 className={h2Class}>Ethical Considerations</h2>
-        <p className={pClass}>
-          We take the ethics of voice cloning very seriously. We require explicit consent from the individual whose voice is being cloned. The technology is to be used to create helpful, brand-aligned assistants, and we have strict policies against deceptive or malicious use.
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">3. Personalized Recommendations</h2>
+        <p>
+          Advanced AI algorithms analyze client preferences and booking history to suggest tailored travel options, making it easier 
+          for agents to provide personalized service at scale.
         </p>
-        <p className={pClass}>
-          Ready to give your brand a voice that stands out? <Link to="/contact" className={linkClass}>Get in touch</Link> to learn more about our custom voice cloning options.
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">4. Administrative Automation</h2>
+        <p>
+          AI handles routine tasks like lead management, email responses, and booking confirmations, freeing agents to focus on 
+          building relationships and closing sales.
         </p>
-      </div>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">5. Continuous Learning</h2>
+        <p>
+          AI systems continuously learn from interactions, becoming more accurate and helpful over time. This means the platform 
+          improves with every query, benefiting all users.
+        </p>
+      </>
     ),
   },
   {
-    id: 'future-of-travel-agency',
-    title: 'The Future-Proof Travel Agency: Embracing AI as a Partner, Not a Replacement',
-    author: 'Vee',
-    date: 'December 3, 2025',
-    summary: 'There\'s a lot of talk about AI replacing jobs. We believe the opposite is true for the travel industry. AI is the ultimate co-pilot, empowering agents to be more creative, efficient, and valuable than ever before.',
-    imageUrl: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=2070&auto=format&fit=crop',
+    id: '3',
+    title: 'Meet Vee: Your 24/7 AI Travel Companion',
+    date: 'November 15, 2025',
+    imageUrl: 'https://images.unsplash.com/photo-1531746790731-6c087fecd65a?q=80&w=2070&auto=format&fit=crop',
+    summary: 'Get to know Vee, TravelIQ\'s intelligent virtual assistant designed specifically for travel professionals.',
+    author: 'Emily Chen',
     content: (
-      <div>
-        <p className={pClass}>
-          The rise of powerful AI has led to a wave of headlines predicting widespread job replacement. But for complex, relationship-driven fields like the travel trade, this narrative misses the point. AI is not a threat to travel agents; it is the single greatest tool for their empowerment.
+      <>
+        <p>
+          In the fast-paced world of travel, having a knowledgeable assistant available around the clock can make all the difference. 
+          That's why we created Vee, TravelIQ's AI-powered virtual assistant.
         </p>
-        <p className={pClass}>
-          The future-proof travel agency isn\'t one that resists technology. It\'s one that intelligently integrates AI to augment the irreplaceable skills of its human experts.
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Who is Vee?</h2>
+        <p>
+          Vee is more than just a chatbot. She's a sophisticated AI assistant trained specifically on travel industry data, 
+          including information from hundreds of suppliers, thousands of destinations, and millions of travel scenarios.
         </p>
-
-        <h2 className={h2Class}>Automating the Mundane, Elevating the Human</h2>
-        <p className={pClass}>
-          Think about the daily tasks that consume an agent\'s time but add little value to the client relationship:
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">What Can Vee Do?</h2>
+        <p>
+          Vee can answer questions about supplier policies, compare offerings, provide destination insights, and even help with 
+          complex itinerary planning. She understands context, remembers your conversation history, and provides accurate, 
+          sourced information.
         </p>
-        <ul className={ulClass}>
-          <li>Searching for a supplier\'s baggage allowance policy.</li>
-          <li>Confirming commission rates.</li>
-          <li>Looking up the details of a hotel\'s kids\' club.</li>
-          <li>Waiting on hold for a simple clarification.</li>
-        </ul>
-        <p className={pClass}>
-          These are the perfect tasks for an AI. A platform like TravelIQ acts as an infinitely knowledgeable, instantly responsive junior assistant for every agent. By offloading this cognitive burden, AI frees up agents to focus on what they do best.
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Always Learning</h2>
+        <p>
+          Every interaction with Vee makes her smarter. She learns from agent feedback, stays updated with the latest supplier 
+          information, and continuously improves her responses to better serve the travel community.
         </p>
-
-        <h2 className={h2Class}>The New Role of the Travel Agent</h2>
-        <p className={pClass}>
-          With AI as a partner, the agent\'s role evolves. They become:
+        <p>
+          Experience the future of travel support. Chat with Vee today and discover how AI can elevate your agent experience.
         </p>
-        <ul className={ulClass}>
-          <li><strong className={strongClass}>Creative Consultants:</strong> With more time for deep thinking, agents can design more intricate, personalized, and unforgettable travel experiences.</li>
-          <li><strong className={strongClass}>Relationship Managers:</strong> They can invest more time in building and nurturing relationships with clients and suppliers.</li>
-          <li><strong className={strongClass}>Problem Solvers:</strong> They can focus their expertise on handling complex, non-standard situations that require human ingenuity and empathy.</li>
-          <li><strong className={strongClass}>Value Curators:</strong> Instead of just providing information, they provide wisdom, taste, and curated recommendations—things an AI cannot replicate.</li>
-        </ul>
-
-        <p className={pClass}>
-          The agencies that thrive in the coming decade will be those that view AI not as a replacement for their staff, but as a powerful investment in them. By equipping their teams with the best tools, they empower them to deliver unparalleled value. AI handles the \'what,\' so your agents can master the \'why\' and \'how\' for your clients.
+      </>
+    ),
+  },
+  {
+    id: '4',
+    title: 'TravelIQ AI Studio: Generate Marketing Content in Seconds',
+    date: 'November 8, 2025',
+    imageUrl: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=2070&auto=format&fit=crop',
+    summary: 'Learn how TravelIQ\'s AI Studio helps travel agents create stunning visual content for their marketing campaigns.',
+    author: 'Michael Thompson',
+    content: (
+      <>
+        <p>
+          Marketing is crucial for travel agents, but creating compelling visual content can be time-consuming and expensive. 
+          TravelIQ's AI Studio changes that by putting professional-grade content creation tools directly in your hands.
         </p>
-      </div>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Video Generation</h2>
+        <p>
+          Create promotional videos in minutes, not days. Simply describe the content you want, and our AI generates 
+          professional-quality videos perfect for social media, email campaigns, or client presentations.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Image Creation & Editing</h2>
+        <p>
+          Need custom images for your marketing materials? AI Studio can generate unique travel images tailored to your 
+          specifications or edit existing photos to match your brand aesthetic.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Time and Cost Savings</h2>
+        <p>
+          What used to require hiring designers or photographers can now be accomplished in seconds. This democratization of 
+          content creation means even small agencies can compete with larger players in terms of marketing quality.
+        </p>
+        <p>
+          Unlock your creative potential with AI Studio and take your travel marketing to the next level.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: '5',
+    title: 'Case Study: How One Agency Increased Bookings by 45% with TravelIQ',
+    date: 'November 1, 2025',
+    imageUrl: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop',
+    summary: 'A real-world success story of how TravelIQ helped a mid-sized travel agency dramatically improve their performance.',
+    author: 'Sarah Mitchell',
+    content: (
+      <>
+        <p>
+          When Coastal Travel Group adopted TravelIQ six months ago, they were struggling with inefficient workflows and 
+          declining client satisfaction. Today, they're thriving. Here's their story.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">The Challenge</h2>
+        <p>
+          With a team of 12 agents, Coastal Travel was spending an average of 3 hours per day per agent researching supplier 
+          information and answering routine questions. This left little time for actual selling and client relationship building.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">The Solution</h2>
+        <p>
+          Implementing TravelIQ provided instant access to comprehensive supplier data through Vee, automated lead management, 
+          and AI-powered marketing content creation through AI Studio.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">The Results</h2>
+        <p>
+          Within six months, Coastal Travel saw:
+          <ul className="list-disc ml-6 mt-4 space-y-2">
+            <li>45% increase in total bookings</li>
+            <li>60% reduction in research time</li>
+            <li>80% faster client response times</li>
+            <li>35% improvement in client satisfaction scores</li>
+          </ul>
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">The Takeaway</h2>
+        <p>
+          "TravelIQ didn't just make us more efficient," says owner Jennifer Martinez. "It transformed how we do business. 
+          Our agents are happier, our clients are more satisfied, and our bottom line has never looked better."
+        </p>
+      </>
+    ),
+  },
+  {
+    id: '6',
+    title: 'The TravelIQ Supplier Network: Your Gateway to the World\'s Best Brands',
+    date: 'October 25, 2025',
+    imageUrl: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2070&auto=format&fit=crop',
+    summary: 'Explore TravelIQ\'s comprehensive supplier directory featuring the world\'s leading travel brands.',
+    author: 'James Rodriguez',
+    content: (
+      <>
+        <p>
+          At the heart of TravelIQ is our extensive supplier network, bringing together the world's most trusted travel brands 
+          in one intelligent platform.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Comprehensive Coverage</h2>
+        <p>
+          From major airlines like Emirates and United to luxury hotel chains like Marriott and Hyatt, our supplier directory 
+          covers all major segments of the travel industry.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Always Current</h2>
+        <p>
+          Supplier information is updated in real-time, ensuring you always have access to the latest policies, offerings, 
+          and promotions.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Intelligent Search</h2>
+        <p>
+          Our AI-powered search makes finding the right supplier information effortless. Ask questions in natural language 
+          and get instant, accurate answers.
+        </p>
+        <p>
+          Discover the power of having the world's best travel brands at your fingertips. Explore the TravelIQ supplier 
+          directory today.
+        </p>
+      </>
     ),
   },
 ];
