@@ -396,7 +396,7 @@ const HomePage: React.FC = () => {
               <p>Yes, absolutely! Access to our entire network of AI Sales Support is completely free for registered travel agents. Our mission is to provide you with the best tools to help you sell more effectively.</p>
             </FAQItem>
             <FAQItem question="How accurate is the information provided by the AI?">
-              <p>The information comes directly from the suppliers themselves. Our AI is trained on their official documentation, training materials, and agent portals. This ensures you're getting the most accurate and up-to-date information, just as you would from a top-performing sales rep.</p>
+              <p>The information comes directly from the suppliers themselves. Each brand controls its own knowledge base through our Supplier Portal — official policies, fares, schedules, training materials, agent FAQs — and updates it in real-time as things change. The AI only answers from what the supplier has provided, so every response is verified, on-brand, and as current as the source material.</p>
             </FAQItem>
              <FAQItem question="Do I need to install any software?">
                 <p>No software is required. TravelIQ is a web-based platform, accessible from any device with an internet browser and a microphone for voice commands. It's designed for ease of use and immediate access.</p>
@@ -423,7 +423,7 @@ const HomePage: React.FC = () => {
                 <span>Cost Objection: 'This sounds expensive, and we already have a support team.'</span>
               </div>
             }>
-              <p>I understand cost is a priority. Think of Travel IQ not as an expense, but as a direct cost-saving and revenue-generating investment. While your human team manages complex or urgent issues, the AI handles 80% of repetitive, high-volume queries 24/7. This dramatically reduces your operational costs per interaction and frees your sales team to focus purely on high-value selling, guaranteeing a rapid ROI far exceeding the platform fee.</p>
+              <p>I understand cost is a priority. Think of TravelIQ not as an expense, but as a direct cost-saving and revenue-generating investment. While your human team manages complex or urgent issues, the AI handles 80% of repetitive, high-volume queries 24/7. This dramatically reduces your operational costs per interaction and frees your sales team to focus purely on high-value selling, guaranteeing a rapid ROI far exceeding the platform fee.</p>
             </FAQItem>
 
             <FAQItem question={
@@ -434,7 +434,7 @@ const HomePage: React.FC = () => {
                 <span>Human Touch Objection: 'Travel is a personal business. Will this AI erode the human connection we have with our agents?'</span>
               </div>
             }>
-              <p>Absolutely not. Travel IQ is designed to enhance, not replace, your human interaction. We eliminate the frustration agents feel waiting for basic information, meaning when they do connect with your human representative, the conversation is focused, productive, and based on relationship building—not just query answering. We handle the trivia so your team can handle the vital relationship management.</p>
+              <p>Absolutely not. TravelIQ is designed to enhance, not replace, your human interaction. We eliminate the frustration agents feel waiting for basic information, meaning when they do connect with your human representative, the conversation is focused, productive, and based on relationship building—not just query answering. We handle the trivia so your team can handle the vital relationship management.</p>
             </FAQItem>
 
             <FAQItem question={
@@ -446,7 +446,7 @@ const HomePage: React.FC = () => {
                 <span>Data Security Objection: 'How do we know our proprietary data and our agents' data are secure on a new platform?'</span>
               </div>
             }>
-              <p>Security and privacy are paramount. Your knowledge base data is ring-fenced and used only to train your dedicated Voice AI instance—it is never shared or used to train other models. Furthermore, Travel IQ is strictly a sales and information support tool; we do not handle bookings or collect sensitive agent PII. We are focused on maintaining the integrity and confidentiality of your supplier knowledge, giving you control over what the AI shares.</p>
+              <p>Security and privacy are paramount. Your knowledge base is ring-fenced to your own dedicated AI instance — it's never shared with other suppliers and never used to train other models. You control exactly what's in there through your Supplier Portal dashboard, and you can update or remove information at any time. TravelIQ is strictly a sales and information support tool; we do not handle bookings or collect sensitive agent PII, and the platform is fully GDPR compliant.</p>
             </FAQItem>
 
             <FAQItem question={
@@ -457,7 +457,7 @@ const HomePage: React.FC = () => {
                 <span>Trust Objection: 'The platform is new. Why should we trust this technology or your company?'</span>
               </div>
             }>
-              <p>We are addressing a clear gap in the market by being Europe's first to offer this dedicated, AI-driven B2B travel support. We are confident because our model is built on two core principles: transparency and results. We start by working with you to ingest and verify your information, giving you full control over the AI's knowledge base. Your low investment secures you a first-mover advantage, positioning you as a forward-thinking, 24/7 reliable partner to the UK and European travel trade immediately.</p>
+              <p>We are addressing a clear gap in the market by being Europe's first to offer dedicated, AI-driven B2B travel support. Our model is built on transparency and supplier control: you self-onboard through the Supplier Portal, paste your own knowledge base, and decide exactly what your AI shares — at any time, with no middleman. Joining now secures you a first-mover advantage and positions you as a forward-thinking, 24/7 reliable partner to the UK and European travel trade.</p>
             </FAQItem>
 
             <FAQItem question={
@@ -470,7 +470,7 @@ const HomePage: React.FC = () => {
                 <span>AI Accuracy Objection: 'We cannot risk the AI giving out incorrect information—that could damage our brand.'</span>
               </div>
             }>
-              <p>That is a crucial point, and it's precisely why our model eliminates that risk. Unlike general AI chatbots, the Travel IQ Voice AI is a closed-loop system. It is only trained and fed from the verified knowledge base you provide. If the answer is not in your data, the AI is trained to simply state it cannot answer or direct the agent to a human contact, ensuring every piece of information it delivers is accurate, consistent, and directly controlled by your brand.</p>
+              <p>That is a crucial point, and it's precisely why our model eliminates that risk. Unlike general AI chatbots, the TravelIQ Voice AI is a closed-loop system. It is only trained and fed from the verified knowledge base you provide. If the answer is not in your data, the AI is trained to simply state it cannot answer or direct the agent to a human contact, ensuring every piece of information it delivers is accurate, consistent, and directly controlled by your brand.</p>
             </FAQItem>
           </div>
         </div>
