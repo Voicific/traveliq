@@ -403,14 +403,14 @@ const HomePage: React.FC = () => {
             </FAQItem>
 
             <h3 className="text-3xl font-bold font-heading text-cyan-400 mt-16 mb-6 drop-shadow-[0_0_15px_rgba(0,212,255,0.5)]">For Suppliers</h3>
-            <FAQItem question="How do you train the AI on our brand's information?">
-              <p>We have a secure and straightforward onboarding process. You provide us with your existing knowledge base—this can include agent websites, product PDFs, internal FAQs, and more. Our system ingests this data to create a custom AI Sales Support expert for your brand.</p>
+            <FAQItem question="How do we get our brand's AI Sales Assistant set up?">
+              <p>It's fully self-service. Sign up at the Supplier Portal, log in to your dashboard, and paste your knowledge base directly — agent FAQs, product details, fares, schedules, training materials, even links to your trade portal. The AI uses only what you provide, so every answer is on-brand and accurate. You stay in full control, and you can publish your profile the moment you're ready.</p>
             </FAQItem>
             <FAQItem question="Can we update the information the AI provides?">
-              <p>Yes. We know that products, promotions, and policies change. Our platform makes it easy to update the AI's knowledge base in real-time, ensuring the travel trade always has the latest information.</p>
+              <p>Yes — anytime. Log in to your supplier dashboard, edit the knowledge base, and save. Updates are live immediately, so when promotions, schedules, or policies change, your AI reflects them in real-time without any back-and-forth with us.</p>
             </FAQItem>
             <FAQItem question="What kind of analytics and lead data do we get?">
-              <p>Our supplier dashboard provides powerful insights. You can see what questions agents are asking, identify trends, and discover knowledge gaps. We also provide a full lead capture system, delivering details of the agents interacting with your brand directly to you.</p>
+              <p>Every agent who engages with your AI Sales Assistant is captured as a lead and shown in your dashboard — name, email, agency, and message. You also get email notifications. You can see exactly who's interacting with your brand and follow up directly. More advanced analytics (trending questions, knowledge gaps, engagement patterns) ship on the Standard and Enterprise plans.</p>
             </FAQItem>
 
             <h4 className="text-2xl font-bold font-heading text-cyan-300 mt-12 mb-4 drop-shadow-[0_0_10px_rgba(0,212,255,0.3)]">Common Supplier Objections & Our Responses</h4>
