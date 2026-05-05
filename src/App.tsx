@@ -25,6 +25,10 @@ import SupplierChatbot from './components/SupplierChatbot.tsx';
 import BlogPage from './pages/BlogPage.tsx';
 import BlogPostPage from './pages/BlogPostPage.tsx';
 import AffiliateProgramPage from './pages/AffiliateProgramPage.tsx';
+import SupplierRegisterPage from './pages/SupplierRegisterPage.tsx';
+import SupplierLoginPage from './pages/SupplierLoginPage.tsx';
+import SupplierDashboardPage from './pages/SupplierDashboardPage.tsx';
+import { SupabaseAuthProvider } from './context/SupabaseAuthContext.tsx';
 import { AIProvider } from './context/AIContext.tsx';
 import AIStudioLayout from './pages/AIStudioLayout.tsx';
 
@@ -59,6 +63,9 @@ const AppContent: React.FC = () => {
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:id" element={<BlogPostPage />} />
               <Route path="/affiliate-program" element={<AffiliateProgramPage />} />
+              <Route path="/supplier-portal/register" element={<SupplierRegisterPage />} />
+              <Route path="/supplier-portal/login" element={<SupplierLoginPage />} />
+              <Route path="/supplier-portal/dashboard" element={<SupplierDashboardPage />} />
               <Route path="/privacy" element={<PrivacyPolicyPage />} />
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/login" element={<LoginPage />} />
@@ -127,6 +134,7 @@ function App() {
   return (
     <AIProvider>
       <LeadProvider>
+        <SupabaseAuthProvider>
         <AuthProvider>
           <SupplierProvider>
             <AgentProvider>
@@ -138,6 +146,7 @@ function App() {
             </AgentProvider>
           </SupplierProvider>
         </AuthProvider>
+        </SupabaseAuthProvider>
       </LeadProvider>
     </AIProvider>
   );
