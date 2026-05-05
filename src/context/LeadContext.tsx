@@ -1,51 +1,17 @@
-import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
-import { GOOGLE_SCRIPT_URL as SCRIPT_URL } from '../config.ts';
-
-// --- Google Sheets Integration ---
-
-const addLeadToSheet = async (lead: Lead) => {
-  if (!SCRIPT_URL) {
-    console.warn('Google Sheets integration is not configured. Skipping lead save.');
-    return;
-  }
-  try {
-    await fetch(SCRIPT_URL, {
-      method: 'POST',
-      mode: 'cors',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'addLead', payload: { lead } }),
-    });
-  } catch (error) {
-    console.error('Failed to add lead to Google Sheet:', error);
-  }
-};
-
-const getLeadsFromSheet = async (): Promise<Lead[] | null> => {
-    if (!SCRIPT_URL) {
-        console.warn('Google Sheets integration is not configured. Cannot fetch leads.');
-        return null;
-    }
-    try {
-        const response = await fetch(`${SCRIPT_URL}?action=getLeads&t=${new Date().getTime()}`, {
-            method: 'GET',
-            mode: 'cors',
-        });
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const result = await response.json();
-        if (!result.success) throw new Error(result.message || 'Failed to get leads from sheet.');
-        return result.data as Lead[];
-    } catch (error) {
-        console.error('Failed to fetch leads from Google Sheet:', error);
-        return null;
-    }
-};
-// --- End Google Sheets Integration ---
+import React, { createContext, useState, useContext, ReactNode, useEffect, useCallback } from 'react';
+import {
+  postToSheet,
+  getFromSheet,
+  addPendingLead,
+  flushPendingLeads,
+  getPendingCount,
+} from '../services/sheetsService.ts';
 
 export interface Lead {
   type: 'Newsletter' | 'Demo Request' | 'Agent Chat' | 'Contact Inquiry' | 'AI Lead Capture';
   firstName?: string;
   lastName?: string;
-  name?: string; // for forms with single name field
+  name?: string;
   email: string;
   agency?: string;
   plan?: string;
@@ -56,7 +22,11 @@ export interface Lead {
 
 interface LeadContextType {
   leads: Lead[];
-  addLead: (lead: Omit<Lead, 'timestamp'>) => void;
+  addLead: (lead: Omit<Lead, 'timestamp'>) => Promise<void>;
+  pendingCount: number;
+  isSyncing: boolean;
+  flushPending: () => Promise<void>;
+  refreshLeads: () => Promise<void>;
 }
 
 const LeadContext = createContext<LeadContextType | undefined>(undefined);
@@ -64,55 +34,78 @@ const LEADS_STORAGE_KEY = 'collectedLeads';
 
 export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [leads, setLeads] = useState<Lead[]>([]);
+  const [pendingCount, setPendingCount] = useState<number>(getPendingCount);
+  const [isSyncing, setIsSyncing] = useState(false);
 
-  // Effect for initial load from storage and/or Google Sheet
-  useEffect(() => {
-    const loadLeads = async () => {
-        let localLeads: Lead[] = [];
-        try {
-            const storedLeads = localStorage.getItem(LEADS_STORAGE_KEY);
-            if (storedLeads) {
-                localLeads = JSON.parse(storedLeads);
-            }
-        } catch (error) {
-            console.error("Failed to parse leads from local storage", error);
-        }
-
-        const sheetLeads = await getLeadsFromSheet();
-
-        if (sheetLeads) {
-            const combinedLeads = new Map<string, Lead>();
-            localLeads.forEach(lead => combinedLeads.set(lead.timestamp, lead));
-            sheetLeads.forEach(lead => combinedLeads.set(lead.timestamp, lead));
-            
-            const allLeads = Array.from(combinedLeads.values()).sort(
-                (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-            );
-            
-            setLeads(allLeads);
-            localStorage.setItem(LEADS_STORAGE_KEY, JSON.stringify(allLeads));
-        } else {
-            setLeads(localLeads);
-        }
-    };
-    loadLeads();
+  const mergeAndStore = useCallback((local: Lead[], remote: Lead[]) => {
+    const map = new Map<string, Lead>();
+    local.forEach(l => map.set(l.timestamp, l));
+    remote.forEach(l => map.set(l.timestamp, l));
+    const merged = Array.from(map.values()).sort(
+      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
+    setLeads(merged);
+    localStorage.setItem(LEADS_STORAGE_KEY, JSON.stringify(merged));
+    return merged;
   }, []);
 
-  const addLead = (newLeadData: Omit<Lead, 'timestamp'>) => {
-    const leadWithTimestamp: Lead = {
-      ...newLeadData,
-      timestamp: new Date().toISOString(),
-    };
-    
-    const updatedLeads = [...leads, leadWithTimestamp];
-    setLeads(updatedLeads);
-    localStorage.setItem(LEADS_STORAGE_KEY, JSON.stringify(updatedLeads));
-    
-    addLeadToSheet(leadWithTimestamp);
-  };
+  const loadLeads = useCallback(async () => {
+    let local: Lead[] = [];
+    try {
+      const stored = localStorage.getItem(LEADS_STORAGE_KEY);
+      if (stored) local = JSON.parse(stored);
+    } catch {}
+    setLeads(local);
+
+    const remote = (await getFromSheet('getLeads')) as Lead[] | null;
+    if (remote) mergeAndStore(local, remote);
+  }, [mergeAndStore]);
+
+  useEffect(() => {
+    loadLeads();
+    flushPendingLeads().then(flushed => {
+      if (flushed > 0) setPendingCount(getPendingCount());
+    });
+  }, [loadLeads]);
+
+  const addLead = useCallback(async (data: Omit<Lead, 'timestamp'>) => {
+    const lead: Lead = { ...data, timestamp: new Date().toISOString() };
+
+    setLeads(prev => {
+      const updated = [lead, ...prev];
+      localStorage.setItem(LEADS_STORAGE_KEY, JSON.stringify(updated));
+      return updated;
+    });
+
+    const ok = await postToSheet('addLead', { lead });
+    if (!ok) {
+      addPendingLead(lead);
+      setPendingCount(getPendingCount());
+    }
+  }, []);
+
+  const flushPending = useCallback(async () => {
+    setIsSyncing(true);
+    try {
+      await flushPendingLeads();
+      setPendingCount(getPendingCount());
+      await loadLeads();
+    } finally {
+      setIsSyncing(false);
+    }
+  }, [loadLeads]);
+
+  const refreshLeads = useCallback(async () => {
+    setIsSyncing(true);
+    try {
+      await loadLeads();
+    } finally {
+      setIsSyncing(false);
+    }
+  }, [loadLeads]);
 
   return (
-    <LeadContext.Provider value={{ leads, addLead }}>
+    <LeadContext.Provider value={{ leads, addLead, pendingCount, isSyncing, flushPending, refreshLeads }}>
       {children}
     </LeadContext.Provider>
   );
@@ -120,8 +113,6 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 export const useLeads = () => {
   const context = useContext(LeadContext);
-  if (context === undefined) {
-    throw new Error('useLeads must be used within a LeadProvider');
-  }
+  if (!context) throw new Error('useLeads must be used within a LeadProvider');
   return context;
 };

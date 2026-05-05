@@ -6,6 +6,8 @@ export interface BlogPost {
   summary: string;
   author: string;
   content: React.ReactNode;
+  contentText?: string;  // plain text with ## / ** formatting, used by managed posts
+  isManaged?: boolean;   // true = stored in Google Sheets, editable via admin
 }
 
 export const blogPosts: BlogPost[] = [
