@@ -24,6 +24,7 @@ import { VeeChatProvider } from './context/VeeChatContext.tsx';
 import SupplierChatbot from './components/SupplierChatbot.tsx';
 import BlogPage from './pages/BlogPage.tsx';
 import BlogPostPage from './pages/BlogPostPage.tsx';
+import AffiliateProgramPage from './pages/AffiliateProgramPage.tsx';
 import { AIProvider } from './context/AIContext.tsx';
 import AIStudioLayout from './pages/AIStudioLayout.tsx';
 
@@ -57,6 +58,7 @@ const AppContent: React.FC = () => {
               <Route path="/about" element={<AboutUsPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:id" element={<BlogPostPage />} />
+              <Route path="/affiliate-program" element={<AffiliateProgramPage />} />
               <Route path="/privacy" element={<PrivacyPolicyPage />} />
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/login" element={<LoginPage />} />

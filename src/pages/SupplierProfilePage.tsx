@@ -108,6 +108,18 @@ const LeadCaptureModal: React.FC<{ supplierName: string, onSubmit: (details: {fi
     );
 };
 
+function getVideoEmbedUrl(url: string): string | null {
+    if (!url) return null;
+    const ytWatch = url.match(/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/);
+    if (ytWatch) return `https://www.youtube.com/embed/${ytWatch[1]}`;
+    const ytShort = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+    if (ytShort) return `https://www.youtube.com/embed/${ytShort[1]}`;
+    const vimeo = url.match(/vimeo\.com\/(\d+)/);
+    if (vimeo) return `https://player.vimeo.com/video/${vimeo[1]}`;
+    // Already an embed URL (HeyGen, Synthesia, or custom)
+    return url;
+}
+
 const SupplierProfilePage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const { getSupplierById } = useSuppliers();
@@ -161,7 +173,25 @@ const SupplierProfilePage: React.FC = () => {
                         </div>
                     </div>
                     <p className="text-gray-300 mt-4">{supplier.longDescription}</p>
-                    
+
+                    {supplier.videoUrl && (() => {
+                        const embedUrl = getVideoEmbedUrl(supplier.videoUrl);
+                        return embedUrl ? (
+                            <div className="mt-8 border-t border-cyan-400/10 pt-6">
+                                <h2 className="text-2xl font-bold font-heading text-white mb-4">Video Presentation</h2>
+                                <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                                    <iframe
+                                        src={embedUrl}
+                                        title={`${supplier.name} video presentation`}
+                                        className="absolute inset-0 w-full h-full rounded-lg"
+                                        allowFullScreen
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    />
+                                </div>
+                            </div>
+                        ) : null;
+                    })()}
+
                     <div className="mt-8 border-t border-cyan-400/10 pt-6">
                         <h2 className="text-2xl font-bold font-heading text-white">AI Sales Support Chat</h2>
                         <p className="text-gray-300 mt-2">Speak or type your question below to get an instant response from the AI sales assistant for {supplier.name}.</p>

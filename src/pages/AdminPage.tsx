@@ -37,7 +37,7 @@ const labelClass = 'block text-sm font-medium text-brand-gray';
 
 const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<void>; onCancel: () => void }> = ({ supplier, onSave, onCancel }) => {
   const { ai, error: aiError } = useAI();
-  const [formData, setFormData] = useState({ name: '', type: SupplierType.Airline, logoUrl: '', bannerUrl: '', shortDescription: '', longDescription: '', avatarImageUrl: '', websiteUrl: '', knowledgeBaseUrl: '', knowledgeBaseText: '', hedra_avatar_id: '', geminiVoiceName: 'Zephyr' });
+  const [formData, setFormData] = useState({ name: '', type: SupplierType.Airline, logoUrl: '', bannerUrl: '', videoUrl: '', shortDescription: '', longDescription: '', avatarImageUrl: '', websiteUrl: '', knowledgeBaseUrl: '', knowledgeBaseText: '', hedra_avatar_id: '', geminiVoiceName: 'Zephyr' });
   const [isSaving, setIsSaving] = useState(false);
   const [isGeneratingShort, setIsGeneratingShort] = useState(false);
   const [isGeneratingLong, setIsGeneratingLong] = useState(false);
@@ -47,9 +47,9 @@ const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<
 
   useEffect(() => {
     if (supplier) {
-      setFormData({ name: supplier.name || '', type: supplier.type || SupplierType.Airline, logoUrl: supplier.logoUrl || '', bannerUrl: supplier.bannerUrl || '', shortDescription: supplier.shortDescription || '', longDescription: supplier.longDescription || '', avatarImageUrl: supplier.avatarImageUrl || '', websiteUrl: supplier.websiteUrl || '', knowledgeBaseUrl: supplier.knowledgeBaseUrl || '', knowledgeBaseText: supplier.knowledgeBaseText || '', hedra_avatar_id: supplier.hedra_avatar_id || '', geminiVoiceName: supplier.geminiVoiceName || 'Zephyr' });
+      setFormData({ name: supplier.name || '', type: supplier.type || SupplierType.Airline, logoUrl: supplier.logoUrl || '', bannerUrl: supplier.bannerUrl || '', videoUrl: supplier.videoUrl || '', shortDescription: supplier.shortDescription || '', longDescription: supplier.longDescription || '', avatarImageUrl: supplier.avatarImageUrl || '', websiteUrl: supplier.websiteUrl || '', knowledgeBaseUrl: supplier.knowledgeBaseUrl || '', knowledgeBaseText: supplier.knowledgeBaseText || '', hedra_avatar_id: supplier.hedra_avatar_id || '', geminiVoiceName: supplier.geminiVoiceName || 'Zephyr' });
     } else {
-      setFormData({ name: '', type: SupplierType.Airline, logoUrl: '', bannerUrl: '', shortDescription: '', longDescription: '', avatarImageUrl: '', websiteUrl: '', knowledgeBaseUrl: '', knowledgeBaseText: '', hedra_avatar_id: '', geminiVoiceName: 'Zephyr' });
+      setFormData({ name: '', type: SupplierType.Airline, logoUrl: '', bannerUrl: '', videoUrl: '', shortDescription: '', longDescription: '', avatarImageUrl: '', websiteUrl: '', knowledgeBaseUrl: '', knowledgeBaseText: '', hedra_avatar_id: '', geminiVoiceName: 'Zephyr' });
     }
     setProcessingFiles([]);
   }, [supplier]);
@@ -154,6 +154,7 @@ const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<
       </div>
       <div><div className={labelContainerClass}><label className={labelClass}>Logo URL</label><Tooltip text="Direct link to the supplier's logo, or upload a file." /></div><div className="flex items-center gap-2 mt-1"><input type="text" name="logoUrl" value={formData.logoUrl} onChange={handleChange} required className={inputClass + ' flex-grow'} /><label htmlFor="logoUpload" className="cursor-pointer bg-brand-light/10 text-white font-bold py-2 px-4 rounded-md hover:bg-brand-light/20 whitespace-nowrap">Upload</label><input type="file" id="logoUpload" onChange={handleFileChange} accept="image/*" className="hidden" /></div></div>
       <div><div className={labelContainerClass}><label className={labelClass}>Banner URL</label><Tooltip text="Wide-format image for the profile page." /></div><input type="text" name="bannerUrl" value={formData.bannerUrl} onChange={handleChange} required className={inputClass} /></div>
+      <div><div className={labelContainerClass}><label className={labelClass}>Video Presentation URL</label><Tooltip text="Optional: YouTube, Vimeo, HeyGen, or Synthesia embed link. Displayed on the supplier profile page." /></div><input type="url" name="videoUrl" value={formData.videoUrl} onChange={handleChange} placeholder="https://www.youtube.com/watch?v=... or Vimeo / HeyGen URL" className={inputClass} /></div>
       <div><div className={labelContainerClass}><label className={labelClass}>Website URL</label><Tooltip text="The supplier's official website." /></div><input type="url" name="websiteUrl" value={formData.websiteUrl} onChange={handleChange} placeholder="https://example.com" className={inputClass} /></div>
       <div><div className={labelContainerClass}><label className={labelClass}>Fallback Avatar Image URL</label><Tooltip text="Square image for the AI avatar if Hedra is not configured." /></div><input type="text" name="avatarImageUrl" value={formData.avatarImageUrl} onChange={handleChange} required className={inputClass} /></div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

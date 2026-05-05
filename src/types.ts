@@ -17,6 +17,8 @@ export interface Supplier {
   knowledgeBaseUrl: string;
   knowledgeBaseText: string;
   geminiVoiceName: string;
+  // Video presentation embed (YouTube, Vimeo, HeyGen, Synthesia, etc.)
+  videoUrl?: string;
   // NEW: ElevenLabs specific properties
   elevenLabsAgentId?: string;
   useElevenLabs?: boolean;

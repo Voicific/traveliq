@@ -8,7 +8,7 @@ import {
 } from '../services/sheetsService.ts';
 
 export interface Lead {
-  type: 'Newsletter' | 'Demo Request' | 'Agent Chat' | 'Contact Inquiry' | 'AI Lead Capture';
+  type: 'Newsletter' | 'Demo Request' | 'Agent Chat' | 'Contact Inquiry' | 'AI Lead Capture' | 'Affiliate Inquiry';
   firstName?: string;
   lastName?: string;
   name?: string;
