@@ -37,7 +37,7 @@ const labelClass = 'block text-sm font-medium text-brand-gray';
 
 const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<void>; onCancel: () => void }> = ({ supplier, onSave, onCancel }) => {
   const { ai, error: aiError } = useAI();
-  const [formData, setFormData] = useState({ name: '', type: SupplierType.Airline, logoUrl: '', bannerUrl: '', videoUrl: '', shortDescription: '', longDescription: '', avatarImageUrl: '', websiteUrl: '', knowledgeBaseUrl: '', knowledgeBaseText: '', hedra_avatar_id: '', geminiVoiceName: 'Zephyr' });
+  const [formData, setFormData] = useState({ name: '', type: SupplierType.Airline, logoUrl: '', bannerUrl: '', videoUrl: '', shortDescription: '', longDescription: '', avatarImageUrl: '', websiteUrl: '', knowledgeBaseUrl: '', knowledgeBaseText: '', hedra_avatar_id: '', geminiVoiceName: 'Zephyr', useElevenLabs: false, elevenLabsAgentId: '' });
   const [isSaving, setIsSaving] = useState(false);
   const [isGeneratingShort, setIsGeneratingShort] = useState(false);
   const [isGeneratingLong, setIsGeneratingLong] = useState(false);
@@ -47,15 +47,20 @@ const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<
 
   useEffect(() => {
     if (supplier) {
-      setFormData({ name: supplier.name || '', type: supplier.type || SupplierType.Airline, logoUrl: supplier.logoUrl || '', bannerUrl: supplier.bannerUrl || '', videoUrl: supplier.videoUrl || '', shortDescription: supplier.shortDescription || '', longDescription: supplier.longDescription || '', avatarImageUrl: supplier.avatarImageUrl || '', websiteUrl: supplier.websiteUrl || '', knowledgeBaseUrl: supplier.knowledgeBaseUrl || '', knowledgeBaseText: supplier.knowledgeBaseText || '', hedra_avatar_id: supplier.hedra_avatar_id || '', geminiVoiceName: supplier.geminiVoiceName || 'Zephyr' });
+      setFormData({ name: supplier.name || '', type: supplier.type || SupplierType.Airline, logoUrl: supplier.logoUrl || '', bannerUrl: supplier.bannerUrl || '', videoUrl: supplier.videoUrl || '', shortDescription: supplier.shortDescription || '', longDescription: supplier.longDescription || '', avatarImageUrl: supplier.avatarImageUrl || '', websiteUrl: supplier.websiteUrl || '', knowledgeBaseUrl: supplier.knowledgeBaseUrl || '', knowledgeBaseText: supplier.knowledgeBaseText || '', hedra_avatar_id: supplier.hedra_avatar_id || '', geminiVoiceName: supplier.geminiVoiceName || 'Zephyr', useElevenLabs: !!supplier.useElevenLabs, elevenLabsAgentId: supplier.elevenLabsAgentId || '' });
     } else {
-      setFormData({ name: '', type: SupplierType.Airline, logoUrl: '', bannerUrl: '', videoUrl: '', shortDescription: '', longDescription: '', avatarImageUrl: '', websiteUrl: '', knowledgeBaseUrl: '', knowledgeBaseText: '', hedra_avatar_id: '', geminiVoiceName: 'Zephyr' });
+      setFormData({ name: '', type: SupplierType.Airline, logoUrl: '', bannerUrl: '', videoUrl: '', shortDescription: '', longDescription: '', avatarImageUrl: '', websiteUrl: '', knowledgeBaseUrl: '', knowledgeBaseText: '', hedra_avatar_id: '', geminiVoiceName: 'Zephyr', useElevenLabs: false, elevenLabsAgentId: '' });
     }
     setProcessingFiles([]);
   }, [supplier]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
+    const target = e.target;
+    const { name, value } = target;
+    if (target instanceof HTMLInputElement && target.type === 'checkbox') {
+      setFormData(prev => ({ ...prev, [name]: target.checked }));
+      return;
+    }
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
@@ -159,7 +164,15 @@ const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<
       <div><div className={labelContainerClass}><label className={labelClass}>Fallback Avatar Image URL</label><Tooltip text="Square image for the AI avatar if Hedra is not configured." /></div><input type="text" name="avatarImageUrl" value={formData.avatarImageUrl} onChange={handleChange} required className={inputClass} /></div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div><div className={labelContainerClass}><label className={labelClass}>Hedra Avatar ID</label><Tooltip text="Optional: Unique ID for a Hedra live avatar." /></div><input type="text" name="hedra_avatar_id" value={formData.hedra_avatar_id} onChange={handleChange} className={inputClass} /></div>
-        <div><div className={labelContainerClass}><label className={labelClass}>Gemini Voice</label><Tooltip text="Pre-built voice for the AI Sales Support." /></div><select name="geminiVoiceName" value={formData.geminiVoiceName} onChange={handleChange} className={inputClass}>{GEMINI_VOICES.map(v => <option key={v} value={v}>{v}</option>)}</select></div>
+        <div><div className={labelContainerClass}><label className={labelClass}>Gemini Voice</label><Tooltip text="Pre-built voice used when ElevenLabs is not configured." /></div><select name="geminiVoiceName" value={formData.geminiVoiceName} onChange={handleChange} className={inputClass}>{GEMINI_VOICES.map(v => <option key={v} value={v}>{v}</option>)}</select></div>
+      </div>
+      <div className="border border-cyan-400/20 rounded-lg p-4 bg-[#0a1628]/40">
+        <div className="flex items-center gap-3 mb-3">
+          <input type="checkbox" id="useElevenLabs" name="useElevenLabs" checked={formData.useElevenLabs} onChange={handleChange} className="w-4 h-4 accent-cyan-400" />
+          <label htmlFor="useElevenLabs" className="text-sm font-semibold text-white">Use ElevenLabs voice (premium)</label>
+          <Tooltip text="When enabled, the supplier chatbot uses ElevenLabs for high-quality, branded voice playback. Falls back to Gemini if ElevenLabs fails." />
+        </div>
+        <div><div className={labelContainerClass}><label className={labelClass}>ElevenLabs Voice ID</label><Tooltip text="Paste the voice ID from your ElevenLabs voice library (e.g. 21m00Tcm4TlvDq8ikWAM)." /></div><input type="text" name="elevenLabsAgentId" value={formData.elevenLabsAgentId} onChange={handleChange} disabled={!formData.useElevenLabs} placeholder="ElevenLabs voice ID" className={inputClass + (formData.useElevenLabs ? '' : ' opacity-50')} /></div>
       </div>
       <div><div className="flex justify-between items-center"><div className={labelContainerClass}><label className={labelClass}>Short Description</label><Tooltip text="One-sentence tagline for the directory card." /></div><button type="button" onClick={() => handleGenerate('short')} disabled={isGeneratingShort || !ai} className={aiButtonClass}>{isGeneratingShort && <LoadingSpinner className="h-4 w-4 mr-1" />} Generate</button></div><textarea name="shortDescription" value={formData.shortDescription} onChange={handleChange} rows={2} required className={inputClass} /></div>
       <div><div className="flex justify-between items-center"><div className={labelContainerClass}><label className={labelClass}>Long Description</label><Tooltip text="Primary knowledge base for the AI. Confidential." /></div><button type="button" onClick={() => handleGenerate('long')} disabled={isGeneratingLong || !ai} className={aiButtonClass}>{isGeneratingLong && <LoadingSpinner className="h-4 w-4 mr-1" />} Generate</button></div><textarea name="longDescription" value={formData.longDescription} onChange={handleChange} rows={4} required className={inputClass} /></div>

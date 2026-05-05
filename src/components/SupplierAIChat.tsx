@@ -3,6 +3,7 @@ import { Content, LiveServerMessage, Modality, Blob } from '@google/genai';
 import { Supplier } from '../types.ts';
 import { LiveAvatar } from './LiveAvatar.tsx';
 import { useAI } from '../context/AIContext.tsx';
+import { elevenLabsService } from '../services/elevenLabsVoiceService.ts';
 
 // --- ICONS ---
 const MicrophoneIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
@@ -89,6 +90,7 @@ const SupplierAIChat: React.FC<{ supplier: Supplier }> = ({ supplier }) => {
     const nextStartTimeRef = useRef<number>(0);
     const systemInstructionRef = useRef('');
     const ttsCurrentAudioSourceRef = useRef<AudioBufferSourceNode | null>(null);
+    const ttsHtmlAudioRef = useRef<HTMLAudioElement | null>(null);
 
     useEffect(() => {
       let instruction = '';
@@ -287,11 +289,44 @@ Your mission is to clearly articulate EL AL's value proposition for UK travel tr
     const handlePlayTTS = async (text: string, index: number) => {
         if (playingMessageIndex === index) {
             ttsCurrentAudioSourceRef.current?.stop();
+            if (ttsHtmlAudioRef.current) {
+                ttsHtmlAudioRef.current.pause();
+                ttsHtmlAudioRef.current = null;
+            }
             setPlayingMessageIndex(null);
             return;
         }
         if (!ai) return;
         setPlayingMessageIndex(index);
+
+        const correctedText = getPhoneticallyCorrectedText(text);
+
+        // Try ElevenLabs first when supplier opts in and a voice ID is configured
+        const elevenKey = import.meta.env.VITE_ELEVENLABS_API_KEY;
+        if (supplier.useElevenLabs && supplier.elevenLabsAgentId && elevenKey) {
+            try {
+                const audioUrl = await elevenLabsService.generateSpeech(correctedText, supplier.elevenLabsAgentId);
+                const audio = new Audio(audioUrl);
+                ttsHtmlAudioRef.current = audio;
+                audio.onended = () => {
+                    setPlayingMessageIndex(null);
+                    URL.revokeObjectURL(audioUrl);
+                    ttsHtmlAudioRef.current = null;
+                };
+                audio.onerror = () => {
+                    setPlayingMessageIndex(null);
+                    URL.revokeObjectURL(audioUrl);
+                    ttsHtmlAudioRef.current = null;
+                };
+                await audio.play();
+                return;
+            } catch (err) {
+                console.warn('ElevenLabs TTS failed, falling back to Gemini:', err);
+                ttsHtmlAudioRef.current = null;
+                // Fall through to Gemini
+            }
+        }
+
         try {
             if (!outputAudioContextRef.current || outputAudioContextRef.current.state === 'closed') {
                 outputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
@@ -299,8 +334,6 @@ Your mission is to clearly articulate EL AL's value proposition for UK travel tr
             if (outputAudioContextRef.current.state === 'suspended') {
                 await outputAudioContextRef.current.resume();
             }
-            
-            const correctedText = getPhoneticallyCorrectedText(text);
 
             const response = await ai.models.generateContent({
                 model: "gemini-2.5-flash-preview-tts",
