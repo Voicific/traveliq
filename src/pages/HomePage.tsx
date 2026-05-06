@@ -212,11 +212,11 @@ const HomePage: React.FC = () => {
               </span>
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             </button>
-            <Link to="/suppliers" className="group relative bg-white/10 backdrop-blur-md border-2 border-cyan-400/40 text-white font-bold px-10 py-5 rounded-xl hover:bg-cyan-400/20 hover:border-cyan-400 transition-all duration-500 transform hover:scale-105 shadow-[0_0_20px_rgba(0,212,255,0.2)] hover:shadow-[0_0_40px_rgba(0,212,255,0.5)]">
-              <span className="relative z-10">Explore Suppliers</span>
+            <Link to="/pricing" className="group relative bg-white/10 backdrop-blur-md border-2 border-cyan-400/40 text-white font-bold px-10 py-5 rounded-xl hover:bg-cyan-400/20 hover:border-cyan-400 transition-all duration-500 transform hover:scale-105 shadow-[0_0_20px_rgba(0,212,255,0.2)] hover:shadow-[0_0_40px_rgba(0,212,255,0.5)]">
+              <span className="relative z-10">List Your Brand</span>
             </Link>
-            <Link to="/pricing" className="group relative bg-white/5 backdrop-blur-md border border-cyan-400/20 text-white font-bold px-10 py-5 rounded-xl hover:bg-cyan-400/10 hover:border-cyan-400/50 transition-all duration-500 transform hover:scale-105">
-              <span className="relative z-10">For Suppliers</span>
+            <Link to="/suppliers" className="group relative bg-white/5 backdrop-blur-md border border-cyan-400/20 text-white font-bold px-10 py-5 rounded-xl hover:bg-cyan-400/10 hover:border-cyan-400/50 transition-all duration-500 transform hover:scale-105">
+              <span className="relative z-10">Explore Suppliers</span>
             </Link>
           </div>
 
@@ -232,9 +232,10 @@ const HomePage: React.FC = () => {
       {/* Supplier Logos */}
       <section className="py-16 bg-gradient-to-b from-[#0d2d3d]/50 to-[#0a1628]/50 border-y border-cyan-400/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-center text-sm font-semibold text-gray-400 tracking-wider uppercase mb-10">
-                Trusted by leading travel brands across the UK & Europe
+            <h2 className="text-center text-sm font-semibold text-gray-400 tracking-wider uppercase mb-4">
+                Built for travel brands like these
             </h2>
+            <p className="text-center text-xs text-gray-500 mb-10">Supplier profiles are illustrative. Join to get yours listed.</p>
             <SupplierCarousel />
         </div>
       </section>
@@ -285,8 +286,8 @@ const HomePage: React.FC = () => {
           <FeatureCard
             step={1}
             icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-16 h-16"><path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0l-3.75 3.75M12 9.75l3.75 3.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
-            title="Onboard Your Knowledge"
-            description="Your proprietary information is safe. We are GDPR compliant and treat your knowledge base with the strictest confidentiality. Securely provide your data, and our AI will become your brand expert."
+            title="You Control Your AI"
+            description="Paste your own knowledge base — agent FAQs, fares, policies, training materials. You decide exactly what your AI knows and says. Update it anytime, in real-time. No third-party middleman. GDPR compliant."
           />
           <FeatureCard
             step={2}
@@ -300,6 +301,81 @@ const HomePage: React.FC = () => {
             title="Convert & Analyze"
             description="Receive qualified leads and gain valuable insights from agent interactions through our powerful analytics dashboard."
           />
+        </div>
+      </section>
+
+      {/* Lead Capture / Agent Database Callout */}
+      <section className="py-24 sm:py-32 px-4 bg-gradient-to-br from-[#0a1628] via-[#0d2d3d] to-[#0a1628] border-y border-cyan-400/10">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <span className="inline-flex items-center gap-2 bg-cyan-400/10 border border-cyan-400/30 text-cyan-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-6">
+              <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
+              Your Growing Agent Database
+            </span>
+            <h2 className="text-4xl sm:text-5xl font-extrabold font-heading bg-gradient-to-r from-white to-cyan-200 bg-clip-text text-transparent leading-tight">
+              Every Conversation.<br />A Qualified Lead.
+            </h2>
+            <p className="mt-6 text-xl text-gray-300 leading-relaxed">
+              Every travel agent who interacts with your AI Sales Assistant becomes a named lead in your dashboard — name, email, agency, and the exact question they asked.
+            </p>
+            <div className="mt-8 space-y-5">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-10 h-10 bg-cyan-400/10 rounded-lg flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                </div>
+                <div>
+                  <h3 className="text-white font-bold">Named contacts, not anonymous clicks</h3>
+                  <p className="text-gray-400 text-sm mt-1">Real names, emails, and agency details — a living database of agents who've already engaged with your brand.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-10 h-10 bg-cyan-400/10 rounded-lg flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                </div>
+                <div>
+                  <h3 className="text-white font-bold">Instant email notifications</h3>
+                  <p className="text-gray-400 text-sm mt-1">Get alerted the moment an agent interacts — so your sales team can follow up while the conversation is still fresh.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-10 h-10 bg-cyan-400/10 rounded-lg flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                </div>
+                <div>
+                  <h3 className="text-white font-bold">Pre-qualified intent signals</h3>
+                  <p className="text-gray-400 text-sm mt-1">You know exactly what they asked about — so every follow-up is warm, relevant, and already halfway closed.</p>
+                </div>
+              </div>
+            </div>
+            <Link to="/pricing" className="mt-10 inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold px-8 py-4 rounded-xl hover:opacity-90 transition-opacity shadow-[0_0_20px_rgba(0,212,255,0.3)]">
+              See the Full Feature Set
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+            </Link>
+          </div>
+          <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 border border-cyan-400/20 rounded-2xl p-8 shadow-[0_0_40px_rgba(0,212,255,0.1)]">
+            <h3 className="text-lg font-bold text-white mb-6">Your Lead Dashboard</h3>
+            <div className="space-y-3">
+              {[
+                { name: 'Sarah Mitchell', agency: 'Midlands Travel Group', q: 'What are your agent commission rates?' },
+                { name: 'James Okafor', agency: 'Elite Escapes Ltd', q: 'Do you offer group booking support?' },
+                { name: 'Luisa Fernández', agency: 'Viajes Barcelona', q: '¿Tienen tarifas de temporada baja?' },
+                { name: 'Tom Brennan', agency: 'Dublin Travel Experts', q: 'What training resources do you offer?' },
+              ].map((lead, i) => (
+                <div key={i} className="flex items-start gap-4 p-4 bg-white/5 rounded-lg border border-cyan-400/10 hover:border-cyan-400/30 transition-colors">
+                  <div className="flex-shrink-0 w-9 h-9 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                    {lead.name[0]}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-white font-semibold text-sm">{lead.name}</p>
+                    <p className="text-gray-400 text-xs">{lead.agency}</p>
+                    <p className="text-cyan-300 text-xs mt-1 truncate italic">"{lead.q}"</p>
+                  </div>
+                  <span className="flex-shrink-0 ml-auto text-xs bg-cyan-400/10 text-cyan-400 px-2 py-1 rounded-full border border-cyan-400/20">New</span>
+                </div>
+              ))}
+            </div>
+            <p className="mt-4 text-center text-xs text-gray-500">Illustrative example. Your dashboard shows real agent leads.</p>
+          </div>
         </div>
       </section>
 
@@ -346,7 +422,7 @@ const HomePage: React.FC = () => {
                     <tbody className="divide-y divide-cyan-400/10">
                         <tr className="hover:bg-white/5 transition-colors duration-200">
                             <td className="p-5 font-medium text-white">Annual Cost</td>
-                            <td className="p-5 text-gray-400">$150,000+</td>
+                            <td className="p-5 text-gray-400">£100,000+</td>
                             <td className="p-5 font-bold text-cyan-400">Significant Savings</td>
                         </tr>
                         <tr className="hover:bg-white/5 transition-colors duration-200">
@@ -373,10 +449,9 @@ const HomePage: React.FC = () => {
                 </table>
                  <div className="p-8 bg-gradient-to-r from-[#0d2d3d]/80 to-[#0f1c2e]/80 text-center border-t border-cyan-400/20">
                     <h4 className="font-bold text-2xl bg-gradient-to-r from-white to-cyan-200 bg-clip-text text-transparent">Clear ROI, Immediate Impact</h4>
-                    <p className="text-sm text-gray-400 mt-2">Example based on 2 sales reps vs. one Enterprise plan.</p>
                     <div className="mt-6 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 p-6 rounded-xl border border-cyan-400/30 shadow-[0_0_30px_rgba(0,212,255,0.3)]">
-                        <p className="text-6xl font-extrabold font-heading bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(0,212,255,0.5)]">90%+</p>
-                        <p className="font-bold text-xl text-white mt-2">Reduction in Annual Cost</p>
+                        <p className="font-bold text-xl text-white">A fraction of the cost of a dedicated BDM</p>
+                        <p className="text-sm text-gray-400 mt-2">No holiday cover. No sick days. No 9–5 limitations. Your AI works 24/7, 365 days a year.</p>
                     </div>
                 </div>
             </div>
