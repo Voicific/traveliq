@@ -3,12 +3,32 @@ import { useSuppliers } from '../context/SupplierContext.tsx';
 import { Supplier, SupplierType, GEMINI_VOICES } from '../types.ts';
 import { useLeads, Lead } from '../context/LeadContext.tsx';
 import { useAI } from '../context/AIContext.tsx';
+import { supabase } from '../lib/supabase.ts';
 import {
   getAllBlogPostsFromSheet,
   saveBlogPostToSheet,
   deleteBlogPostFromSheet,
 } from '../services/sheetsService.ts';
 import type { ManagedBlogPost } from '../services/sheetsService.ts';
+
+interface AffiliateApplication {
+  id: string;
+  created_at: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string | null;
+  country: string;
+  role: string;
+  company: string | null;
+  linkedin: string | null;
+  experience: string;
+  supplier_types: string[];
+  network_size: string | null;
+  methods: string[];
+  notes: string | null;
+  status: 'pending' | 'approved' | 'rejected';
+}
 
 // ─── Shared helpers ───────────────────────────────────────────────────────────
 
@@ -346,38 +366,121 @@ const BlogPostForm: React.FC<{
 // ─── Apps Script Setup Instructions ──────────────────────────────────────────
 
 const APPS_SCRIPT_CODE = `// ═══════════════════════════════════════════════════════════════
-// STEP 1: Open your Google Apps Script and find doPost(e).
-//         Add these two lines inside the action switch/if block:
-//
-//   case 'saveBlogPost': return respond(saveBlogPost(payload));
-//   case 'deleteBlogPost': return respond(deleteBlogPost(payload));
-//
-// STEP 2: In doGet(e), add:
-//   if (action === 'getBlogPosts') return respond(getBlogPosts());
-//
-// STEP 3: Add these new functions anywhere in the script:
+// TravelIQ — Complete Google Apps Script
+// Paste this entire file into your Apps Script editor, replacing
+// all existing content, then deploy as a Web App (Execute as Me,
+// access: Anyone). Copy the deployment URL into src/config.ts.
 // ═══════════════════════════════════════════════════════════════
+
+function doPost(e) {
+  try {
+    var payload = JSON.parse(e.postData.contents);
+    var action = payload.action;
+    if (action === 'addLead') return respond(addLead(payload));
+    if (action === 'saveBlogPost') return respond(saveBlogPost(payload));
+    if (action === 'deleteBlogPost') return respond(deleteBlogPost(payload));
+    if (action === 'addNewsletterSubscriber') return respond(addNewsletterSubscriber(payload));
+    return respond({ success: false, message: 'Unknown action: ' + action });
+  } catch(err) {
+    return respond({ success: false, message: err.toString() });
+  }
+}
+
+function doGet(e) {
+  try {
+    var action = e.parameter.action;
+    if (action === 'getLeads') return respond(getLeads());
+    if (action === 'getBlogPosts') return respond(getBlogPosts());
+    return respond({ success: false, message: 'Unknown action: ' + action });
+  } catch(err) {
+    return respond({ success: false, message: err.toString() });
+  }
+}
+
+function respond(data) {
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ── LEADS ──────────────────────────────────────────────────────
+
+function addLead(payload) {
+  try {
+    var lead = payload.lead;
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName('Leads');
+    if (!sheet) {
+      sheet = ss.insertSheet('Leads');
+      sheet.appendRow(['timestamp','type','firstName','lastName','name','email','agency','plan','message','wantsDemo']);
+    }
+    sheet.appendRow([
+      lead.timestamp || new Date().toISOString(),
+      lead.type || '',
+      lead.firstName || '',
+      lead.lastName || '',
+      lead.name || '',
+      lead.email || '',
+      lead.agency || '',
+      lead.plan || '',
+      lead.message || '',
+      lead.wantsDemo ? 'true' : 'false'
+    ]);
+    sendLeadNotification(lead);
+    return { success: true };
+  } catch(err) { return { success: false, message: err.toString() }; }
+}
+
+function getLeads() {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName('Leads');
+    if (!sheet || sheet.getLastRow() <= 1) return { success: true, data: [] };
+    var data = sheet.getDataRange().getValues();
+    var headers = data[0];
+    var leads = data.slice(1).map(function(row) {
+      var lead = {};
+      headers.forEach(function(h, i) { lead[h] = row[i]; });
+      return lead;
+    });
+    return { success: true, data: leads };
+  } catch(err) { return { success: false, message: err.toString() }; }
+}
 
 function sendLeadNotification(lead) {
   try {
     var name = lead.name || ((lead.firstName || '') + ' ' + (lead.lastName || '')).trim() || 'Unknown';
     GmailApp.sendEmail(
       'hello@beeancy.com',
-      '🔔 New TravelIQ Lead: ' + lead.type,
+      '\\uD83D\\uDD14 New TravelIQ Lead: ' + lead.type,
       'New lead on TravelIQ:\\n\\n' +
-      '• Type: ' + lead.type + '\\n' +
-      '• Name: ' + name + '\\n' +
-      '• Email: ' + lead.email + '\\n' +
-      '• Agency: ' + (lead.agency || 'N/A') + '\\n' +
-      '• Time: ' + new Date(lead.timestamp).toLocaleString('en-GB') + '\\n' +
-      (lead.message ? '\\n• Message: ' + lead.message + '\\n' : '') +
-      '\\nLog in to your admin panel to view all leads.'
+      '\\u2022 Type: ' + lead.type + '\\n' +
+      '\\u2022 Name: ' + name + '\\n' +
+      '\\u2022 Email: ' + lead.email + '\\n' +
+      '\\u2022 Agency: ' + (lead.agency || 'N/A') + '\\n' +
+      '\\u2022 Time: ' + new Date(lead.timestamp).toLocaleString('en-GB') + '\\n' +
+      (lead.message ? '\\n\\u2022 Message: ' + lead.message + '\\n' : '') +
+      '\\nLog in to admin to view all leads: https://traveliq.biz/#/login'
     );
-  } catch(e) { Logger.log('Email failed: ' + e); }
+  } catch(err) { Logger.log('Email failed: ' + err); }
 }
 
-// Call sendLeadNotification(lead) inside your existing addLead handler,
-// right after you append the row to the Leads sheet.
+// ── NEWSLETTER ─────────────────────────────────────────────────
+
+function addNewsletterSubscriber(payload) {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName('Newsletter');
+    if (!sheet) {
+      sheet = ss.insertSheet('Newsletter');
+      sheet.appendRow(['timestamp','email','source']);
+    }
+    sheet.appendRow([new Date().toISOString(), payload.email || '', payload.source || 'website']);
+    return { success: true };
+  } catch(err) { return { success: false, message: err.toString() }; }
+}
+
+// ── BLOG ───────────────────────────────────────────────────────
 
 function getBlogPosts() {
   try {
@@ -397,7 +500,7 @@ function getBlogPosts() {
       return post;
     });
     return { success: true, data: posts };
-  } catch(e) { return { success: false, message: e.toString() }; }
+  } catch(err) { return { success: false, message: err.toString() }; }
 }
 
 function saveBlogPost(payload) {
@@ -416,7 +519,7 @@ function saveBlogPost(payload) {
     if (existingRow > 0) sheet.getRange(existingRow, 1, 1, row.length).setValues([row]);
     else sheet.appendRow(row);
     return { success: true };
-  } catch(e) { return { success: false, message: e.toString() }; }
+  } catch(err) { return { success: false, message: err.toString() }; }
 }
 
 function deleteBlogPost(payload) {
@@ -429,7 +532,7 @@ function deleteBlogPost(payload) {
       if (String(data[i][idCol]) === String(payload.id)) { sheet.deleteRow(i + 1); break; }
     }
     return { success: true };
-  } catch(e) { return { success: false, message: e.toString() }; }
+  } catch(err) { return { success: false, message: err.toString() }; }
 }`;
 
 const SetupInstructions: React.FC<{ onDismiss: () => void }> = ({ onDismiss }) => {
@@ -473,7 +576,7 @@ const SetupInstructions: React.FC<{ onDismiss: () => void }> = ({ onDismiss }) =
 
 // ─── Main Admin Page ───────────────────────────────────────────────────────────
 
-type Tab = 'suppliers' | 'leads' | 'blog';
+type Tab = 'suppliers' | 'leads' | 'blog' | 'affiliates';
 
 const AdminPage: React.FC = () => {
   const { suppliers, addSupplier, updateSupplier, deleteSupplier, resetToSeedData, isLoading: isSuppliersLoading, loadStatus } = useSuppliers();
@@ -494,6 +597,11 @@ const AdminPage: React.FC = () => {
   const [postToDelete, setPostToDelete] = useState<ManagedBlogPost | null>(null);
   const [showSetupInstructions, setShowSetupInstructions] = useState(true);
   const [blogSheetConnected, setBlogSheetConnected] = useState<boolean | null>(null);
+
+  // Affiliate state
+  const [affiliates, setAffiliates] = useState<AffiliateApplication[]>([]);
+  const [affiliateLoading, setAffiliateLoading] = useState(false);
+  const [affiliateLoaded, setAffiliateLoaded] = useState(false);
 
   // Shared notification
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -575,6 +683,40 @@ const AdminPage: React.FC = () => {
     if (ok) { showNotification('success', 'Post deleted.'); await loadBlogPosts(); }
     else { showNotification('error', 'Failed to delete post.'); }
     setPostToDelete(null);
+  };
+
+  // ── Affiliate handlers ──
+  const loadAffiliates = useCallback(async () => {
+    setAffiliateLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('affiliate_applications')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      setAffiliates((data ?? []) as AffiliateApplication[]);
+      setAffiliateLoaded(true);
+    } catch (err: any) {
+      showNotification('error', `Failed to load affiliates: ${err.message}`);
+    } finally {
+      setAffiliateLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === 'affiliates' && !affiliateLoaded) {
+      loadAffiliates();
+    }
+  }, [activeTab, affiliateLoaded, loadAffiliates]);
+
+  const handleAffiliateStatus = async (id: string, status: 'approved' | 'rejected') => {
+    const { error } = await supabase
+      .from('affiliate_applications')
+      .update({ status, reviewed_at: new Date().toISOString() })
+      .eq('id', id);
+    if (error) { showNotification('error', `Failed: ${error.message}`); return; }
+    setAffiliates(prev => prev.map(a => a.id === id ? { ...a, status } : a));
+    showNotification('success', `Application ${status}.`);
   };
 
   // ── CSV export ──
@@ -676,6 +818,9 @@ const AdminPage: React.FC = () => {
             Leads {leads.length > 0 && <span className="ml-1.5 bg-white/20 text-white text-xs font-bold px-2 py-0.5 rounded-full">{leads.length}</span>}
           </button>
           <button className={tabClass('blog')} onClick={() => setActiveTab('blog')}>Blog</button>
+          <button className={tabClass('affiliates')} onClick={() => setActiveTab('affiliates')}>
+            Affiliates {affiliates.filter(a => a.status === 'pending').length > 0 && <span className="ml-1.5 bg-amber-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">{affiliates.filter(a => a.status === 'pending').length}</span>}
+          </button>
         </div>
 
         {/* ── SUPPLIERS TAB ── */}
@@ -867,6 +1012,108 @@ const AdminPage: React.FC = () => {
                 </table>
               </div>
             ) : null}
+          </section>
+        )}
+
+        {/* ── AFFILIATES TAB ── */}
+        {activeTab === 'affiliates' && (
+          <section>
+            <div className="flex flex-wrap justify-between items-center mb-4 gap-3">
+              <h2 className="text-3xl font-bold font-heading text-white">
+                Affiliate Applications
+                {!affiliateLoading && (
+                  <span className="ml-3 text-lg text-gray-400 font-normal">
+                    {affiliates.filter(a => a.status === 'pending').length} pending
+                  </span>
+                )}
+              </h2>
+              <button onClick={() => loadAffiliates()} disabled={affiliateLoading} className="text-sm bg-white/10 hover:bg-white/20 text-white font-medium px-3 py-1.5 rounded-lg disabled:opacity-50 flex items-center gap-1">
+                {affiliateLoading ? <LoadingSpinner className="h-4 w-4" /> : '↻'} Refresh
+              </button>
+            </div>
+
+            {affiliateLoading ? (
+              <div className="flex justify-center py-16"><LoadingSpinner className="h-8 w-8 text-cyan-400" /></div>
+            ) : affiliates.length === 0 ? (
+              <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 border border-cyan-400/10 rounded-lg p-16 text-center text-gray-400">
+                No applications yet. They'll appear here when affiliates submit the form.
+              </div>
+            ) : (
+              <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 border border-cyan-400/10 shadow-lg rounded-lg overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-brand-light/10">
+                    <thead className="bg-[#0a1628]/50">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Date</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Name</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Email</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Country</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Role</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Network</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Status</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-brand-light/10">
+                      {affiliates.map(a => (
+                        <tr key={a.id} className={`hover:bg-white/5 ${a.status === 'pending' ? 'bg-amber-900/5' : ''}`}>
+                          <td className="px-4 py-3 text-gray-400 text-xs whitespace-nowrap">
+                            {new Date(a.created_at).toLocaleDateString('en-GB')}
+                          </td>
+                          <td className="px-4 py-3 text-white font-medium whitespace-nowrap">
+                            {a.first_name} {a.last_name}
+                            {a.company && <p className="text-xs text-gray-400 font-normal">{a.company}</p>}
+                          </td>
+                          <td className="px-4 py-3 text-cyan-400 text-sm">
+                            <a href={`mailto:${a.email}`} className="hover:underline">{a.email}</a>
+                          </td>
+                          <td className="px-4 py-3 text-gray-300 text-sm whitespace-nowrap">{a.country}</td>
+                          <td className="px-4 py-3 text-gray-300 text-sm max-w-xs">
+                            <span className="line-clamp-1" title={a.role}>{a.role}</span>
+                            <span className="text-xs text-gray-500">{a.experience}</span>
+                          </td>
+                          <td className="px-4 py-3 text-gray-300 text-sm whitespace-nowrap">{a.network_size || '—'}</td>
+                          <td className="px-4 py-3 whitespace-nowrap">
+                            <span className={`px-2 py-0.5 inline-flex text-xs font-semibold rounded-full ${
+                              a.status === 'approved' ? 'bg-green-900/50 text-green-300' :
+                              a.status === 'rejected' ? 'bg-red-900/50 text-red-300' :
+                              'bg-amber-900/50 text-amber-300'
+                            }`}>
+                              {a.status}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-sm font-medium whitespace-nowrap">
+                            {a.status === 'pending' ? (
+                              <div className="flex items-center gap-2">
+                                <button
+                                  onClick={() => handleAffiliateStatus(a.id, 'approved')}
+                                  className="bg-green-700 hover:bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-md transition-colors"
+                                >
+                                  Approve
+                                </button>
+                                <button
+                                  onClick={() => handleAffiliateStatus(a.id, 'rejected')}
+                                  className="bg-red-800/70 hover:bg-red-700 text-white text-xs font-bold px-3 py-1 rounded-md transition-colors"
+                                >
+                                  Reject
+                                </button>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => handleAffiliateStatus(a.id, 'pending')}
+                                className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
+                              >
+                                Reset to pending
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </section>
         )}
       </div>

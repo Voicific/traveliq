@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { LogoIcon } from './icons/LogoIcon.tsx';
-import NewsletterForm from './NewsletterForm.tsx';
 import { useUI } from '../context/UIContext.tsx';
 
 const Footer: React.FC = () => {
@@ -62,14 +61,8 @@ const Footer: React.FC = () => {
           </div>
         </div>
         
-        <div id="newsletter-signup" className="mt-12 border-t border-cyan-400/20 pt-8">
-            <h3 className="text-lg font-semibold text-center text-white">Stay Ahead of the Trade</h3>
-            <p className="text-gray-300 text-center mt-2">Get supplier updates and exclusive invites to TravelIQ demos.</p>
-            <NewsletterForm />
-        </div>
-
         <div className="mt-12 border-t border-cyan-400/20 pt-8">
-          <p className="text-base text-gray-300 xl:text-center">&copy; 2025 TravelIQ. All rights reserved.</p>
+          <p className="text-base text-gray-300 xl:text-center">&copy; {new Date().getFullYear()} TravelIQ. All rights reserved.</p>
         </div>
       </div>
     </footer>

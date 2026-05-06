@@ -1,39 +1,223 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useLeads } from '../context/LeadContext.tsx';
+import { supabase } from '../lib/supabase.ts';
+
+interface AffiliateFormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  country: string;
+  role: string;
+  company: string;
+  linkedin: string;
+  experience: string;
+  supplierTypes: string[];
+  networkSize: string;
+  methods: string[];
+  notes: string;
+  termsAccepted: boolean;
+}
+
+const inputClass = "mt-1 w-full px-4 py-3 text-white bg-[#0a1628]/80 border border-cyan-400/20 rounded-lg focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 outline-none transition-all placeholder-gray-500";
+const selectClass = "mt-1 w-full px-4 py-3 text-white bg-[#0a1628]/80 border border-cyan-400/20 rounded-lg focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 outline-none transition-all";
+const labelClass = "block text-sm font-medium text-gray-300";
+
+const TIERS = [
+  {
+    tag: 'Standard',
+    tagColor: 'bg-gray-700/60 text-gray-300',
+    rate: '10%',
+    subtitle: 'From day one',
+    perks: [
+      'Personal tracking link & referral materials',
+      'TravelIQ team handles all demos & contracts',
+      'Recurring commission while supplier is active',
+      'Dedicated affiliate support',
+      'Co-branded pitch materials',
+    ],
+    unlock: 'Available from day one',
+    featured: false,
+  },
+  {
+    tag: 'Growth',
+    tagColor: 'bg-cyan-400/20 text-cyan-300',
+    rate: '15%',
+    subtitle: 'After 3 paying customers',
+    perks: [
+      'Everything in Standard',
+      'Priority support from TravelIQ team',
+      'Personalised co-branded pitch deck',
+      'Featured on TravelIQ website',
+      'Quarterly strategy review call',
+    ],
+    unlock: 'Unlocked after 3 paying suppliers',
+    featured: true,
+  },
+  {
+    tag: 'Strategic Partner',
+    tagColor: 'bg-blue-400/20 text-blue-300',
+    rate: '20%',
+    subtitle: 'At £15,000+ annual revenue',
+    perks: [
+      'Everything in Growth',
+      'Annual TravelIQ Affiliate Summit invitation',
+      'Co-marketing opportunities',
+      'Negotiated custom programme terms',
+      'Named on TravelIQ partner page',
+    ],
+    unlock: 'Unlocked when annual revenue exceeds £15,000',
+    featured: false,
+  },
+];
+
+const PROFILES = [
+  { emoji: '🗺️', bg: 'bg-teal-900/40', title: 'Tour Operators & DMCs', desc: 'Complex products, many agent questions, smaller sales teams. Decision-maker is usually Head of Trade Sales.', tier: 'Tier 1 — Start Here', tierClass: 'bg-teal-900/50 text-teal-300' },
+  { emoji: '🚢', bg: 'bg-teal-900/40', title: 'Cruise Lines', desc: 'High agent dependency, complex cabin pricing. BDMs are overwhelmed with repeat queries from agencies.', tier: 'Tier 1 — Start Here', tierClass: 'bg-teal-900/50 text-teal-300' },
+  { emoji: '✈️', bg: 'bg-amber-900/40', title: 'Airlines', desc: 'Massive agent channel. Commission queries, group pricing, and booking conditions are constant pain points.', tier: 'Tier 2 — With Proof', tierClass: 'bg-amber-900/50 text-amber-300' },
+  { emoji: '🏨', bg: 'bg-amber-900/40', title: 'Hotels & Resorts', desc: 'Independent hotels and boutique groups with agency programmes — ideal for AI to handle rate and availability queries.', tier: 'Tier 2 — With Proof', tierClass: 'bg-amber-900/50 text-amber-300' },
+  { emoji: '🧳', bg: 'bg-blue-900/40', title: 'Travel Insurance Providers', desc: 'Highly complex policy questions that agents struggle to explain to clients. A natural fit for AI-powered answers.', tier: 'Tier 3 — Strong Fit', tierClass: 'bg-blue-900/50 text-blue-300' },
+  { emoji: '🏕️', bg: 'bg-blue-900/40', title: 'Safari & Adventure Operators', desc: 'Premium, detail-heavy products. Agents need deep knowledge fast. These suppliers have loyal agent communities.', tier: 'Tier 3 — Strong Fit', tierClass: 'bg-blue-900/50 text-blue-300' },
+];
+
+const FAQS = [
+  {
+    q: 'Do I need to be a sales professional to be an affiliate?',
+    a: "Not at all. Your value is your trusted relationships in the travel industry. You make the introduction; the TravelIQ team handles every step of the sales process from demo to contract. Many of our best affiliates are consultants, former BDMs, or agency principals who simply recommend TravelIQ to people they already know and trust.",
+  },
+  {
+    q: 'When and how do I get paid?',
+    a: "Commission is paid within 30 days of TravelIQ receiving payment from the supplier you introduced. Payments are made via bank transfer. You'll receive a monthly commission statement showing all pending and paid amounts.",
+  },
+  {
+    q: 'How long is the attribution window?',
+    a: "Once you introduce a supplier — whether by email introduction, your tracking link, or a verbal referral registered with the TravelIQ team — that supplier is attributed to you for the lifetime of their account. There is no expiry on your attribution as long as the supplier remains on the platform.",
+  },
+  {
+    q: 'Is this programme open across the UK and Europe?',
+    a: "Absolutely. TravelIQ is built for the UK and European travel trade market. We particularly welcome affiliates from the UK, Ireland, Germany, France, the Netherlands, Scandinavia, and beyond — anywhere you have strong connections with travel suppliers serving the European market.",
+  },
+  {
+    q: "What if a supplier I introduce doesn't convert straight away?",
+    a: "That's completely normal in B2B sales. As long as you register the introduction with TravelIQ, your attribution is locked in. If that supplier signs any time in the future, your commission applies. There's no deadline — we honour every valid introduction.",
+  },
+  {
+    q: 'Is there a cost to join the affiliate programme?',
+    a: "No. Joining the TravelIQ Affiliate Programme is completely free. There are no upfront fees, no monthly charges, and no minimum targets. We simply pay you a commission when a supplier you introduce becomes a paying TravelIQ customer.",
+  },
+];
+
+const FaqItem: React.FC<{ q: string; a: string }> = ({ q, a }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="border-b border-cyan-400/10 last:border-b-0">
+      <button
+        className="w-full flex items-center justify-between gap-4 py-5 px-6 text-left font-medium text-white hover:text-cyan-400 transition-colors"
+        onClick={() => setOpen(v => !v)}
+      >
+        <span>{q}</span>
+        <span className={`flex-shrink-0 w-6 h-6 rounded-full border border-cyan-400/30 flex items-center justify-center text-cyan-400 text-lg font-light transition-transform ${open ? 'rotate-45 bg-cyan-400/20' : ''}`}>+</span>
+      </button>
+      {open && (
+        <div className="px-6 pb-5 text-gray-300 text-sm leading-relaxed">{a}</div>
+      )}
+    </div>
+  );
+};
 
 const AffiliateProgramPage: React.FC = () => {
-  const { addLead } = useLeads();
-  const [form, setForm] = useState({ name: '', email: '', agency: '', message: '' });
+  const [form, setForm] = useState<AffiliateFormData>({
+    firstName: '', lastName: '', email: '', phone: '', country: '',
+    role: '', company: '', linkedin: '', experience: '',
+    supplierTypes: [], networkSize: '', methods: [], notes: '',
+    termsAccepted: false,
+  });
+  const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Calculator state
+  const [calcFee, setCalcFee] = useState(6000);
+  const [calcSups, setCalcSups] = useState(5);
+
+  const calcRate = calcSups >= 3 ? 0.15 : 0.10;
+  const calcY1 = calcFee * calcSups * calcRate;
+  // Top tier check: if year-1 earnings would exceed £15k threshold, show 20%
+  const effectiveRate = calcY1 >= 15000 ? 0.20 : calcRate;
+  const calcY1Effective = calcFee * calcSups * effectiveRate;
+  const calcRenew = calcFee * calcSups * effectiveRate;
+  const calcTotal3 = calcY1Effective + calcRenew * 2;
+  const calcTierLabel = effectiveRate === 0.20 ? 'Strategic Partner (20%)' : effectiveRate === 0.15 ? 'Growth (15%)' : 'Standard (10%)';
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target;
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      if (name === 'termsAccepted') {
+        setForm(prev => ({ ...prev, termsAccepted: checked }));
+        return;
+      }
+      setForm(prev => {
+        const arr = prev[name as 'supplierTypes' | 'methods'] as string[];
+        return {
+          ...prev,
+          [name]: checked ? [...arr, value] : arr.filter(v => v !== value),
+        };
+      });
+      return;
+    }
+    setForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    addLead({ type: 'Affiliate Inquiry', ...form });
-    setSubmitted(true);
+    setSubmitting(true);
+    setSubmitError(null);
+    try {
+      const { error } = await supabase
+        .from('affiliate_applications')
+        .insert({
+          first_name: form.firstName,
+          last_name: form.lastName,
+          email: form.email,
+          phone: form.phone || null,
+          country: form.country,
+          role: form.role,
+          company: form.company || null,
+          linkedin: form.linkedin || null,
+          experience: form.experience,
+          supplier_types: form.supplierTypes,
+          network_size: form.networkSize || null,
+          methods: form.methods,
+          notes: form.notes || null,
+          status: 'pending',
+        });
+      if (error) throw error;
+      setSubmitted(true);
+    } catch (err: any) {
+      setSubmitError(err.message || 'Something went wrong. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const inputClass = "mt-1 w-full px-4 py-3 text-white bg-[#0a1628]/80 border border-cyan-400/20 rounded-lg focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 outline-none transition-all placeholder-gray-500";
 
   return (
     <div className="bg-gradient-to-br from-[#0a1628] via-[#0f1c2e] to-[#0a1628] text-white">
 
       {/* Hero */}
-      <section className="relative text-center py-24 sm:py-32 px-4 overflow-hidden bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=2069&auto=format&fit=crop')" }}>
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/40 to-transparent" />
+      <section className="relative text-center py-24 sm:py-36 px-4 overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/5 via-transparent to-blue-900/5 pointer-events-none" />
         <div className="relative max-w-4xl mx-auto animate-fade-in">
-          <div className="inline-flex items-center gap-2 bg-cyan-400/10 border border-cyan-400/30 text-cyan-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-6">
-            Earn While You Refer
+          <div className="inline-flex items-center gap-2 bg-cyan-400/10 border border-cyan-400/30 text-cyan-300 text-xs font-semibold px-4 py-1.5 rounded-full mb-6 tracking-widest uppercase">
+            ✦ Affiliate Partner Programme
           </div>
-          <h1 className="text-4xl sm:text-6xl font-extrabold font-heading text-white leading-tight drop-shadow-lg">
-            TravelIQ Affiliate Programme
+          <h1 className="text-4xl sm:text-6xl font-extrabold font-heading text-white leading-tight">
+            Earn by introducing suppliers to{' '}
+            <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">the future of the travel trade</span>
           </h1>
-          <p className="mt-6 max-w-3xl mx-auto text-lg sm:text-xl text-white/90 leading-relaxed">
-            Know a travel supplier who should be on TravelIQ? Refer them, and earn a commission for every successful partnership you introduce.
+          <p className="mt-6 max-w-3xl mx-auto text-lg sm:text-xl text-white/70 leading-relaxed font-light">
+            TravelIQ is the AI supplier network built for UK and European travel suppliers. Join our affiliate programme and earn recurring commission on every supplier you introduce.
           </p>
           <a
             href="#apply"
@@ -41,133 +225,405 @@ const AffiliateProgramPage: React.FC = () => {
           >
             Apply to Join
           </a>
+          <div className="mt-16 flex flex-wrap justify-center gap-8 sm:gap-16">
+            {[
+              { num: '20%', label: 'Max commission' },
+              { num: '£15k', label: 'Revenue to reach top tier' },
+              { num: 'Recurring', label: 'Commission structure' },
+              { num: '30 days', label: 'Payment terms' },
+            ].map(s => (
+              <div key={s.label} className="text-center">
+                <div className="text-3xl sm:text-4xl font-extrabold font-heading text-white">{s.num}</div>
+                <div className="text-xs text-white/50 mt-1 tracking-wide uppercase">{s.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
 
         {/* How it works */}
-        <section className="text-center">
-          <h2 className="text-3xl font-extrabold font-heading text-white">How It Works</h2>
-          <p className="mt-4 text-gray-300 max-w-2xl mx-auto">Three simple steps to start earning.</p>
-          <div className="mt-12 grid md:grid-cols-3 gap-8">
+        <section id="how-it-works" className="py-16">
+          <p className="text-xs font-semibold tracking-widest text-cyan-400 uppercase mb-3">How it works</p>
+          <h2 className="text-3xl font-extrabold font-heading text-white mb-4">Introductions, not sales</h2>
+          <p className="text-gray-300 max-w-2xl mb-12 font-light leading-relaxed">
+            You don't need to be a salesperson. Your value is the warm introduction and trusted recommendation. TravelIQ's team handles demos, proposals and contracts. You make the introduction — we do the rest.
+          </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-cyan-400/10 rounded-xl overflow-hidden">
             {[
-              {
-                step: '01',
-                title: 'Join the Programme',
-                description: "Fill in the application form below. We'll review your details and get you set up with a unique referral link.",
-              },
-              {
-                step: '02',
-                title: 'Refer Suppliers',
-                description: 'Share your referral link or introduce suppliers directly. Think airlines, cruise lines, hotels, tour operators, and DMCs.',
-              },
-              {
-                step: '03',
-                title: 'Earn Commission',
-                description: 'When a referred supplier becomes a paying TravelIQ partner, you earn a commission — for as long as they remain a customer.',
-              },
-            ].map(item => (
-              <div key={item.step} className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 border border-cyan-400/10 rounded-xl p-8 text-left relative overflow-hidden">
-                <span className="absolute top-4 right-6 text-6xl font-extrabold text-cyan-400/10 font-heading select-none">{item.step}</span>
-                <h3 className="text-xl font-bold font-heading text-white mb-3">{item.title}</h3>
-                <p className="text-gray-300 text-sm leading-relaxed">{item.description}</p>
+              { num: '01', title: 'Apply & onboard', desc: "Complete your application below. We'll schedule a short onboarding call and set you up with your personal tracking link and co-branded materials." },
+              { num: '02', title: 'Make introductions', desc: "Introduce TravelIQ to travel suppliers in your network — tour operators, cruise lines, airlines, hotels, DMCs. Share your unique link or introduce us by email." },
+              { num: '03', title: 'We close the deal', desc: "The TravelIQ team takes over — demo, proposal, contract and onboarding. We track every introduction back to you." },
+              { num: '04', title: 'Get paid', desc: "Earn commission on first-year revenue plus recurring commission every year the supplier stays on the platform. Passive income, built on one introduction." },
+            ].map(step => (
+              <div key={step.num} className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 p-7">
+                <div className="text-5xl font-extrabold font-heading text-cyan-400/10 select-none mb-3">{step.num}</div>
+                <h3 className="text-base font-bold text-white mb-2">{step.title}</h3>
+                <p className="text-gray-400 text-sm leading-relaxed">{step.desc}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Who can join */}
-        <section className="mt-24">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl font-extrabold font-heading text-white">Who Can Join?</h2>
-              <p className="mt-4 text-gray-300">Our affiliate programme is open to anyone with connections in the travel industry.</p>
-              <ul className="mt-8 space-y-4">
-                {[
-                  { title: 'Travel Agents & Agencies', desc: 'You know suppliers personally — and they trust your recommendation.' },
-                  { title: 'Travel Industry Consultants', desc: 'Help your clients discover the competitive edge of AI-powered sales support.' },
-                  { title: 'Trade Associations & Networks', desc: 'Bring TravelIQ to your members as an exclusive benefit.' },
-                  { title: 'Content Creators & Influencers', desc: 'If your audience includes travel suppliers, your referrals count.' },
-                  { title: 'Technology & Marketing Partners', desc: 'Resell or recommend TravelIQ as part of your service offering.' },
-                ].map(item => (
-                  <li key={item.title} className="flex items-start gap-4">
-                    <div className="mt-1 flex-shrink-0 w-6 h-6 rounded-full bg-cyan-400/20 border border-cyan-400/40 flex items-center justify-center">
-                      <svg className="h-3 w-3 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+        {/* Commission tiers */}
+        <section className="py-16 border-t border-cyan-400/10">
+          <p className="text-xs font-semibold tracking-widest text-cyan-400 uppercase mb-3">Commission structure</p>
+          <h2 className="text-3xl font-extrabold font-heading text-white mb-4">Three tiers, growing with you</h2>
+          <p className="text-gray-300 max-w-2xl mb-12 font-light leading-relaxed">
+            Start at 10% and grow as you bring more suppliers on board. All tiers earn recurring commission — your earnings compound over time as suppliers renew.
+          </p>
+          <div className="grid sm:grid-cols-3 gap-5">
+            {TIERS.map(tier => (
+              <div key={tier.tag} className={`relative rounded-xl border p-7 flex flex-col transition-transform hover:-translate-y-1 ${tier.featured ? 'border-cyan-400/40 bg-gradient-to-br from-cyan-900/20 to-blue-900/20' : 'border-cyan-400/10 bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80'}`}>
+                {tier.featured && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-cyan-500 text-white text-xs font-bold px-4 py-0.5 rounded-full tracking-wide whitespace-nowrap">MOST POPULAR</div>
+                )}
+                <span className={`inline-block text-xs font-bold px-3 py-1 rounded-full mb-4 w-fit ${tier.tagColor}`}>{tier.tag}</span>
+                <div className="text-5xl font-extrabold font-heading text-white mb-1">{tier.rate}</div>
+                <div className="text-sm text-gray-400 mb-5">{tier.subtitle}</div>
+                <hr className="border-cyan-400/10 mb-5" />
+                <ul className="space-y-3 flex-1">
+                  {tier.perks.map(p => (
+                    <li key={p} className="flex items-start gap-3 text-sm text-gray-300">
+                      <svg className="h-4 w-4 text-cyan-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                       </svg>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-white">{item.title}</p>
-                      <p className="text-gray-400 text-sm mt-0.5">{item.desc}</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+                      {p}
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-5 text-xs text-gray-500 italic">{tier.unlock}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Earnings Calculator */}
+        <section className="py-16 border-t border-cyan-400/10">
+          <div className="bg-gradient-to-br from-[#060e1d] to-[#0d2040] rounded-xl p-8 sm:p-12 grid sm:grid-cols-2 gap-10 items-center border border-cyan-400/10">
+            <div>
+              <h2 className="text-3xl font-extrabold font-heading text-white mb-3">Estimate your earnings</h2>
+              <p className="text-gray-400 font-light leading-relaxed">
+                Adjust the sliders to see what your affiliate income could look like based on the suppliers you introduce.
+              </p>
+              <p className="mt-4 text-xs text-gray-500">All figures in GBP. Estimates based on typical supplier annual fees. Actual amounts depend on agreed plan values.</p>
             </div>
-            <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 border border-cyan-400/10 rounded-xl p-8">
-              <h3 className="text-2xl font-bold font-heading text-white mb-6">What You'll Earn</h3>
-              <div className="space-y-6">
-                <div className="p-4 rounded-lg bg-cyan-400/5 border border-cyan-400/10">
-                  <p className="text-cyan-400 font-bold text-lg">Recurring Commission</p>
-                  <p className="text-gray-300 text-sm mt-1">Earn a percentage of the subscription value for every month your referred supplier remains an active partner.</p>
-                </div>
-                <div className="p-4 rounded-lg bg-cyan-400/5 border border-cyan-400/10">
-                  <p className="text-cyan-400 font-bold text-lg">Tiered Rewards</p>
-                  <p className="text-gray-300 text-sm mt-1">The more suppliers you refer, the higher your commission tier. Our top affiliates unlock exclusive bonuses and benefits.</p>
-                </div>
-                <div className="p-4 rounded-lg bg-cyan-400/5 border border-cyan-400/10">
-                  <p className="text-cyan-400 font-bold text-lg">No Cap on Earnings</p>
-                  <p className="text-gray-300 text-sm mt-1">There's no limit to how many suppliers you can refer or how much you can earn. The programme scales with your network.</p>
+            <div className="space-y-6">
+              <div>
+                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">Supplier annual fee tier</label>
+                <select value={calcFee} onChange={e => setCalcFee(Number(e.target.value))} className={selectClass}>
+                  <option value={2400}>Small tour operator — £2,400/yr</option>
+                  <option value={6000}>Mid-size tour operator — £6,000/yr</option>
+                  <option value={12000}>Large cruise / airline — £12,000/yr</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">
+                  Suppliers introduced per year: <span className="text-white font-bold">{calcSups}</span>
+                </label>
+                <input
+                  type="range" min={1} max={20} value={calcSups}
+                  onChange={e => setCalcSups(Number(e.target.value))}
+                  className="w-full accent-cyan-400"
+                />
+                <div className="flex justify-between text-xs text-gray-500 mt-1"><span>1</span><span>20</span></div>
+              </div>
+              <div className="bg-cyan-400/10 border border-cyan-400/20 rounded-xl p-5">
+                <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">Estimated Year 1 earnings</p>
+                <p className="text-4xl font-extrabold font-heading text-white">£{Math.round(calcY1Effective).toLocaleString()}</p>
+                <div className="mt-3 space-y-1.5 text-sm">
+                  <div className="flex justify-between text-gray-400">
+                    <span>Commission tier applied</span>
+                    <span className="text-cyan-300 font-medium">{calcTierLabel}</span>
+                  </div>
+                  <div className="flex justify-between text-gray-400">
+                    <span>Year 2+ renewals/yr</span>
+                    <span>£{Math.round(calcRenew).toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between text-white font-semibold border-t border-cyan-400/10 pt-2 mt-2">
+                    <span>3-year total</span>
+                    <span>£{Math.round(calcTotal3).toLocaleString()}</span>
+                  </div>
                 </div>
               </div>
-              <p className="mt-6 text-xs text-gray-500">Specific commission rates and tier details are shared upon successful application. Terms and conditions apply.</p>
             </div>
           </div>
         </section>
 
+        {/* Who to target */}
+        <section className="py-16 border-t border-cyan-400/10">
+          <p className="text-xs font-semibold tracking-widest text-cyan-400 uppercase mb-3">Ideal prospects</p>
+          <h2 className="text-3xl font-extrabold font-heading text-white mb-4">Who should you be introducing?</h2>
+          <p className="text-gray-300 max-w-2xl mb-12 font-light leading-relaxed">
+            TravelIQ is built for any supplier with a travel agent distribution channel. These are the highest-value prospects to target first in the UK and European market.
+          </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {PROFILES.map(p => (
+              <div key={p.title} className="flex gap-4 p-5 rounded-xl border border-cyan-400/10 bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 hover:border-cyan-400/30 transition-colors">
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0 ${p.bg}`}>{p.emoji}</div>
+                <div>
+                  <p className="font-semibold text-white text-sm mb-1">{p.title}</p>
+                  <p className="text-gray-400 text-xs leading-relaxed mb-2">{p.desc}</p>
+                  <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${p.tierClass}`}>{p.tier}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* Application form */}
-        <section id="apply" className="mt-24 max-w-2xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-extrabold font-heading text-white">Apply to Join</h2>
-            <p className="mt-4 text-gray-300">Fill in your details and we'll be in touch within 2 business days.</p>
+        <section id="apply" className="py-16 border-t border-cyan-400/10">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-cyan-400/10 border border-cyan-400/20 text-3xl mb-5">🤝</div>
+            <h2 className="text-3xl font-extrabold font-heading text-white">Apply to become an affiliate</h2>
+            <p className="mt-3 text-gray-300 max-w-lg mx-auto font-light">
+              Tell us about yourself and your network. We'll review your application and be in touch within 2 business days.
+            </p>
           </div>
 
           {submitted ? (
-            <div className="bg-cyan-400/10 border border-cyan-400/30 rounded-xl p-10 text-center animate-fade-in">
-              <svg className="h-12 w-12 text-cyan-400 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <h3 className="mt-4 text-xl font-bold text-white">Application Received!</h3>
-              <p className="mt-2 text-gray-300">Thank you, {form.name}. We'll review your application and get back to you at {form.email} shortly.</p>
-              <Link to="/" className="mt-6 inline-block text-cyan-400 hover:text-white transition-colors font-semibold">← Back to Home</Link>
+            <div className="max-w-2xl mx-auto bg-cyan-400/10 border border-cyan-400/30 rounded-xl p-12 text-center animate-fade-in">
+              <div className="w-20 h-20 rounded-full bg-cyan-400/20 flex items-center justify-center mx-auto text-4xl mb-6">✓</div>
+              <h3 className="text-2xl font-bold font-heading text-white">Application Received!</h3>
+              <p className="mt-3 text-gray-300 max-w-md mx-auto">
+                Thank you, {form.firstName}. We'll review your application and reach out to {form.email} within 2 business days to schedule your onboarding call.
+              </p>
+              <Link to="/" className="mt-8 inline-block text-cyan-400 hover:text-white transition-colors font-semibold">← Back to Home</Link>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 border border-cyan-400/10 rounded-xl p-8 space-y-5">
-              <div className="grid sm:grid-cols-2 gap-5">
-                <div>
-                  <label className="text-sm font-medium text-gray-300">Full Name</label>
-                  <input name="name" value={form.name} onChange={handleChange} required placeholder="Jane Smith" className={inputClass} />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-300">Email Address</label>
-                  <input name="email" type="email" value={form.email} onChange={handleChange} required placeholder="jane@yourcompany.com" className={inputClass} />
-                </div>
-              </div>
+            <form onSubmit={handleSubmit} className="max-w-2xl mx-auto bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 border border-cyan-400/10 rounded-xl p-8 space-y-8">
+
+              {submitError && (
+                <div className="p-4 bg-red-900/30 border border-red-500/30 rounded-lg text-red-300 text-sm">{submitError}</div>
+              )}
+
+              {/* Your details */}
               <div>
-                <label className="text-sm font-medium text-gray-300">Company / Agency Name</label>
-                <input name="agency" value={form.agency} onChange={handleChange} required placeholder="Your agency or company" className={inputClass} />
+                <p className="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-5">Your details</p>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelClass}>First name <span className="text-cyan-400">*</span></label>
+                    <input name="firstName" value={form.firstName} onChange={handleChange} required placeholder="Jane" className={inputClass} />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Last name <span className="text-cyan-400">*</span></label>
+                    <input name="lastName" value={form.lastName} onChange={handleChange} required placeholder="Smith" className={inputClass} />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className={labelClass}>Email address <span className="text-cyan-400">*</span></label>
+                    <input name="email" type="email" value={form.email} onChange={handleChange} required placeholder="jane@yourcompany.com" className={inputClass} />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Phone number</label>
+                    <input name="phone" type="tel" value={form.phone} onChange={handleChange} placeholder="+44 7700 000000" className={inputClass} />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Country <span className="text-cyan-400">*</span></label>
+                    <select name="country" value={form.country} onChange={handleChange} required className={selectClass}>
+                      <option value="">Select country</option>
+                      <option>United Kingdom</option>
+                      <option>Ireland</option>
+                      <option>Germany</option>
+                      <option>France</option>
+                      <option>Netherlands</option>
+                      <option>Belgium</option>
+                      <option>Spain</option>
+                      <option>Italy</option>
+                      <option>Sweden</option>
+                      <option>Norway</option>
+                      <option>Denmark</option>
+                      <option>Switzerland</option>
+                      <option>Austria</option>
+                      <option>Australia</option>
+                      <option>South Africa</option>
+                      <option>Other</option>
+                    </select>
+                  </div>
+                </div>
               </div>
+
+              <hr className="border-cyan-400/10" />
+
+              {/* Your background */}
               <div>
-                <label className="text-sm font-medium text-gray-300">Tell us about your network</label>
-                <textarea name="message" value={form.message} onChange={handleChange} rows={4} placeholder="Describe your connections in the travel industry and how you plan to refer suppliers to TravelIQ..." className={inputClass} />
+                <p className="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-5">Your background</p>
+                <div className="space-y-4">
+                  <div>
+                    <label className={labelClass}>Current role / profession <span className="text-cyan-400">*</span></label>
+                    <select name="role" value={form.role} onChange={handleChange} required className={selectClass}>
+                      <option value="">Select your role</option>
+                      <option>Travel trade consultant</option>
+                      <option>Host agency principal / owner</option>
+                      <option>Former supplier BDM / trade rep</option>
+                      <option>Travel industry coach or educator</option>
+                      <option>Travel trade journalist / media</option>
+                      <option>Travel industry event organiser</option>
+                      <option>Travel technology consultant</option>
+                      <option>Independent travel agent</option>
+                      <option>Other travel industry professional</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className={labelClass}>Company / agency name</label>
+                    <input name="company" value={form.company} onChange={handleChange} placeholder="Your company or agency (if applicable)" className={inputClass} />
+                  </div>
+                  <div>
+                    <label className={labelClass}>LinkedIn profile URL</label>
+                    <input name="linkedin" type="url" value={form.linkedin} onChange={handleChange} placeholder="https://linkedin.com/in/your-name" className={inputClass} />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Years of experience in the travel industry <span className="text-cyan-400">*</span></label>
+                    <select name="experience" value={form.experience} onChange={handleChange} required className={selectClass}>
+                      <option value="">Select range</option>
+                      <option>Less than 2 years</option>
+                      <option>2–5 years</option>
+                      <option>5–10 years</option>
+                      <option>10–20 years</option>
+                      <option>20+ years</option>
+                    </select>
+                  </div>
+                </div>
               </div>
-              <button type="submit" className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-4 rounded-lg hover:opacity-90 transition-opacity text-lg">
-                Submit Application
+
+              <hr className="border-cyan-400/10" />
+
+              {/* Your network */}
+              <div>
+                <p className="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-5">Your network</p>
+                <div className="space-y-6">
+                  <div>
+                    <label className={labelClass}>Which supplier types do you have the strongest connections with? <span className="text-cyan-400">*</span></label>
+                    <div className="mt-3 space-y-2.5">
+                      {[
+                        { value: 'tour-operators', label: 'Tour operators & DMCs' },
+                        { value: 'cruise', label: 'Cruise lines' },
+                        { value: 'airlines', label: 'Airlines' },
+                        { value: 'hotels', label: 'Hotels & resorts' },
+                        { value: 'insurance', label: 'Travel insurance providers' },
+                        { value: 'other', label: 'Other' },
+                      ].map(opt => (
+                        <label key={opt.value} className="flex items-center gap-3 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            name="supplierTypes"
+                            value={opt.value}
+                            checked={form.supplierTypes.includes(opt.value)}
+                            onChange={handleChange}
+                            className="w-4 h-4 accent-cyan-400"
+                          />
+                          <span className="text-sm text-gray-300 group-hover:text-white transition-colors">{opt.label}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className={labelClass}>Roughly how many travel supplier contacts are in your network?</label>
+                    <select name="networkSize" value={form.networkSize} onChange={handleChange} className={selectClass}>
+                      <option value="">Select range</option>
+                      <option>Fewer than 10</option>
+                      <option>10–25</option>
+                      <option>25–50</option>
+                      <option>50–100</option>
+                      <option>100+</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className={labelClass}>How do you plan to introduce TravelIQ to suppliers?</label>
+                    <div className="mt-3 space-y-2.5">
+                      {[
+                        { value: 'personal', label: 'Personal introductions from my existing network' },
+                        { value: 'linkedin', label: 'LinkedIn outreach' },
+                        { value: 'events', label: 'Trade events and conferences' },
+                        { value: 'content', label: 'Content / social media' },
+                        { value: 'email', label: 'Email marketing to my list' },
+                      ].map(opt => (
+                        <label key={opt.value} className="flex items-center gap-3 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            name="methods"
+                            value={opt.value}
+                            checked={form.methods.includes(opt.value)}
+                            onChange={handleChange}
+                            className="w-4 h-4 accent-cyan-400"
+                          />
+                          <span className="text-sm text-gray-300 group-hover:text-white transition-colors">{opt.label}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className={labelClass}>Anything else you'd like us to know?</label>
+                    <textarea
+                      name="notes"
+                      value={form.notes}
+                      onChange={handleChange}
+                      rows={4}
+                      placeholder="Tell us about your network, any specific suppliers you have in mind, or questions about the programme…"
+                      className={inputClass}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <hr className="border-cyan-400/10" />
+
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="termsAccepted"
+                  checked={form.termsAccepted}
+                  onChange={handleChange}
+                  required
+                  className="w-4 h-4 accent-cyan-400 mt-0.5 flex-shrink-0"
+                />
+                <span className="text-sm text-gray-300">
+                  I confirm I am a travel industry professional and agree to the{' '}
+                  <Link to="/privacy" className="text-cyan-400 hover:underline">TravelIQ Affiliate Programme Terms</Link> and{' '}
+                  <Link to="/privacy" className="text-cyan-400 hover:underline">Privacy Policy</Link>. <span className="text-cyan-400">*</span>
+                </span>
+              </label>
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-4 rounded-lg hover:opacity-90 transition-opacity text-lg disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {submitting ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    Submitting…
+                  </>
+                ) : (
+                  <>
+                    Submit my application
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </>
+                )}
               </button>
-              <p className="text-xs text-gray-500 text-center">By submitting this form you agree to our <Link to="/privacy" className="text-cyan-400 hover:underline">Privacy Policy</Link>.</p>
+              <p className="text-xs text-gray-500 text-center">
+                We'll review your application within 2 business days and reach out to schedule your onboarding call.
+              </p>
             </form>
           )}
+        </section>
+
+        {/* FAQ */}
+        <section className="py-16 border-t border-cyan-400/10">
+          <div className="max-w-2xl mx-auto">
+            <p className="text-xs font-semibold tracking-widest text-cyan-400 uppercase mb-3 text-center">FAQ</p>
+            <h2 className="text-3xl font-extrabold font-heading text-white mb-10 text-center">Common questions</h2>
+            <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 border border-cyan-400/10 rounded-xl overflow-hidden">
+              {FAQS.map(faq => (
+                <FaqItem key={faq.q} q={faq.q} a={faq.a} />
+              ))}
+            </div>
+          </div>
         </section>
 
       </div>
