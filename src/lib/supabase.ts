@@ -1,20 +1,20 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const SUPABASE_URL = 'https://ypciahmwkiivenlvcoev.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlwY2lhaG13a2lpdmVubHZjb2V2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMTE2MjMsImV4cCI6MjA5MzU4NzYyM30.Rzv-58bmvgyq7I7O99cPgtR0Ewb6rHKybG7J68o5V2Y';
 
-export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || SUPABASE_ANON_KEY;
+
+export const isSupabaseConfigured = true;
 
 let _client: SupabaseClient | null = null;
 
 export const supabase: SupabaseClient = (() => {
   if (!_client) {
-    if (!isSupabaseConfigured) {
-      console.warn('Supabase env vars missing. Auth and supplier portal features disabled.');
-    }
     _client = createClient(
-      supabaseUrl || 'https://placeholder.supabase.co',
-      supabaseAnonKey || 'placeholder-key',
+      supabaseUrl,
+      supabaseAnonKey,
       {
         auth: {
           persistSession: true,
