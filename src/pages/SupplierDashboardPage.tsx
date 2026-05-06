@@ -2,12 +2,13 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase.ts';
 import { useSupabaseAuth } from '../context/SupabaseAuthContext.tsx';
+import { SupplierType } from '../types.ts';
 
 interface SupplierRow {
   id: string;
   owner_id: string | null;
   name: string;
-  type: 'airline' | 'hotel' | 'cruise';
+  type: string;
   logo_url: string | null;
   banner_url: string | null;
   video_url: string | null;
@@ -81,7 +82,7 @@ const SupplierDashboardPage: React.FC = () => {
       .insert({
         owner_id: user.id,
         name: profile?.company_name || 'My Travel Brand',
-        type: 'hotel',
+        type: SupplierType.Airline,
         is_published: false,
       })
       .select()
@@ -200,10 +201,10 @@ const SupplierDashboardPage: React.FC = () => {
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div><label className={labelClass}>Brand name</label><input value={supplier.name} onChange={e => setSupplier({ ...supplier, name: e.target.value })} required className={inputClass} /></div>
                   <div><label className={labelClass}>Type</label>
-                    <select value={supplier.type} onChange={e => setSupplier({ ...supplier, type: e.target.value as SupplierRow['type'] })} className={inputClass}>
-                      <option value="airline">Airline</option>
-                      <option value="hotel">Hotel</option>
-                      <option value="cruise">Cruise</option>
+                    <select value={supplier.type} onChange={e => setSupplier({ ...supplier, type: e.target.value })} className={inputClass}>
+                      {Object.values(SupplierType).map(t => (
+                        <option key={t} value={t}>{t}</option>
+                      ))}
                     </select>
                   </div>
                 </div>

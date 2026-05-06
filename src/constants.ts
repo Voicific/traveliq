@@ -92,7 +92,7 @@ export const SEED_SUPPLIERS: Supplier[] = [
   {
     id: 'ritz-carlton-hotels',
     name: 'Ritz Carlton Hotels',
-    type: SupplierType.Hotel,
+    type: SupplierType.HotelResort,
     logoUrl: '/images/ritz-carlton-logo.png',
     bannerUrl: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=2070&auto=format&fit=crop',
     shortDescription: 'Luxury redefined, delivering legendary service and unforgettable stays in the world\'s most iconic destinations.',
@@ -106,7 +106,7 @@ export const SEED_SUPPLIERS: Supplier[] = [
   {
     id: 'leonardo-hotels',
     name: 'Leonardo Hotels',
-    type: SupplierType.Hotel,
+    type: SupplierType.HotelResort,
     logoUrl: '/images/leonardo-hotels-logo.png',
     bannerUrl: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=2071&auto=format&fit=crop',
     shortDescription: 'Modern European hotel chain, blending comfort and design across city and resort locations.',
@@ -120,7 +120,7 @@ export const SEED_SUPPLIERS: Supplier[] = [
   {
     id: 'four-seasons',
     name: 'Four Seasons',
-    type: SupplierType.Hotel,
+    type: SupplierType.HotelResort,
     logoUrl: '/images/four-seasons-logo.jpg',
     bannerUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop',
     shortDescription: 'World-renowned luxury hospitality, offering exceptional service and experiences in premier global destinations.',
@@ -134,7 +134,7 @@ export const SEED_SUPPLIERS: Supplier[] = [
   {
     id: 'royal-caribbean',
     name: 'Royal Caribbean',
-    type: SupplierType.Cruise,
+    type: SupplierType.CruiseLine,
     logoUrl: '/images/royal-caribbean-logo.png',
     bannerUrl: 'https://images.unsplash.com/photo-1563404227-993c8cf14227?q=80&w=2070&auto=format&fit=crop',
     shortDescription: 'Innovative ships, global destinations, and unforgettable adventures for travelers of all ages on the high seas.',
@@ -148,7 +148,7 @@ export const SEED_SUPPLIERS: Supplier[] = [
   {
     id: 'prima-hotels',
     name: 'Prima Hotels',
-    type: SupplierType.Hotel,
+    type: SupplierType.HotelResort,
     logoUrl: '/images/prima-hotels-logo.jpeg',
     bannerUrl: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=2070&auto=format&fit=crop',
     shortDescription: 'Leading Israeli hotel chain offering premium accommodations and exceptional service in prime locations across Israel.',
