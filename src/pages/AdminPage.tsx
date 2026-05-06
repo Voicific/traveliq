@@ -37,7 +37,7 @@ const labelClass = 'block text-sm font-medium text-brand-gray';
 
 const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<void>; onCancel: () => void }> = ({ supplier, onSave, onCancel }) => {
   const { ai, error: aiError } = useAI();
-  const [formData, setFormData] = useState({ name: '', type: SupplierType.Airline, logoUrl: '', bannerUrl: '', videoUrl: '', shortDescription: '', longDescription: '', avatarImageUrl: '', websiteUrl: '', knowledgeBaseUrl: '', knowledgeBaseText: '', hedra_avatar_id: '', geminiVoiceName: 'Zephyr', useElevenLabs: false, elevenLabsAgentId: '' });
+  const [formData, setFormData] = useState({ name: '', type: SupplierType.Airline, logoUrl: '', bannerUrl: '', videoUrl: '', shortDescription: '', longDescription: '', avatarImageUrl: '', websiteUrl: '', knowledgeBaseUrl: '', knowledgeBaseText: '', hedra_avatar_id: '', geminiVoiceName: 'Zephyr', useElevenLabs: false, elevenLabsAgentId: '', isDemo: true });
   const [isSaving, setIsSaving] = useState(false);
   const [isGeneratingShort, setIsGeneratingShort] = useState(false);
   const [isGeneratingLong, setIsGeneratingLong] = useState(false);
@@ -47,9 +47,9 @@ const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<
 
   useEffect(() => {
     if (supplier) {
-      setFormData({ name: supplier.name || '', type: supplier.type || SupplierType.Airline, logoUrl: supplier.logoUrl || '', bannerUrl: supplier.bannerUrl || '', videoUrl: supplier.videoUrl || '', shortDescription: supplier.shortDescription || '', longDescription: supplier.longDescription || '', avatarImageUrl: supplier.avatarImageUrl || '', websiteUrl: supplier.websiteUrl || '', knowledgeBaseUrl: supplier.knowledgeBaseUrl || '', knowledgeBaseText: supplier.knowledgeBaseText || '', hedra_avatar_id: supplier.hedra_avatar_id || '', geminiVoiceName: supplier.geminiVoiceName || 'Zephyr', useElevenLabs: !!supplier.useElevenLabs, elevenLabsAgentId: supplier.elevenLabsAgentId || '' });
+      setFormData({ name: supplier.name || '', type: supplier.type || SupplierType.Airline, logoUrl: supplier.logoUrl || '', bannerUrl: supplier.bannerUrl || '', videoUrl: supplier.videoUrl || '', shortDescription: supplier.shortDescription || '', longDescription: supplier.longDescription || '', avatarImageUrl: supplier.avatarImageUrl || '', websiteUrl: supplier.websiteUrl || '', knowledgeBaseUrl: supplier.knowledgeBaseUrl || '', knowledgeBaseText: supplier.knowledgeBaseText || '', hedra_avatar_id: supplier.hedra_avatar_id || '', geminiVoiceName: supplier.geminiVoiceName || 'Zephyr', useElevenLabs: !!supplier.useElevenLabs, elevenLabsAgentId: supplier.elevenLabsAgentId || '', isDemo: supplier.isDemo ?? true });
     } else {
-      setFormData({ name: '', type: SupplierType.Airline, logoUrl: '', bannerUrl: '', videoUrl: '', shortDescription: '', longDescription: '', avatarImageUrl: '', websiteUrl: '', knowledgeBaseUrl: '', knowledgeBaseText: '', hedra_avatar_id: '', geminiVoiceName: 'Zephyr', useElevenLabs: false, elevenLabsAgentId: '' });
+      setFormData({ name: '', type: SupplierType.Airline, logoUrl: '', bannerUrl: '', videoUrl: '', shortDescription: '', longDescription: '', avatarImageUrl: '', websiteUrl: '', knowledgeBaseUrl: '', knowledgeBaseText: '', hedra_avatar_id: '', geminiVoiceName: 'Zephyr', useElevenLabs: false, elevenLabsAgentId: '', isDemo: true });
     }
     setProcessingFiles([]);
   }, [supplier]);
@@ -153,6 +153,14 @@ const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<
     <form onSubmit={handleSubmit} className="space-y-4 bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 backdrop-blur-lg border border-cyan-400/10 p-6 rounded-lg shadow-md">
       <h2 className="text-xl font-bold font-heading text-white">{supplier ? 'Edit Supplier' : 'Add New Supplier'}</h2>
       {aiError && <p className="text-red-400 text-sm">Warning: AI content generation disabled due to API key error.</p>}
+      {/* Demo status — uncheck once supplier has signed */}
+      <div className="flex items-center justify-between p-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
+        <div className="flex items-center gap-3">
+          <input type="checkbox" id="isDemo" name="isDemo" checked={formData.isDemo} onChange={handleChange} className="w-4 h-4 accent-amber-400" />
+          <label htmlFor="isDemo" className="text-sm font-semibold text-amber-200">Demo profile (shows "Demo" badge on card)</label>
+        </div>
+        <span className="text-xs text-amber-400/70">Uncheck when supplier has signed</span>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div><div className={labelContainerClass}><label className={labelClass}>Name</label><Tooltip text="The official name of the supplier." /></div><input type="text" name="name" value={formData.name} onChange={handleChange} required className={inputClass} /></div>
         <div><div className={labelContainerClass}><label className={labelClass}>Type</label><Tooltip text="Category of the supplier." /></div><select name="type" value={formData.type} onChange={handleChange} className={inputClass}>{Object.values(SupplierType).map(t => <option key={t} value={t}>{t}</option>)}</select></div>

@@ -137,12 +137,13 @@ const FAQItem: React.FC<{ question: React.ReactNode; children: React.ReactNode }
 
 const StatsBar: React.FC = () => (
   <section className="py-12 bg-gradient-to-r from-[#0a1628] via-[#0d2d3d] to-[#0a1628] border-y border-cyan-400/10">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-5 gap-8 text-center">
       {[
         { stat: '24/7', label: 'Always-On AI Support' },
         { stat: '10+', label: 'Languages Supported' },
         { stat: 'UK & EU', label: 'Coverage Across Europe' },
         { stat: 'Free', label: 'For Travel Agents' },
+        { stat: '2 Ways', label: 'Self-Serve or Managed' },
       ].map(item => (
         <div key={item.label} className="group">
           <p className="text-4xl sm:text-5xl font-extrabold font-heading bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(0,212,255,0.4)] group-hover:scale-105 transition-transform duration-300">{item.stat}</p>
@@ -287,19 +288,19 @@ const HomePage: React.FC = () => {
             step={1}
             icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-16 h-16"><path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0l-3.75 3.75M12 9.75l3.75 3.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
             title="You Control Your AI"
-            description="Paste your own knowledge base — agent FAQs, fares, policies, training materials. You decide exactly what your AI knows and says. Update it anytime, in real-time. No third-party middleman. GDPR compliant."
+            description="Provide your product presentations, fact sheets, website copy, policies, and agent FAQs. You decide exactly what your AI knows and says — and update it anytime in real time. GDPR compliant. No middleman."
           />
           <FeatureCard
             step={2}
             icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-16 h-16"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 3v1.5M4.5 8.25H19.5M18.75 8.25V21m-16.5 0V8.25m16.5 0c0-1.657-1.343-3-3-3H9c-1.657 0-3 1.343-3 3m15 0a3 3 0 01-3 3H9a3 3 0 01-3-3m15 0a3 3 0 01-3 3H9a3 3 0 01-3-3" /></svg>}
             title="Engage Agents 24/7"
-            description="Your AI Sales Support instantly answers agent queries, provides training, and promotes your latest offers, day and night."
+            description="Your AI Sales Assistant handles queries, explains your products, and promotes your latest offers — in the agent's language, day and night, with no hold times and no out-of-office replies."
           />
           <FeatureCard
             step={3}
             icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-16 h-16"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-4.68c.34-1.017.64-2.09.87-3.186a11.03 11.03 0 00.13-1.014c0-1.113-.285-2.16-.786-3.07m-3.672 8.422A3.723 3.723 0 017.5 15.75c0-1.52.923-2.834 2.226-3.411a3.723 3.723 0 014.288 0c1.303.577 2.226 1.891 2.226 3.411a3.723 3.723 0 01-1.258 2.654l-3.022.043z" /></svg>}
-            title="Convert & Analyze"
-            description="Receive qualified leads and gain valuable insights from agent interactions through our powerful analytics dashboard."
+            title="Convert & Analyse"
+            description="Every agent interaction is logged. On Standard and above, each agent becomes a named lead in your dashboard — name, email, agency, and what they asked — so your team can follow up with warm, qualified intent."
           />
         </div>
       </section>
@@ -316,7 +317,7 @@ const HomePage: React.FC = () => {
               Every Conversation.<br />A Qualified Lead.
             </h2>
             <p className="mt-6 text-xl text-gray-300 leading-relaxed">
-              Every travel agent who interacts with your AI Sales Assistant becomes a named lead in your dashboard — name, email, agency, and the exact question they asked.
+              Every travel agent who interacts with your AI Sales Assistant becomes a named lead in your dashboard — name, email, agency, and the exact question they asked. <span className="text-cyan-300 font-semibold">Available on Standard and above.</span>
             </p>
             <div className="mt-8 space-y-5">
               <div className="flex items-start gap-4">
@@ -436,9 +437,9 @@ const HomePage: React.FC = () => {
                             <td className="p-5 font-bold text-white">Global & Unlimited</td>
                         </tr>
                         <tr className="hover:bg-white/5 transition-colors duration-200">
-                            <td className="p-5 font-medium text-white">Lead Quality</td>
-                            <td className="p-5 text-gray-400">Variable</td>
-                            <td className="p-5 font-bold text-white">Qualified & Tracked</td>
+                            <td className="p-5 font-medium text-white">Named Agent Leads</td>
+                            <td className="p-5 text-gray-400">Manual & inconsistent</td>
+                            <td className="p-5 font-bold text-white">Standard+ <span className="text-cyan-400 text-sm font-normal">— name, email, agency</span></td>
                         </tr>
                          <tr className="hover:bg-white/5 transition-colors duration-200">
                             <td className="p-5 font-medium text-white">Info Consistency</td>
@@ -485,7 +486,7 @@ const HomePage: React.FC = () => {
               <p>Yes — anytime. Log in to your supplier dashboard, edit the knowledge base, and save. Updates are live immediately, so when promotions, schedules, or policies change, your AI reflects them in real-time without any back-and-forth with us.</p>
             </FAQItem>
             <FAQItem question="What kind of analytics and lead data do we get?">
-              <p>Every agent who engages with your AI Sales Assistant is captured as a lead and shown in your dashboard — name, email, agency, and message. You also get email notifications. You can see exactly who's interacting with your brand and follow up directly. More advanced analytics (trending questions, knowledge gaps, engagement patterns) ship on the Standard and Enterprise plans.</p>
+              <p>On the <strong className="text-white">Starter</strong> plan, you receive interaction counts — how many agents engaged with your profile. On <strong className="text-white">Standard and above</strong>, every agent becomes a named lead in your dashboard: name, email, agency, and the exact question they asked, plus email notifications so your team can follow up immediately. <strong className="text-white">Enterprise</strong> adds advanced analytics — trending queries, knowledge gaps, and engagement patterns — so you can continuously optimise your AI's performance.</p>
             </FAQItem>
 
             <h4 className="text-2xl font-bold font-heading text-cyan-300 mt-12 mb-4 drop-shadow-[0_0_10px_rgba(0,212,255,0.3)]">Common Supplier Objections & Our Responses</h4>

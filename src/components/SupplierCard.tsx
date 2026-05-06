@@ -9,7 +9,13 @@ interface SupplierCardProps {
 
 const SupplierCard: React.FC<SupplierCardProps> = ({ supplier }) => {
   return (
-    <div className="bg-[#0a1628]/50 backdrop-blur-lg border border-cyan-400/10 rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-all duration-300 group hover:shadow-2xl hover:shadow-brand-cyan/10">
+    <div className="relative bg-[#0a1628]/50 backdrop-blur-lg border border-cyan-400/10 rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-all duration-300 group hover:shadow-2xl hover:shadow-brand-cyan/10">
+      {/* Demo badge — visible until admin marks supplier as live (isDemo: false) */}
+      {supplier.isDemo !== false && (
+        <span className="absolute top-3 right-3 z-10 bg-amber-500/20 text-amber-300 text-xs font-semibold px-2 py-0.5 rounded-full border border-amber-500/30 tracking-wide">
+          Demo
+        </span>
+      )}
       {/* The main flex container that organizes the card's content vertically */}
       <div className="p-6 flex flex-col h-full border-t-2 border-transparent group-hover:border-brand-cyan transition-all duration-300">
         

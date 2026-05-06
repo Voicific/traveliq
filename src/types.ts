@@ -24,6 +24,9 @@ export interface Supplier {
   useElevenLabs?: boolean;
   // Legacy property for backward compatibility
   hedra_avatar_id?: string;
+  // When true (default for new profiles), shows "Demo" badge on card.
+  // Admin unchecks this when a real supplier signs.
+  isDemo?: boolean;
 }
 
 export interface Message {

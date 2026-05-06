@@ -45,7 +45,7 @@ const PricingPage: React.FC = () => {
             Partnerships
           </h1>
           <p className="mt-6 max-w-3xl mx-auto text-lg sm:text-xl text-white/90 leading-relaxed drop-shadow-md">
-            Deploy a dedicated AI Sales Assistant that engages travel agents across the UK and Europe — 24/7, in any language.
+            Deploy a dedicated AI Sales Assistant that engages travel agents across the UK and Europe — 24/7, in any language. Fully managed by us, or self-serve through your own dashboard. You choose.
           </p>
         </div>
       </section>
@@ -74,16 +74,20 @@ const PricingPage: React.FC = () => {
           <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl font-extrabold font-heading text-white">Your Digital Brand Ambassador, 24/7</h2>
             <p className="mt-4 text-lg text-gray-300">
-              Joining TravelIQ isn't just about listing your brand — it's about deploying a highly intelligent, perfectly on-brand AI Sales Assistant dedicated to engaging the travel trade on your behalf, in any language, anytime, anywhere.
+              TravelIQ isn't just a directory listing — it's a dedicated AI Sales Assistant that engages the travel trade on your behalf, in any language, anytime. And you stay in full control of everything it knows and says.
             </p>
-            <div className="mt-6 grid md:grid-cols-2 gap-6 text-left">
+            <div className="mt-6 grid md:grid-cols-3 gap-6 text-left">
               <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 p-6 rounded-lg border border-cyan-400/10">
                 <h3 className="text-xl font-bold text-cyan-400">100% Accurate, Guaranteed</h3>
-                <p className="mt-2 text-gray-300 text-sm">Our Voice AI learns exclusively from the knowledge base you provide. Every answer is accurate, verified, and perfectly aligned with your brand's messaging.</p>
+                <p className="mt-2 text-gray-300 text-sm">Your AI learns exclusively from the content you provide. Every answer is accurate, verified, and perfectly on-brand — never improvised.</p>
               </div>
               <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 p-6 rounded-lg border border-cyan-400/10">
                 <h3 className="text-xl font-bold text-cyan-400">Multilingual by Design</h3>
-                <p className="mt-2 text-gray-300 text-sm">Our Voice AI automatically recognises and responds in the language of the travel agent — English, French, Spanish, German, and more. Reach agents across Europe without language barriers.</p>
+                <p className="mt-2 text-gray-300 text-sm">Responds automatically in the agent's language — English, French, Spanish, German, and more. Reach agents across Europe without language barriers.</p>
+              </div>
+              <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 p-6 rounded-lg border border-cyan-400/10">
+                <h3 className="text-xl font-bold text-cyan-400">Flexible by Design</h3>
+                <p className="mt-2 text-gray-300 text-sm">Choose fully managed — we handle setup and onboarding — or take the self-serve route through your own Supplier Portal. Both get you the same powerful AI. The difference is who does the work.</p>
               </div>
             </div>
           </div>
@@ -105,7 +109,7 @@ const PricingPage: React.FC = () => {
                     <ul className="space-y-3 text-gray-300 text-sm">
                       <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-1" /><span><strong className="text-white">AI Sales Support:</strong> 24/7 answers trained on your brand's knowledge.</span></li>
                       <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-1" /><span><strong className="text-white">Multilingual Voice AI:</strong> Responds in the agent's own language automatically.</span></li>
-                      <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-1" /><span><strong className="text-white">Lead Capture:</strong> Every agent interaction is captured and delivered to you.</span></li>
+                      <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-1" /><span><strong className="text-white">Agent Database:</strong> Interaction counts on Starter; named leads (name, email, agency) on Standard+.</span></li>
                       <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-1" /><span><strong className="text-white">Dashboard & Analytics:</strong> Insights into agent queries and engagement patterns.</span></li>
                     </ul>
                   </div>
@@ -144,7 +148,7 @@ const PricingPage: React.FC = () => {
           {/* Starter */}
           <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 backdrop-blur-lg border border-cyan-400/10 rounded-xl p-8 shadow-lg flex flex-col transition-all duration-300 hover:shadow-2xl hover:shadow-brand-cyan/10 hover:-translate-y-1">
             <h3 className="text-2xl font-bold font-heading text-white">Starter</h3>
-            <p className="mt-2 text-gray-400 text-sm">Get listed and let agents discover your brand.</p>
+            <p className="mt-2 text-gray-400 text-sm">List your brand and start conversations with agents.</p>
             <div className="mt-6">
               <a href="mailto:hello@beeancy.com" className="text-3xl font-extrabold text-white hover:text-cyan-400 transition-colors">Contact Us</a>
               <p className="text-sm font-medium text-gray-400 mt-1">for pricing details</p>
@@ -152,7 +156,7 @@ const PricingPage: React.FC = () => {
             <ul className="mt-8 space-y-3 text-gray-300 text-sm flex-grow">
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Directory listing with full profile</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> AI Chat Support (standard)</li>
-              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Lead capture & delivery</li>
+              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Agent interaction count</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Standard voice options</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Email support</li>
             </ul>
@@ -167,13 +171,14 @@ const PricingPage: React.FC = () => {
           {/* Standard */}
           <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 backdrop-blur-lg border border-cyan-400/20 rounded-xl p-8 shadow-lg flex flex-col transition-all duration-300 hover:shadow-2xl hover:shadow-brand-cyan/10 hover:-translate-y-1">
             <h3 className="text-2xl font-bold font-heading text-white">Standard</h3>
-            <p className="mt-2 text-gray-400 text-sm">Ideal for suppliers serious about agent engagement.</p>
+            <p className="mt-2 text-gray-400 text-sm">Build your agent database with named leads and full analytics.</p>
             <div className="mt-6">
               <a href="mailto:hello@beeancy.com" className="text-3xl font-extrabold text-white hover:text-cyan-400 transition-colors">Contact Us</a>
               <p className="text-sm font-medium text-gray-400 mt-1">for pricing details</p>
             </div>
             <ul className="mt-8 space-y-3 text-gray-300 text-sm flex-grow">
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /><span><strong className="text-white">Everything in Starter, plus:</strong></span></li>
+              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /><span><strong className="text-white">Named leads</strong> — name, email, agency, question</span></li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Dashboard & analytics</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Knowledge base management</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Custom voice options</li>
@@ -196,7 +201,7 @@ const PricingPage: React.FC = () => {
               </div>
             </div>
             <h3 className="text-2xl font-bold font-heading text-white">Enterprise</h3>
-            <p className="mt-2 text-gray-400 text-sm">For suppliers wanting a fully branded, custom experience.</p>
+            <p className="mt-2 text-gray-400 text-sm">Your complete AI trade marketing partner, fully branded.</p>
             <div className="mt-6">
               <span className="text-4xl font-extrabold text-white">Custom</span>
             </div>
@@ -227,6 +232,30 @@ const PricingPage: React.FC = () => {
           </p>
         </div>
 
+        {/* Supplier FAQ */}
+        <div className="mt-24">
+          <h2 className="text-3xl font-extrabold font-heading text-white text-center">Supplier Questions</h2>
+          <p className="mt-4 text-gray-300 text-center max-w-xl mx-auto">Everything you need to know before getting started.</p>
+          <div className="mt-10 max-w-3xl mx-auto space-y-0 divide-y divide-cyan-400/10">
+            {[
+              {
+                q: "How do we get set up on TravelIQ?",
+                a: "There are two ways. The most popular for new suppliers is our fully managed onboarding — you send us your content and we handle the build, knowledge base configuration, and profile setup on your behalf. Alternatively, if you prefer to move fast and stay hands-on, our Supplier Portal lets you sign up, paste your knowledge base, and go live yourself. Both paths get you the same AI capability. Just ask us which is right for you."
+              },
+              {
+                q: "What content do we need to provide?",
+                a: "The more you share, the better your AI performs. Most suppliers start with: product presentations or brochures, agent fact sheets, website copy (especially trade/agent pages), booking and cancellation policies, and an agent FAQ document if you have one. You don't need everything on day one — we can start with what you have and add more over time."
+              },
+              {
+                q: "How quickly can we go live?",
+                a: "On the self-serve route, you can have your profile live within hours of signing up. For fully managed onboarding, we typically turn around a complete profile within 3–5 working days of receiving your content. Either way, you'll review and approve everything before it goes live."
+              }
+            ].map(({ q, a }) => (
+              <SupplierFAQItem key={q} question={q} answer={a} />
+            ))}
+          </div>
+        </div>
+
       </div>
 
       {isModalOpen && (
@@ -245,5 +274,18 @@ const CheckIcon: React.FC<{ className?: string }> = ({ className }) => (
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
   </svg>
 );
+
+const SupplierFAQItem: React.FC<{ question: string; answer: string }> = ({ question, answer }) => {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <div className="py-5">
+      <button onClick={() => setOpen(!open)} className="w-full flex justify-between items-center text-left group">
+        <span className="text-lg font-semibold text-white group-hover:text-cyan-300 transition-colors">{question}</span>
+        <span className={`ml-4 flex-shrink-0 transform transition-transform duration-300 ${open ? 'rotate-180 text-cyan-400' : 'text-gray-400'}`}>▼</span>
+      </button>
+      {open && <p className="mt-4 text-gray-300 leading-relaxed">{answer}</p>}
+    </div>
+  );
+};
 
 export default PricingPage;
