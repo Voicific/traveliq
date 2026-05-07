@@ -1,5 +1,4 @@
 
-Your Agency
 import React, { useState } from 'react';
 import { useLeads } from '../context/LeadContext.tsx';
 
