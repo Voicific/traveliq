@@ -1,52 +1,7 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
-import { Supplier } from '../types.ts';
+import { Supplier, SupplierType } from '../types.ts';
 import { SEED_SUPPLIERS } from '../constants.ts';
-import { GOOGLE_SCRIPT_URL as SCRIPT_URL } from '../config.ts';
-
-// --- Google Sheets Integration ---
-
-const saveSuppliersToSheet = async (suppliers: Supplier[]) => {
-  if (!SCRIPT_URL || SCRIPT_URL.includes('1WQQcx1LIFhJ0gcZd7MuswG8BENcfRgmEb3PB0Od-9Au6BftpXejf7xjP')) {
-    throw new Error('Google Sheets URL is not configured.');
-  }
-  try {
-    const response = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      mode: 'cors',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'saveSuppliers', payload: { suppliers } }),
-    });
-     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    const result = await response.json();
-    if (!result.success) {
-      throw new Error(result.message || 'Failed to save suppliers to sheet.');
-    }
-  } catch (error) {
-    console.error('Failed to save suppliers to Google Sheet:', error);
-    throw error;
-  }
-};
-
-const getSuppliersFromSheet = async (): Promise<Supplier[]> => {
-    if (!SCRIPT_URL || SCRIPT_URL.includes('1WQQcx1LIFhJ0gcZd7MuswG8BENcfRgmEb3PB0Od-9Au6BftpXejf7xjP')) {
-        console.warn('Google Sheets integration is not configured. Returning empty array.');
-        return [];
-    }
-    try {
-        const response = await fetch(`${SCRIPT_URL}?action=getSuppliers&t=${new Date().getTime()}`, {
-            method: 'GET',
-            mode: 'cors'
-        });
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const result = await response.json();
-        if (!result.success) throw new Error(result.message || 'Failed to get suppliers from sheet.');
-        return (result.data as Supplier[]) || [];
-    } catch (error) {
-        console.error('Failed to fetch suppliers from Google Sheet:', error);
-        throw error;
-    }
-};
-// --- End Google Sheets Integration ---
+import { supabase } from '../lib/supabase.ts';
 
 type LoadStatus = 'pending' | 'success' | 'error';
 
@@ -61,6 +16,46 @@ interface SupplierContextType {
   resetToSeedData: () => Promise<void>;
 }
 
+const mapRowToSupplier = (row: Record<string, unknown>): Supplier => ({
+  id: row.id as string,
+  name: (row.name as string) || '',
+  type: (row.type as SupplierType) || SupplierType.OtherTravelSupplier,
+  logoUrl: (row.logo_url as string) || '',
+  bannerUrl: (row.banner_url as string) || '',
+  shortDescription: (row.short_description as string) || '',
+  longDescription: (row.long_description as string) || '',
+  avatarImageUrl: (row.avatar_image_url as string) || '',
+  websiteUrl: (row.website_url as string) || '',
+  knowledgeBaseUrl: (row.knowledge_base_url as string) || '',
+  knowledgeBaseText: (row.knowledge_base_text as string) || '',
+  geminiVoiceName: (row.gemini_voice_name as string) || 'Zephyr',
+  videoUrl: (row.video_url as string) || undefined,
+  elevenLabsAgentId: (row.eleven_labs_agent_id as string) || undefined,
+  useElevenLabs: (row.use_eleven_labs as boolean) || false,
+  hedra_avatar_id: (row.hedra_avatar_id as string) || undefined,
+  isDemo: row.is_demo !== false,
+});
+
+const mapSupplierToRow = (s: Omit<Supplier, 'id'>) => ({
+  name: s.name,
+  type: s.type,
+  logo_url: s.logoUrl || null,
+  banner_url: s.bannerUrl || null,
+  short_description: s.shortDescription || null,
+  long_description: s.longDescription || null,
+  avatar_image_url: s.avatarImageUrl || null,
+  website_url: s.websiteUrl || null,
+  knowledge_base_url: s.knowledgeBaseUrl || null,
+  knowledge_base_text: s.knowledgeBaseText || null,
+  gemini_voice_name: s.geminiVoiceName || 'Zephyr',
+  video_url: s.videoUrl || null,
+  eleven_labs_agent_id: s.elevenLabsAgentId || null,
+  use_eleven_labs: s.useElevenLabs || false,
+  hedra_avatar_id: s.hedra_avatar_id || null,
+  is_demo: s.isDemo !== false,
+  is_published: true,
+});
+
 const SupplierContext = createContext<SupplierContextType | undefined>(undefined);
 
 export const SupplierProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -73,18 +68,30 @@ export const SupplierProvider: React.FC<{ children: ReactNode }> = ({ children }
       setIsLoading(true);
       setLoadStatus('pending');
       try {
-        const sheetSuppliers = await getSuppliersFromSheet();
-        
-        if (sheetSuppliers.length === 0) {
-          console.log("Supplier list is empty, safely restoring seed data...");
-          await saveSuppliersToSheet(SEED_SUPPLIERS);
-          setSuppliers(SEED_SUPPLIERS);
+        const { data, error } = await supabase
+          .from('suppliers')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        const loaded = (data || []).map(mapRowToSupplier);
+
+        if (loaded.length === 0) {
+          // Seed the database with demo suppliers on first load
+          const rows = SEED_SUPPLIERS.map(s => ({ ...mapSupplierToRow(s), is_demo: true }));
+          const { data: inserted, error: insertError } = await supabase
+            .from('suppliers')
+            .insert(rows)
+            .select();
+          if (insertError) throw insertError;
+          setSuppliers((inserted || []).map(mapRowToSupplier));
         } else {
-          setSuppliers(sheetSuppliers);
+          setSuppliers(loaded);
         }
         setLoadStatus('success');
-      } catch (error) {
-        console.error("Critical error loading suppliers from Google Sheet:", error);
+      } catch (err) {
+        console.error('Failed to load suppliers from Supabase:', err);
         setLoadStatus('error');
       } finally {
         setIsLoading(false);
@@ -93,49 +100,38 @@ export const SupplierProvider: React.FC<{ children: ReactNode }> = ({ children }
     loadData();
   }, []);
 
-  const checkLoadStatus = () => {
-    if (loadStatus !== 'success') {
-      throw new Error("Cannot save: data is out of sync due to a load error. Please refresh the page.");
-    }
-  };
-
-  const getSupplierById = (id: string) => {
-    return suppliers.find(s => s.id === id);
-  };
+  const getSupplierById = (id: string) => suppliers.find(s => s.id === id);
 
   const addSupplier = async (supplierData: Omit<Supplier, 'id'>) => {
-    checkLoadStatus();
-    const newSupplier: Supplier = {
-      ...supplierData,
-      id: `${supplierData.name.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`
-    };
-    const updatedSuppliers = [...suppliers, newSupplier];
-    await saveSuppliersToSheet(updatedSuppliers); // This might be better as updateSingleSupplier too
-    setSuppliers(updatedSuppliers);
+    const row = mapSupplierToRow(supplierData);
+    const { data, error } = await supabase.from('suppliers').insert(row).select().single();
+    if (error) throw error;
+    setSuppliers(prev => [mapRowToSupplier(data), ...prev]);
   };
 
-  const updateSupplier = async (updatedSupplier: Supplier) => {
-    checkLoadStatus();
-    const updatedSuppliers = suppliers.map(s => s.id === updatedSupplier.id ? updatedSupplier : s);
-    // The backend script expects the entire list, so we use the saveSuppliers action
-    // which is the established pattern in this file for adding/deleting.
-    await saveSuppliersToSheet(updatedSuppliers);
-    setSuppliers(updatedSuppliers);
+  const updateSupplier = async (updated: Supplier) => {
+    const { id, ...rest } = updated;
+    const row = mapSupplierToRow(rest);
+    const { data, error } = await supabase.from('suppliers').update(row).eq('id', id).select().single();
+    if (error) throw error;
+    setSuppliers(prev => prev.map(s => s.id === id ? mapRowToSupplier(data) : s));
   };
 
   const deleteSupplier = async (id: string) => {
-    checkLoadStatus();
-    const updatedSuppliers = suppliers.filter(s => s.id !== id);
-    await saveSuppliersToSheet(updatedSuppliers);
-    setSuppliers(updatedSuppliers);
+    const { error } = await supabase.from('suppliers').delete().eq('id', id);
+    if (error) throw error;
+    setSuppliers(prev => prev.filter(s => s.id !== id));
   };
 
   const resetToSeedData = async () => {
-    checkLoadStatus();
     setIsLoading(true);
     try {
-      await saveSuppliersToSheet(SEED_SUPPLIERS);
-      setSuppliers(SEED_SUPPLIERS);
+      // Delete all existing suppliers then re-insert seed data
+      await supabase.from('suppliers').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      const rows = SEED_SUPPLIERS.map(s => ({ ...mapSupplierToRow(s), is_demo: true }));
+      const { data, error } = await supabase.from('suppliers').insert(rows).select();
+      if (error) throw error;
+      setSuppliers((data || []).map(mapRowToSupplier));
     } finally {
       setIsLoading(false);
     }
@@ -150,8 +146,6 @@ export const SupplierProvider: React.FC<{ children: ReactNode }> = ({ children }
 
 export const useSuppliers = () => {
   const context = useContext(SupplierContext);
-  if (context === undefined) {
-    throw new Error('useSuppliers must be used within a SupplierProvider');
-  }
+  if (context === undefined) throw new Error('useSuppliers must be used within a SupplierProvider');
   return context;
 };

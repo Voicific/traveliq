@@ -595,7 +595,7 @@ const AdminPage: React.FC = () => {
   const [editingBlogPost, setEditingBlogPost] = useState<ManagedBlogPost | undefined>(undefined);
   const [isBlogFormVisible, setIsBlogFormVisible] = useState(false);
   const [postToDelete, setPostToDelete] = useState<ManagedBlogPost | null>(null);
-  const [showSetupInstructions, setShowSetupInstructions] = useState(true);
+  const [showSetupInstructions, setShowSetupInstructions] = useState(false);
   const [blogSheetConnected, setBlogSheetConnected] = useState<boolean | null>(null);
 
   // Affiliate state
