@@ -552,16 +552,16 @@ const HomePage: React.FC = () => {
         </div>
       </section>
       
-       {/* Final CTA */}
+      {/* Final CTA */}
       <section className="bg-gradient-to-br from-[#0a1628] via-[#0d2d3d] to-[#0a1628] py-24 sm:py-32 px-4 border-t border-cyan-400/20">
-        <div className="max-w-5xl mx-auto text-center">
-            <h2 className="text-4xl sm:text-5xl font-extrabold font-heading bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(0,212,255,0.3)]">
-              Ready to Join the Intelligent Travel Network?
-            </h2>
-            <p className="mt-6 text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-                Whether you're an agent seeking instant answers or a supplier looking to engage the trade more effectively, TravelIQ is your solution. Sign up for updates to stay ahead.
-            </p>
-            <NewsletterForm />
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl sm:text-5xl font-extrabold font-heading bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(0,212,255,0.3)]">
+            Get your brand in front of every agent who matters
+          </h2>
+          <p className="mt-6 text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+            TravelIQ puts your AI Sales Assistant in front of UK and European travel agents — answering their questions, capturing their details, and building your agent database. Sign up for updates and early access.
+          </p>
+          <NewsletterForm />
         </div>
       </section>
     </div>

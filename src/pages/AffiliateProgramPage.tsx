@@ -82,6 +82,18 @@ const PROFILES = [
 
 const FAQS = [
   {
+    q: 'Do I need to be based in the UK or Europe to be an affiliate?',
+    a: "Not at all. The programme is open to affiliates worldwide. What matters is that the suppliers you introduce serve — or want to serve — the UK and European travel agent market. If you know a tour operator in Southeast Asia, a cruise line in the US, or a safari lodge in Africa that wants to grow bookings through European agents, that introduction is exactly what we're looking for.",
+  },
+  {
+    q: 'What does TravelIQ actually do for the suppliers I introduce?',
+    a: "TravelIQ gives each supplier a dedicated AI Sales Assistant — a voice and chat agent that UK and European travel agents can interact with 24/7. Agents get instant answers on products, pricing, commissions, and policies in their own language. The supplier receives named leads (agent name, email, agency, question asked) and never misses an enquiry due to out-of-office or time zones.",
+  },
+  {
+    q: 'Why would a travel agent use TravelIQ?',
+    a: "Travel agents often need quick answers about supplier products — fare rules, group rates, commission structures, visa requirements — and getting those answers currently means waiting on hold, sending emails, or hoping a BDM responds. TravelIQ gives agents an instant, knowledgeable resource available any time of day, in multiple languages. Agents love it because it saves them hours every week.",
+  },
+  {
     q: 'Do I need to be a sales professional to be an affiliate?',
     a: "Not at all. Your value is your trusted relationships in the travel industry. You make the introduction; the TravelIQ team handles every step of the sales process from demo to contract. Many of our best affiliates are consultants, former BDMs, or agency principals who simply recommend TravelIQ to people they already know and trust.",
   },
@@ -92,10 +104,6 @@ const FAQS = [
   {
     q: 'How long is the attribution window?',
     a: "Once you introduce a supplier — whether by email introduction, your tracking link, or a verbal referral registered with the TravelIQ team — that supplier is attributed to you for the lifetime of their account. There is no expiry on your attribution as long as the supplier remains on the platform.",
-  },
-  {
-    q: 'Is this programme open across the UK and Europe?',
-    a: "Absolutely. TravelIQ is built for the UK and European travel trade market. We particularly welcome affiliates from the UK, Ireland, Germany, France, the Netherlands, Scandinavia, and beyond — anywhere you have strong connections with travel suppliers serving the European market.",
   },
   {
     q: "What if a supplier I introduce doesn't convert straight away?",
@@ -217,14 +225,14 @@ const AffiliateProgramPage: React.FC = () => {
             <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">the future of the travel trade</span>
           </h1>
           <p className="mt-6 max-w-3xl mx-auto text-lg sm:text-xl text-white/70 leading-relaxed font-light">
-            TravelIQ is the AI supplier network built for UK and European travel suppliers. Join our affiliate programme and earn recurring commission on every supplier you introduce.
+            TravelIQ gives travel suppliers a 24/7 AI Sales Assistant that engages UK and European travel agents. You don't need to be based in the UK — if you know suppliers anywhere in the world who want to reach European agents, your referral earns commission.
           </p>
-          <a
-            href="#apply"
+          <button
+            onClick={() => document.getElementById('apply')?.scrollIntoView({ behavior: 'smooth' })}
             className="mt-10 inline-block bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-4 px-10 rounded-lg hover:opacity-90 transition-opacity text-lg shadow-lg"
           >
             Apply to Join
-          </a>
+          </button>
           <div className="mt-16 flex flex-wrap justify-center gap-8 sm:gap-16">
             {[
               { num: '20%', label: 'Max commission' },
@@ -369,6 +377,48 @@ const AffiliateProgramPage: React.FC = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Global scope + agent context */}
+        <section className="py-16 border-t border-cyan-400/10">
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Open globally */}
+            <div className="bg-gradient-to-br from-cyan-900/20 to-blue-900/20 border border-cyan-400/20 rounded-xl p-8">
+              <div className="text-3xl mb-4">🌍</div>
+              <h3 className="text-xl font-bold font-heading text-white mb-3">Open to affiliates worldwide</h3>
+              <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                You don't need to be based in the UK or Europe to participate. If you have relationships with travel suppliers anywhere — Asia, the Middle East, North America, Africa — and those suppliers want to grow their bookings through UK and European travel agents, your introduction is valuable.
+              </p>
+              <ul className="space-y-2">
+                {['UK & Ireland based affiliates', 'European travel industry professionals', 'Global supplier-side contacts & consultants', 'Former BDMs and trade reps worldwide'].map(item => (
+                  <li key={item} className="flex items-center gap-2 text-sm text-gray-300">
+                    <svg className="h-4 w-4 text-cyan-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            {/* What TravelIQ does for agents */}
+            <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 border border-cyan-400/10 rounded-xl p-8">
+              <div className="text-3xl mb-4">🤖</div>
+              <h3 className="text-xl font-bold font-heading text-white mb-3">What TravelIQ does for travel agents</h3>
+              <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                When you introduce a supplier to TravelIQ, their profile goes live in a directory used by UK and European travel agents. Each supplier gets a dedicated AI Sales Assistant that agents can chat and speak with — getting instant answers on fares, policies, products, and commissions, 24/7, in any language.
+              </p>
+              <div className="space-y-3">
+                {[
+                  { label: 'Instant answers', desc: 'No hold music. No out-of-office replies.' },
+                  { label: '10+ languages', desc: 'Serves agents across the European market.' },
+                  { label: 'Named lead capture', desc: 'Supplier receives agent name, email, agency, and question.' },
+                ].map(item => (
+                  <div key={item.label} className="flex gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-2 flex-shrink-0" />
+                    <p className="text-sm text-gray-300"><span className="text-white font-semibold">{item.label}</span> — {item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
