@@ -77,15 +77,19 @@ export const SupplierProvider: React.FC<{ children: ReactNode }> = ({ children }
 
         const loaded = (data || []).map(mapRowToSupplier);
 
-        if (loaded.length === 0) {
-          // Seed the database with demo suppliers on first load
-          const rows = SEED_SUPPLIERS.map(s => ({ ...mapSupplierToRow(s), is_demo: true }));
+        const loadedNames = new Set(loaded.map(s => s.name));
+        const missingSeedSuppliers = SEED_SUPPLIERS.filter(s => !loadedNames.has(s.name));
+
+        if (missingSeedSuppliers.length > 0) {
+          // Seed any missing demo suppliers (handles first load and cases where DB had non-seed data)
+          const rows = missingSeedSuppliers.map(s => ({ ...mapSupplierToRow(s), is_demo: true }));
           const { data: inserted, error: insertError } = await supabase
             .from('suppliers')
             .insert(rows)
             .select();
           if (insertError) throw insertError;
-          setSuppliers((inserted || []).map(mapRowToSupplier));
+          const seeded = (inserted || []).map(mapRowToSupplier);
+          setSuppliers([...seeded, ...loaded]);
         } else {
           setSuppliers(loaded);
         }

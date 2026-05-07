@@ -1,13 +1,11 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useSuppliers } from '../context/SupplierContext.tsx';
+import { SEED_SUPPLIERS } from '../constants.ts';
 
 const SupplierCarousel: React.FC = () => {
-  const { suppliers } = useSuppliers();
-
-  // Duplicate the array for a seamless, infinite loop effect
-  const duplicatedSuppliers = [...suppliers, ...suppliers];
+  // Use static seed data so carousel always shows well-known logos regardless of DB state
+  const duplicatedSuppliers = [...SEED_SUPPLIERS, ...SEED_SUPPLIERS];
 
   return (
     <div className="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
