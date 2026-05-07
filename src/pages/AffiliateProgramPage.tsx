@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase.ts';
 
@@ -144,18 +144,8 @@ const AffiliateProgramPage: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  // Calculator state
-  const [calcFee, setCalcFee] = useState(6000);
-  const [calcSups, setCalcSups] = useState(5);
-
-  const calcRate = calcSups >= 3 ? 0.15 : 0.10;
-  const calcY1 = calcFee * calcSups * calcRate;
-  // Top tier check: if year-1 earnings would exceed £15k threshold, show 20%
-  const effectiveRate = calcY1 >= 15000 ? 0.20 : calcRate;
-  const calcY1Effective = calcFee * calcSups * effectiveRate;
-  const calcRenew = calcFee * calcSups * effectiveRate;
-  const calcTotal3 = calcY1Effective + calcRenew * 2;
-  const calcTierLabel = effectiveRate === 0.20 ? 'Strategic Partner (20%)' : effectiveRate === 0.15 ? 'Growth (15%)' : 'Standard (10%)';
+  const [barsVisible, setBarsVisible] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setBarsVisible(true), 300); return () => clearTimeout(t); }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -307,53 +297,62 @@ const AffiliateProgramPage: React.FC = () => {
           </div>
         </section>
 
-        {/* Earnings Calculator */}
+        {/* Recurring income section */}
         <section className="py-16 border-t border-cyan-400/10">
-          <div className="bg-gradient-to-br from-[#060e1d] to-[#0d2040] rounded-xl p-8 sm:p-12 grid sm:grid-cols-2 gap-10 items-center border border-cyan-400/10">
-            <div>
-              <h2 className="text-3xl font-extrabold font-heading text-white mb-3">Estimate your earnings</h2>
-              <p className="text-gray-400 font-light leading-relaxed">
-                Adjust the sliders to see what your affiliate income could look like based on the suppliers you introduce.
-              </p>
-              <p className="mt-4 text-xs text-gray-500">All figures in GBP. Estimates based on typical supplier annual fees. Actual amounts depend on agreed plan values.</p>
-            </div>
-            <div className="space-y-6">
+          <div className="bg-gradient-to-br from-[#060e1d] to-[#0d2040] rounded-xl p-8 sm:p-12 border border-cyan-400/10">
+            <div className="grid sm:grid-cols-2 gap-10 items-center">
               <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">Supplier annual fee tier</label>
-                <select value={calcFee} onChange={e => setCalcFee(Number(e.target.value))} className={selectClass}>
-                  <option value={2400}>Small tour operator — £2,400/yr</option>
-                  <option value={6000}>Mid-size tour operator — £6,000/yr</option>
-                  <option value={12000}>Large cruise / airline — £12,000/yr</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">
-                  Suppliers introduced per year: <span className="text-white font-bold">{calcSups}</span>
-                </label>
-                <input
-                  type="range" min={1} max={20} value={calcSups}
-                  onChange={e => setCalcSups(Number(e.target.value))}
-                  className="w-full accent-cyan-400"
-                />
-                <div className="flex justify-between text-xs text-gray-500 mt-1"><span>1</span><span>20</span></div>
-              </div>
-              <div className="bg-cyan-400/10 border border-cyan-400/20 rounded-xl p-5">
-                <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">Estimated Year 1 earnings</p>
-                <p className="text-4xl font-extrabold font-heading text-white">£{Math.round(calcY1Effective).toLocaleString()}</p>
-                <div className="mt-3 space-y-1.5 text-sm">
-                  <div className="flex justify-between text-gray-400">
-                    <span>Commission tier applied</span>
-                    <span className="text-cyan-300 font-medium">{calcTierLabel}</span>
-                  </div>
-                  <div className="flex justify-between text-gray-400">
-                    <span>Year 2+ renewals/yr</span>
-                    <span>£{Math.round(calcRenew).toLocaleString()}</span>
-                  </div>
-                  <div className="flex justify-between text-white font-semibold border-t border-cyan-400/10 pt-2 mt-2">
-                    <span>3-year total</span>
-                    <span>£{Math.round(calcTotal3).toLocaleString()}</span>
-                  </div>
+                <p className="text-xs font-semibold tracking-widest text-cyan-400 uppercase mb-3">How your income grows</p>
+                <h2 className="text-3xl font-extrabold font-heading text-white mb-4">One introduction.<br/>Recurring income.</h2>
+                <p className="text-gray-400 font-light leading-relaxed mb-8">
+                  Every supplier pays an annual platform fee. Your commission renews each year they stay — turning a single warm introduction into a multi-year income stream.
+                </p>
+                <div className="space-y-5">
+                  {[
+                    { icon: '🔄', label: 'Renews every year', desc: "As long as the supplier is active, you keep earning — no extra work required." },
+                    { icon: '🔒', label: 'Lifetime attribution', desc: "Register an introduction once. If they sign now or in 12 months, the commission is yours." },
+                    { icon: '📈', label: 'Rate grows to 20%', desc: "Hit milestones and your commission rate rises automatically — no renegotiation needed." },
+                  ].map(item => (
+                    <div key={item.label} className="flex gap-4 items-start">
+                      <span className="text-xl mt-0.5">{item.icon}</span>
+                      <div>
+                        <p className="text-white font-semibold text-sm">{item.label}</p>
+                        <p className="text-gray-400 text-xs leading-relaxed mt-0.5">{item.desc}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
+              </div>
+
+              <div>
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-6 text-center">How a small portfolio compounds over time</p>
+                <div className="space-y-4">
+                  {[
+                    { year: 'Year 1', label: 'First introductions land', sublabel: 'Commission starts flowing', pct: 30 },
+                    { year: 'Year 2', label: 'Renewals + new intros', sublabel: 'First-year suppliers renew', pct: 58 },
+                    { year: 'Year 3', label: 'Portfolio compounds', sublabel: 'Multiple renewal streams', pct: 85 },
+                  ].map((row, i) => (
+                    <div key={row.year}>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-xs font-semibold text-white">{row.year}</span>
+                        <span className="text-xs text-gray-500">{row.sublabel}</span>
+                      </div>
+                      <div className="h-9 bg-white/5 rounded-lg border border-cyan-400/10 overflow-hidden">
+                        <div
+                          className="h-full rounded-lg flex items-center px-3 transition-all duration-1000 ease-out"
+                          style={{
+                            width: barsVisible ? `${row.pct}%` : '0%',
+                            transitionDelay: `${i * 180}ms`,
+                            background: 'linear-gradient(90deg, rgba(6,182,212,0.5), rgba(59,130,246,0.4))',
+                          }}
+                        >
+                          <span className="text-xs text-white/90 font-medium whitespace-nowrap">{row.label}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-600 text-center mt-5">Illustrative only. Actual earnings depend on agreed plan values.</p>
               </div>
             </div>
           </div>
