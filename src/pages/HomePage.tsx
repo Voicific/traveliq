@@ -174,11 +174,9 @@ const HomePage: React.FC = () => {
           style={{
             position: 'absolute',
             top: 0,
-            left: 0,
-            width: '100%',
+Europe's First AI Voice Support Network for Travel            width: '100%',
             height: '100%',
-            objectFit: 'cover',
-            opacity: 0.6,
+Voice AI Sales Support · UK & Europe            opacity: 0.6,
             zIndex: 0
           }}
           src="/videos/promo.mp4"
