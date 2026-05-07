@@ -174,9 +174,11 @@ const HomePage: React.FC = () => {
           style={{
             position: 'absolute',
             top: 0,
-Europe's First AI Voice Support Network for Travel            width: '100%',
+            left: 0,
+            width: '100%',
             height: '100%',
-Voice AI Sales Support · UK & Europe            opacity: 0.6,
+            objectFit: 'cover',
+            opacity: 0.6,
             zIndex: 0
           }}
           src="/videos/promo.mp4"
@@ -188,7 +190,7 @@ Voice AI Sales Support · UK & Europe            opacity: 0.6,
 
         <div className="relative z-10 max-w-5xl mx-auto" style={{ zIndex: 10 }}>
           <p className="text-cyan-400 font-bold tracking-[0.3em] uppercase mb-6 text-sm sm:text-base animate-fade-in drop-shadow-[0_0_15px_rgba(0,212,255,0.8)]">
-            Voice AI Sales Support · UK & Europe
+            Europe's First AI Voice Support Network for Travel
           </p>
 
           {/* Continuously Animated Hero Text with Gradient */}
@@ -422,7 +424,7 @@ Voice AI Sales Support · UK & Europe            opacity: 0.6,
                         <tr className="hover:bg-white/5 transition-colors duration-200">
                             <td className="p-5 font-medium text-white">Annual Cost</td>
                             <td className="p-5 text-gray-400">£100,000+</td>
-                            <td className="p-5 font-bold text-cyan-400">From a fraction of one BDM's cost</td>
+                            <td className="p-5 font-bold text-cyan-400">Significant Savings</td>
                         </tr>
                         <tr className="hover:bg-white/5 transition-colors duration-200">
                             <td className="p-5 font-medium text-white">Availability</td>
