@@ -190,7 +190,7 @@ const HomePage: React.FC = () => {
 
         <div className="relative z-10 max-w-5xl mx-auto" style={{ zIndex: 10 }}>
           <p className="text-cyan-400 font-bold tracking-[0.3em] uppercase mb-6 text-sm sm:text-base animate-fade-in drop-shadow-[0_0_15px_rgba(0,212,255,0.8)]">
-            Europe's First AI Voice Support Network for Travel
+            The UK & Europe's Dedicated AI Sales Network for Travel
           </p>
 
           {/* Continuously Animated Hero Text with Gradient */}
@@ -424,7 +424,7 @@ const HomePage: React.FC = () => {
                         <tr className="hover:bg-white/5 transition-colors duration-200">
                             <td className="p-5 font-medium text-white">Annual Cost</td>
                             <td className="p-5 text-gray-400">£100,000+</td>
-                            <td className="p-5 font-bold text-cyan-400">Significant Savings</td>
+                            <td className="p-5 font-bold text-cyan-400">From a fraction of one BDM's cost</td>
                         </tr>
                         <tr className="hover:bg-white/5 transition-colors duration-200">
                             <td className="p-5 font-medium text-white">Availability</td>

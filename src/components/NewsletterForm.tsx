@@ -1,5 +1,5 @@
 
-
+Your Agency
 import React, { useState } from 'react';
 import { useLeads } from '../context/LeadContext.tsx';
 
@@ -68,7 +68,7 @@ const NewsletterForm: React.FC = () => {
               type="submit"
               className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold px-6 py-3 rounded-md shadow-lg hover:opacity-90 transition-all duration-300 transform hover:scale-105"
             >
-              Get Updates
+              Request Early Access
             </button>
         </div>
       </form>

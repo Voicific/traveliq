@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import DemoRequestModal from '../components/DemoRequestModal.tsx';
+import DemoRequestModal from '../components/DemoRequestModal.tsx';100% Accurate, Guaranteed never improvised. no improvisation, no off-message responses.
 import { useLeads } from '../context/LeadContext.tsx';
 
 const PricingPage: React.FC = () => {
