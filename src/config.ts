@@ -10,4 +10,4 @@
  * requests to read from and write to your Google Sheet.
  * ============================================================================
  */
-export const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwhN_Nyp_j3AC61U_86HewhKOqH07cO4KMsVbD8NE6IM3QKnT2I0lF41t5ea8C33bkHHQ/exec';
+export const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwE4O496RTn4uao0N4tjXGQdSdPe8HZ9qMiNp8pxtCl3hxJODBms8jewiqUAxAwGvJU/exec';
