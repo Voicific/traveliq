@@ -156,7 +156,7 @@ const StatsBar: React.FC = () => (
 
 const HomePage: React.FC = () => {
   const { openVeeChat } = useUI();
-  const headlineText = "Smart. Instant. Voice AI Supplier Support.";
+  const headlineText = "Smart. Instant. AI Voice Sales. 24/7.";
   const words = headlineText.split(' ');
 
   return (
@@ -190,7 +190,7 @@ const HomePage: React.FC = () => {
 
         <div className="relative z-10 max-w-5xl mx-auto" style={{ zIndex: 10 }}>
           <p className="text-cyan-400 font-bold tracking-[0.3em] uppercase mb-6 text-sm sm:text-base animate-fade-in drop-shadow-[0_0_15px_rgba(0,212,255,0.8)]">
-            The UK & Europe's Dedicated AI Sales Network for Travel
+            The UK & Europe's Voice AI Sales Platform for Travel
           </p>
 
           {/* Continuously Animated Hero Text with Gradient */}

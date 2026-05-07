@@ -93,7 +93,7 @@ const Header: React.FC = () => {
           )}
         </div>
       )}
-      <NavLink to="/pricing" onClick={closeMenu} className={navLinkClassName}>Partnerships</NavLink>
+      <NavLink to="/pricing" onClick={closeMenu} className={navLinkClassName}>Work With Us</NavLink>
       <NavLink to="/blog" onClick={closeMenu} className={navLinkClassName}>Blog</NavLink>
       {isAuthenticated && (
         <>
