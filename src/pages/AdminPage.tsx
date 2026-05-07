@@ -709,7 +709,7 @@ const AdminPage: React.FC = () => {
     }
   }, [activeTab, affiliateLoaded, loadAffiliates]);
 
-  const handleAffiliateStatus = async (id: string, status: 'approved' | 'rejected') => {
+  const handleAffiliateStatus = async (id: string, status: 'approved' | 'rejected' | 'pending') => {
     const { error } = await supabase
       .from('affiliate_applications')
       .update({ status, reviewed_at: new Date().toISOString() })
