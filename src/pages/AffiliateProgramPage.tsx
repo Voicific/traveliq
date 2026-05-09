@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase.ts';
+import {
+  TierIcon,
+  FeatureIcon,
+  GlobalIcon,
+  AIIcon,
+  AffiliateIcon,
+  RecurringIcon,
+  AttributionIcon,
+  GrowthIcon,
+  SparkleIcon,
+} from '../components/icons/TravelIQIcons.tsx';
 
 interface AffiliateFormData {
   firstName: string;
@@ -71,13 +82,89 @@ const TIERS = [
   },
 ];
 
+/**
+ * PROFILES — sector cards in the "Who to target" section.
+ * iconName maps to the TierIcon component from TravelIQIcons.
+ * bg is the tile background (kept from original design).
+ * iconColor is the lucide stroke colour for each sector.
+ */
 const PROFILES = [
-  { emoji: '🗺️', bg: 'bg-teal-900/40', title: 'Tour Operators & DMCs', desc: 'Complex products, many agent questions, smaller sales teams. Decision-maker is usually Head of Trade Sales.', tier: 'Tier 1 — Start Here', tierClass: 'bg-teal-900/50 text-teal-300' },
-  { emoji: '🚢', bg: 'bg-teal-900/40', title: 'Cruise Lines', desc: 'High agent dependency, complex cabin pricing. BDMs are overwhelmed with repeat queries from agencies.', tier: 'Tier 1 — Start Here', tierClass: 'bg-teal-900/50 text-teal-300' },
-  { emoji: '✈️', bg: 'bg-amber-900/40', title: 'Airlines', desc: 'Massive agent channel. Commission queries, group pricing, and booking conditions are constant pain points.', tier: 'Tier 2 — With Proof', tierClass: 'bg-amber-900/50 text-amber-300' },
-  { emoji: '🏨', bg: 'bg-amber-900/40', title: 'Hotels & Resorts', desc: 'Independent hotels and boutique groups with agency programmes — ideal for AI to handle rate and availability queries.', tier: 'Tier 2 — With Proof', tierClass: 'bg-amber-900/50 text-amber-300' },
-  { emoji: '🧳', bg: 'bg-blue-900/40', title: 'Travel Insurance Providers', desc: 'Highly complex policy questions that agents struggle to explain to clients. A natural fit for AI-powered answers.', tier: 'Tier 3 — Strong Fit', tierClass: 'bg-blue-900/50 text-blue-300' },
-  { emoji: '🏕️', bg: 'bg-blue-900/40', title: 'Safari & Adventure Operators', desc: 'Premium, detail-heavy products. Agents need deep knowledge fast. These suppliers have loyal agent communities.', tier: 'Tier 3 — Strong Fit', tierClass: 'bg-blue-900/50 text-blue-300' },
+  {
+    iconName: 'tour-operator' as const,
+    iconColor: 'text-teal-300',
+    bg: 'bg-teal-900/40',
+    title: 'Tour Operators & DMCs',
+    desc: 'Complex products, many agent questions, smaller sales teams. Decision-maker is usually Head of Trade Sales.',
+    tier: 'Tier 1 — Start Here',
+    tierClass: 'bg-teal-900/50 text-teal-300',
+  },
+  {
+    iconName: 'cruise' as const,
+    iconColor: 'text-teal-300',
+    bg: 'bg-teal-900/40',
+    title: 'Cruise Lines',
+    desc: 'High agent dependency, complex cabin pricing. BDMs are overwhelmed with repeat queries from agencies.',
+    tier: 'Tier 1 — Start Here',
+    tierClass: 'bg-teal-900/50 text-teal-300',
+  },
+  {
+    iconName: 'airline' as const,
+    iconColor: 'text-amber-300',
+    bg: 'bg-amber-900/40',
+    title: 'Airlines',
+    desc: 'Massive agent channel. Commission queries, group pricing, and booking conditions are constant pain points.',
+    tier: 'Tier 2 — With Proof',
+    tierClass: 'bg-amber-900/50 text-amber-300',
+  },
+  {
+    iconName: 'hotel' as const,
+    iconColor: 'text-amber-300',
+    bg: 'bg-amber-900/40',
+    title: 'Hotels & Resorts',
+    desc: 'Independent hotels and boutique groups with agency programmes — ideal for AI to handle rate and availability queries.',
+    tier: 'Tier 2 — With Proof',
+    tierClass: 'bg-amber-900/50 text-amber-300',
+  },
+  {
+    iconName: 'insurance' as const,
+    iconColor: 'text-blue-300',
+    bg: 'bg-blue-900/40',
+    title: 'Travel Insurance Providers',
+    desc: 'Highly complex policy questions that agents struggle to explain to clients. A natural fit for AI-powered answers.',
+    tier: 'Tier 3 — Strong Fit',
+    tierClass: 'bg-blue-900/50 text-blue-300',
+  },
+  {
+    iconName: 'adventure' as const,
+    iconColor: 'text-blue-300',
+    bg: 'bg-blue-900/40',
+    title: 'Safari & Adventure Operators',
+    desc: 'Premium, detail-heavy products. Agents need deep knowledge fast. These suppliers have loyal agent communities.',
+    tier: 'Tier 3 — Strong Fit',
+    tierClass: 'bg-blue-900/50 text-blue-300',
+  },
+];
+
+/**
+ * INCOME_FEATURES — the three recurring-income selling points.
+ * iconName maps to TierIcon; replaces the original emoji field.
+ */
+const INCOME_FEATURES = [
+  {
+    iconName: 'recurring' as const,
+    label: 'Renews every year',
+    desc: 'As long as the supplier is active, you keep earning — no extra work required.',
+  },
+  {
+    iconName: 'attribution' as const,
+    label: 'Lifetime attribution',
+    desc: 'Register an introduction once. If they sign now or in 12 months, the commission is yours.',
+  },
+  {
+    iconName: 'growth' as const,
+    label: 'Rate grows to 20%',
+    desc: 'Hit milestones and your commission rate rises automatically — no renegotiation needed.',
+  },
 ];
 
 const FAQS = [
@@ -207,8 +294,10 @@ const AffiliateProgramPage: React.FC = () => {
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/5 via-transparent to-blue-900/5 pointer-events-none" />
         <div className="relative max-w-4xl mx-auto animate-fade-in">
+          {/* Badge — decorative ✦ glyph kept intentionally; it is punctuation, not an emoji */}
           <div className="inline-flex items-center gap-2 bg-cyan-400/10 border border-cyan-400/30 text-cyan-300 text-xs font-semibold px-4 py-1.5 rounded-full mb-6 tracking-widest uppercase">
-            ✦ Affiliate Partner Programme
+            <SparkleIcon size={12} className="text-cyan-400" />
+            Affiliate Partner Programme
           </div>
           <h1 className="text-4xl sm:text-6xl font-extrabold font-heading text-white leading-tight">
             Earn by introducing suppliers to{' '}
@@ -308,13 +397,16 @@ const AffiliateProgramPage: React.FC = () => {
                   Every supplier pays an annual platform fee. Your commission renews each year they stay — turning a single warm introduction into a multi-year income stream.
                 </p>
                 <div className="space-y-5">
-                  {[
-                    { icon: '🔄', label: 'Renews every year', desc: "As long as the supplier is active, you keep earning — no extra work required." },
-                    { icon: '🔒', label: 'Lifetime attribution', desc: "Register an introduction once. If they sign now or in 12 months, the commission is yours." },
-                    { icon: '📈', label: 'Rate grows to 20%', desc: "Hit milestones and your commission rate rises automatically — no renegotiation needed." },
-                  ].map(item => (
+                  {INCOME_FEATURES.map(item => (
                     <div key={item.label} className="flex gap-4 items-start">
-                      <span className="text-xl mt-0.5">{item.icon}</span>
+                      {/* Icon replaces the original emoji */}
+                      <TierIcon
+                        name={item.iconName}
+                        size="sm"
+                        bg="bg-cyan-400/10"
+                        color="text-cyan-400"
+                        className="mt-0.5"
+                      />
                       <div>
                         <p className="text-white font-semibold text-sm">{item.label}</p>
                         <p className="text-gray-400 text-xs leading-relaxed mt-0.5">{item.desc}</p>
@@ -368,7 +460,13 @@ const AffiliateProgramPage: React.FC = () => {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {PROFILES.map(p => (
               <div key={p.title} className="flex gap-4 p-5 rounded-xl border border-cyan-400/10 bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 hover:border-cyan-400/30 transition-colors">
-                <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0 ${p.bg}`}>{p.emoji}</div>
+                {/* TierIcon replaces the original emoji + coloured div */}
+                <TierIcon
+                  name={p.iconName}
+                  size="md"
+                  bg={p.bg}
+                  color={p.iconColor}
+                />
                 <div>
                   <p className="font-semibold text-white text-sm mb-1">{p.title}</p>
                   <p className="text-gray-400 text-xs leading-relaxed mb-2">{p.desc}</p>
@@ -384,7 +482,10 @@ const AffiliateProgramPage: React.FC = () => {
           <div className="grid md:grid-cols-2 gap-8">
             {/* Open globally */}
             <div className="bg-gradient-to-br from-cyan-900/20 to-blue-900/20 border border-cyan-400/20 rounded-xl p-8">
-              <div className="text-3xl mb-4">🌍</div>
+              {/* Globe icon replaces 🌍 */}
+              <FeatureIcon size="lg" bg="bg-cyan-400/10" className="mb-4">
+                <GlobalIcon size={24} className="text-cyan-400" />
+              </FeatureIcon>
               <h3 className="text-xl font-bold font-heading text-white mb-3">Open to affiliates worldwide</h3>
               <p className="text-gray-300 text-sm leading-relaxed mb-4">
                 You don't need to be based in the UK or Europe to participate. If you have relationships with travel suppliers anywhere — Asia, the Middle East, North America, Africa — and those suppliers want to grow their bookings through UK and European travel agents, your introduction is valuable.
@@ -400,7 +501,10 @@ const AffiliateProgramPage: React.FC = () => {
             </div>
             {/* What TravelIQ does for agents */}
             <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 border border-cyan-400/10 rounded-xl p-8">
-              <div className="text-3xl mb-4">🤖</div>
+              {/* Bot icon replaces 🤖 */}
+              <FeatureIcon size="lg" bg="bg-cyan-400/10" className="mb-4">
+                <AIIcon size={24} className="text-cyan-400" />
+              </FeatureIcon>
               <h3 className="text-xl font-bold font-heading text-white mb-3">What TravelIQ does for travel agents</h3>
               <p className="text-gray-300 text-sm leading-relaxed mb-4">
                 When you introduce a supplier to TravelIQ, their profile goes live in a directory used by UK and European travel agents. Each supplier gets a dedicated AI Sales Assistant that agents can chat and speak with — getting instant answers on fares, policies, products, and commissions, 24/7, in any language.
@@ -424,7 +528,10 @@ const AffiliateProgramPage: React.FC = () => {
         {/* Application form */}
         <section id="apply" className="py-16 border-t border-cyan-400/10">
           <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-cyan-400/10 border border-cyan-400/20 text-3xl mb-5">🤝</div>
+            {/* Users icon replaces 🤝 */}
+            <FeatureIcon size="xl" bg="bg-cyan-400/10" className="mx-auto mb-5">
+              <AffiliateIcon size={28} className="text-cyan-400" />
+            </FeatureIcon>
             <h2 className="text-3xl font-extrabold font-heading text-white">Apply to become an affiliate</h2>
             <p className="mt-3 text-gray-300 max-w-lg mx-auto font-light">
               Tell us about yourself and your network. We'll review your application and be in touch within 2 business days.
@@ -433,7 +540,11 @@ const AffiliateProgramPage: React.FC = () => {
 
           {submitted ? (
             <div className="max-w-2xl mx-auto bg-cyan-400/10 border border-cyan-400/30 rounded-xl p-12 text-center animate-fade-in">
-              <div className="w-20 h-20 rounded-full bg-cyan-400/20 flex items-center justify-center mx-auto text-4xl mb-6">✓</div>
+              <div className="w-20 h-20 rounded-full bg-cyan-400/20 flex items-center justify-center mx-auto mb-6">
+                <svg className="w-10 h-10 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
               <h3 className="text-2xl font-bold font-heading text-white">Application Received!</h3>
               <p className="mt-3 text-gray-300 max-w-md mx-auto">
                 Thank you, {form.firstName}. We'll review your application and reach out to {form.email} within 2 business days to schedule your onboarding call.

@@ -8,6 +8,7 @@ import AdminPage from './pages/AdminPage.tsx';
 import LoginPage from './pages/LoginPage.tsx';
 import Header from './components/Header.tsx';
 import Footer from './components/Footer.tsx';
+import ScrollToTop from './components/ScrollToTop.tsx';
 import { SupplierProvider } from './context/SupplierContext.tsx';
 import { AuthProvider } from './context/AuthContext.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
@@ -51,6 +52,14 @@ const AppContent: React.FC = () => {
   return (
     <>
       <HashRouter>
+        {/*
+          ScrollToTop fires window.scrollTo(0,0) on every route change.
+          This fixes the HashRouter default behaviour of preserving scroll
+          position when navigating between pages (e.g. Home → Affiliate Programme).
+          It also ensures /affiliate-program and /supplier-portal always open
+          at the top of the page, regardless of where the user came from.
+        */}
+        <ScrollToTop />
         <div className="flex flex-col min-h-screen text-brand-light">
           <Header />
           <main className="flex-grow">
@@ -103,21 +112,21 @@ const AppContent: React.FC = () => {
           <Footer />
         </div>
       </HashRouter>
-      <ContactModal 
+      <ContactModal
         isOpen={isContactModalOpen}
         onClose={closeContactModal}
         onSubmit={handleContactSubmit}
       />
-      
+
       {!isVeeChatOpen && (
         <button
           onClick={openVeeChat}
           className="fixed bottom-6 right-6 bg-gradient-to-r from-brand-primary to-brand-secondary border border-brand-light/20 text-white rounded-full shadow-lg flex items-center p-2 transform hover:scale-105 transition-transform duration-300 z-[90] gap-3 animate-fade-in"
           aria-label="Speak to Vee"
         >
-          <img 
+          <img
             src="/traveliq-ai-avatar.png"
-            alt="Vee, AI Assistant" 
+            alt="Vee, AI Assistant"
             className="w-12 h-12 rounded-full object-cover border-2 border-brand-cyan"
           />
           <span className="font-bold text-lg pr-4">Speak to Vee</span>
