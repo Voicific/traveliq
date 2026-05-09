@@ -15,7 +15,7 @@ export const blogPosts: BlogPost[] = [
     id: 'multilingual-ai-travel-trade',
     title: 'Lost in Translation: How Multilingual AI Is Helping UK & European Suppliers Reach More Agents',
     date: 'May 3, 2026',
-    imageUrl: '/imgs/blog_thumbnails_ai_6.png',
+    imageUrl: '/imgs/blog-opportunity-growth.jpg',
     summary: 'The UK travel trade is more diverse than ever—and so is Europe\'s. Discover how AI Sales Assistants fluent in 10+ languages are breaking down barriers and helping suppliers reach agent communities they couldn\'t support before.',
     author: 'TravelIQ Team',
     content: (
@@ -99,7 +99,7 @@ export const blogPosts: BlogPost[] = [
     id: 'gdpr-ai-travel-europe',
     title: 'Why GDPR-Compliant AI Is Non-Negotiable for European Travel Suppliers',
     date: 'April 15, 2026',
-    imageUrl: '/imgs/blog_thumbnails_business_5.png',
+    imageUrl: 'imgs/blog_thumbnails_innovation_5.jpg',
     summary: 'With stricter data regulations and growing agent expectations around privacy, European travel suppliers face a real compliance question when deploying AI tools. Discover why GDPR-ready AI isn\'t just a legal box to tick—it\'s a commercial advantage.',
     author: 'TravelIQ Team',
     content: (
