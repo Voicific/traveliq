@@ -12,6 +12,132 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: 'multilingual-ai-travel-trade',
+    title: 'Lost in Translation: How Multilingual AI Is Helping UK & European Suppliers Reach More Agents',
+    date: 'May 3, 2026',
+    imageUrl: '/imgs/blog_thumbnails_ai_6.png',
+    summary: 'The UK travel trade is more diverse than ever—and so is Europe\'s. Discover how AI Sales Assistants fluent in 10+ languages are breaking down barriers and helping suppliers reach agent communities they couldn\'t support before.',
+    author: 'TravelIQ Team',
+    content: (
+      <>
+        <p>
+          Ask any UK-based supplier how they support French, Spanish, or German-speaking agents and you'll get a familiar answer: a mix of patchy email translations, a handful of bilingual sales reps stretched across too many territories, and the occasional webinar with hastily added subtitles. Language has long been a hidden tax on sales. It slows things down, introduces errors, and leaves entire agent communities underserved.
+        </p>
+        <p>
+          That's changing. AI Sales Assistants that operate fluently across 10+ languages are removing this barrier entirely—turning a persistent commercial problem into a genuine competitive advantage.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">The Hidden Cost of Language Friction</h2>
+        <p>
+          The UK travel trade is one of the most diverse in the world. Britain's agency community includes professionals whose first language is Urdu, Mandarin, Arabic, or Polish. Across the Channel, French, Spanish, Italian, and Dutch-speaking agents represent enormous booking potential—but only for the suppliers who can communicate with them effectively.
+        </p>
+        <p>
+          When language creates friction, the consequences are commercial: agents default to suppliers they can easily communicate with, misunderstood policies lead to booking errors, sales reps waste hours on translation tasks, and smaller markets go unserved entirely.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">One Knowledge Base, Every Language</h2>
+        <p>
+          The elegance of multilingual AI is that suppliers maintain a single, authoritative knowledge base in their primary language. The AI handles the rest—detecting the agent's language from the first message and responding accordingly.
+        </p>
+        <p>
+          Update your cancellation policy once in English and it's immediately accessible in French, Spanish, German, Italian, Dutch, and beyond. No separate localisation process, no version control nightmare, no risk of a market receiving outdated information.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Reaching Agents You Couldn't Reach Before</h2>
+        <p>
+          A UK cruise line can now provide instant, accurate support to an agency in Lyon, a tour operator in Malaga, and a boutique travel consultancy in Amsterdam—all simultaneously, all in their native languages—without adding a single member of staff. Markets that were previously too costly to support properly become viable overnight.
+        </p>
+        <p>
+          Most of your competitors are still relying on English-first support with the occasional translated PDF. The window to differentiate on multilingual AI capability is open right now—but it won't stay open indefinitely.
+        </p>
+        <p className="mt-6 font-semibold text-cyan-400">
+          Language should never be the reason an agent books with someone else. Explore how TravelIQ's multilingual AI Sales Assistants can extend your reach across the UK and European travel trade today.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: 'every-conversation-a-lead',
+    title: 'Every Conversation Is a Lead: How AI Sales Assistants Turn Agent Enquiries into Your Pipeline',
+    date: 'April 24, 2026',
+    imageUrl: '/imgs/blog_thumbnails_service_6.webp',
+    summary: 'Your AI Sales Assistant doesn\'t just answer questions—it captures them. Discover how TravelIQ transforms every agent interaction into a named lead in your supplier dashboard, giving you an agent database that grows itself.',
+    author: 'TravelIQ Team',
+    content: (
+      <>
+        <p>
+          Think about how many agent interactions your brand has in a typical month. A question about your new cabin categories. A query on group booking rates. Someone asking about your agent incentive programme. In a traditional setup, each of those interactions happens and then disappears—answered by a sales rep on a call, lost in an email thread, or handled by a trade desk and never logged anywhere useful.
+        </p>
+        <p>
+          What if every single one of those interactions automatically became a named lead in your dashboard? A real person, a real agency, with a real interest in your product—captured, identified, and ready for follow-up. That's what an AI Sales Assistant on TravelIQ does by design.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">The Problem with Invisible Demand</h2>
+        <p>
+          Supplier sales teams are good at tracking agents they already know—their top producers, their key accounts. But the long tail of the trade? The hundreds of agents who look you up, ask a question, and then either book or move on to a competitor? That activity is almost entirely invisible under the current model.
+        </p>
+        <p>
+          You don't know who's actively researching your product. Warm prospects slip through because there's no mechanism to identify them. Your sales reps focus on relationships they already have, while new connections go unbuilt.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Warm Leads, Not Cold Lists</h2>
+        <p>
+          There's a fundamental difference between a cold prospect database and a list of agents who have actively sought out information about your brand. The agents who interact with your AI Sales Assistant have already demonstrated intent—they had a question about <em>your</em> product, not a competitor's.
+        </p>
+        <p>
+          Your sales reps can log into the TravelIQ dashboard and see exactly which agents have been engaging, what they asked about, and when. They can prioritise follow-up calls with confidence, armed with context about what the agent is interested in. The conversation has already started—your team just needs to continue it.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">A Database That Grows While You Sleep</h2>
+        <p>
+          Because your AI Sales Assistant operates 24/7, lead capture doesn't stop when your office closes. An agent researching your product at 10pm on a Sunday—perhaps preparing for a Monday client call—is still captured, still logged, and still available for your team to follow up on first thing Monday morning.
+        </p>
+        <p>
+          Over weeks and months, your agent database grows organically, populated entirely by people who have proactively engaged with your brand. No data scraping, no purchased lists—just agents who came to you. And TravelIQ's platform is GDPR-compliant by design, so the data you receive is clean and collected correctly.
+        </p>
+        <p className="mt-6 font-semibold text-cyan-400">
+          Your AI Sales Assistant should be doing more than answering questions. It should be building your pipeline. Find out how TravelIQ's lead capture dashboard can transform your agent relationships today.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: 'gdpr-ai-travel-europe',
+    title: 'Why GDPR-Compliant AI Is Non-Negotiable for European Travel Suppliers',
+    date: 'April 15, 2026',
+    imageUrl: '/imgs/blog_thumbnails_business_5.png',
+    summary: 'With stricter data regulations and growing agent expectations around privacy, European travel suppliers face a real compliance question when deploying AI tools. Discover why GDPR-ready AI isn\'t just a legal box to tick—it\'s a commercial advantage.',
+    author: 'TravelIQ Team',
+    content: (
+      <>
+        <p>
+          When a travel agent interacts with an AI Sales Assistant—asking about commission structures, group booking policies, or regional promotions—they're sharing data. Their name. Their agency. The nature of their enquiry. In a world where data protection legislation is tightening across the UK and Europe, what happens to that data matters enormously.
+        </p>
+        <p>
+          For travel suppliers operating in the UK and EU markets, GDPR compliance isn't optional and hasn't been for years. But the arrival of AI-powered sales and support tools has added a new dimension to an already complex landscape. The question suppliers need to be asking isn't just "does our AI work?"—it's "does our AI comply?"
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">What GDPR Actually Means for AI Sales Tools</h2>
+        <p>
+          When an AI Sales Assistant captures agent information as part of a lead generation flow, that falls squarely within GDPR's scope. There must be a lawful basis for processing, data minimisation must be observed, agents should understand their interaction is being logged, and the platform must meet appropriate security standards.
+        </p>
+        <p>
+          A supplier who deploys an AI tool without considering these requirements isn't just taking a legal risk—they're taking a reputational one. In a trade built on trust and personal relationships, being known as a supplier whose AI tools "had that data problem" is not a position anyone wants to be in.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">The UK Post-Brexit Picture</h2>
+        <p>
+          For UK-based suppliers, the picture is slightly more nuanced following Brexit. The UK GDPR—a retained version of EU GDPR with domestic modifications—governs data processing within the UK. For suppliers operating across both UK and EU markets (which is the vast majority of the travel trade), both regimes apply in practice.
+        </p>
+        <p>
+          Suppliers who assumed that leaving the EU simplified their data compliance obligations have generally found the opposite to be true. Any AI platform used to capture agent data needs to be architected in a way that supports compliance with both frameworks.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Compliance as a Competitive Signal</h2>
+        <p>
+          Here's the part that often gets overlooked: agents are increasingly aware of their data rights, and they're increasingly choosy about which supplier tools they're willing to use. A supplier who can demonstrate GDPR-compliant infrastructure answers those questions before they're even asked.
+        </p>
+        <p>
+          Being able to tell European agency partners that your AI support platform is GDPR-compliant, multilingual, and purpose-built for the trade is a trust signal that opens doors. Compliance, properly communicated, is a differentiator.
+        </p>
+        <p className="mt-6 font-semibold text-cyan-400">
+          Building agent trust isn't just about your product—it's about how your technology represents your brand. Explore how TravelIQ's GDPR-compliant platform supports trusted engagement with the UK and European travel trade.
+        </p>
+      </>
+    ),
+  },
+  {
     id: 'traveliq-essential-uncertainty',
     title: 'Why TravelIQ is Essential for UK Agents: Navigating Global Travel Uncertainty with AI',
     date: 'March 24, 2026',
@@ -372,7 +498,7 @@ export const blogPosts: BlogPost[] = [
     id: 'travel-agent-experience',
     title: '5 Ways AI is Enhancing the Travel Agent Experience',
     date: 'November 22, 2025',
-    imageUrl: 'https://images.unsplash.com/photo-1556388158-158ea5ccacbd?q=80&w=2070&auto=format&fit=crop',
+    imageUrl: '/imgs/blog-instant-knowledge.jpg',
     summary: 'Explore the top five ways artificial intelligence is making travel agents more efficient and effective in 2025.',
     author: 'TravelIQ Team',
     content: (
@@ -407,7 +533,7 @@ export const blogPosts: BlogPost[] = [
     id: 'meet-vee',
     title: 'Meet Vee: Your 24/7 AI Travel Companion',
     date: 'November 15, 2025',
-    imageUrl: 'https://images.unsplash.com/photo-1531746790731-6c087fecd65a?q=80&w=2070&auto=format&fit=crop',
+    imageUrl: '/imgs/traveliq-ai-avatar.png',
     summary: 'Get to know Vee, TravelIQ\'s intelligent virtual assistant designed specifically for travel professionals.',
     author: 'TravelIQ Team',
     content: (
@@ -417,11 +543,11 @@ export const blogPosts: BlogPost[] = [
         </p>
         <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Who is Vee?</h2>
         <p>
-          Vee is a sophisticated AI assistant trained specifically on travel industry data, including hundreds of suppliers and thousands of destinations.
+          Vee is a our sophisticated AI assistant trained specifically on TravelIQ, including how you can join us as suppliers.
         </p>
         <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">What Can Vee Do?</h2>
         <p>
-          Vee can answer questions about policies, compare offerings, and help with complex planning. She understands context and provides sourced information.
+          Vee knows about our features, can offer guidance and help with your questions about our platform. She understands context and provides sourced information.
         </p>
         <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Always Learning</h2>
         <p>
