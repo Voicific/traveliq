@@ -259,6 +259,7 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
 
     const chatEndRef = useRef<HTMLDivElement>(null);
     const sessionPromiseRef = useRef<Promise<any> | null>(null);
+    const wsRef = useRef<WebSocket | null>(null);
     const audioStreamRef = useRef<MediaStream | null>(null);
     const scriptProcessorRef = useRef<ScriptProcessorNode | null>(null);
     const inputAudioContextRef = useRef<AudioContext | null>(null);
@@ -272,6 +273,12 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
     }, [conversation, isLoading, transcript]);
     
     const cleanupLiveSession = useCallback(async () => {
+        // Close ElevenLabs WebSocket if open
+        if (wsRef.current) {
+            try { wsRef.current.close(); } catch (e) {}
+            wsRef.current = null;
+        }
+        // Close Gemini Live session if any
         if (sessionPromiseRef.current) {
             try {
                 const session = await sessionPromiseRef.current;
@@ -650,160 +657,162 @@ When an agent asks "is [supplier] on TravelIQ?", check this list and direct them
 
 
     // --- LIVE CHAT LOGIC ---
+    // Helper: encode Float32 PCM → base64 Int16 for ElevenLabs
+    const float32ToBase64PCM = (float32: Float32Array): string => {
+        const int16 = new Int16Array(float32.length);
+        for (let i = 0; i < float32.length; i++) {
+            int16[i] = Math.max(-32768, Math.min(32767, Math.round(float32[i] * 32768)));
+        }
+        const bytes = new Uint8Array(int16.buffer);
+        let binary = '';
+        for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+        return btoa(binary);
+    };
+
+    // Helper: decode base64 PCM Int16 → play via AudioContext
+    const playPCMChunk = async (base64: string, outputCtx: AudioContext) => {
+        try {
+            const binary = atob(base64);
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+            // Try decodeAudioData first (handles MP3 and raw PCM containers)
+            try {
+                const audioBuffer = await outputCtx.decodeAudioData(bytes.buffer.slice(0));
+                const source = outputCtx.createBufferSource();
+                source.buffer = audioBuffer;
+                source.connect(outputCtx.destination);
+                source.addEventListener('ended', () => {
+                    outputSourcesRef.current.delete(source);
+                    if (outputSourcesRef.current.size === 0) setIsAiSpeaking(false);
+                });
+                source.start();
+                outputSourcesRef.current.add(source);
+            } catch {
+                // Fallback: treat as raw Int16 PCM at 16kHz
+                const int16 = new Int16Array(bytes.buffer);
+                const float32 = new Float32Array(int16.length);
+                for (let i = 0; i < int16.length; i++) float32[i] = int16[i] / 32768;
+                const audioBuffer = outputCtx.createBuffer(1, float32.length, 16000);
+                audioBuffer.copyToChannel(float32, 0);
+                const source = outputCtx.createBufferSource();
+                source.buffer = audioBuffer;
+                source.connect(outputCtx.destination);
+                source.addEventListener('ended', () => {
+                    outputSourcesRef.current.delete(source);
+                    if (outputSourcesRef.current.size === 0) setIsAiSpeaking(false);
+                });
+                source.start();
+                outputSourcesRef.current.add(source);
+            }
+        } catch (e) {
+            console.error('Audio playback error:', e);
+            setIsAiSpeaking(false);
+        }
+    };
+
     const startLiveSession = useCallback(async () => {
-        if (!ai) return;
         setMode('live');
         setLiveStatus('connecting');
         setTranscript([]);
 
         try {
+            // Request microphone access first (needs user gesture context)
+            let stream: MediaStream;
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            } catch (micError: any) {
+                console.error('Microphone access denied:', micError);
+                setLiveStatus('error');
+                return;
+            }
+            audioStreamRef.current = stream;
+
+            // Set up audio contexts
             if (!outputAudioContextRef.current || outputAudioContextRef.current.state === 'closed') {
-                outputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
+                outputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
             }
             if (outputAudioContextRef.current.state === 'suspended') {
                 await outputAudioContextRef.current.resume();
             }
             const outputCtx = outputAudioContextRef.current;
 
-            const greetingText = "Glad you're here at TravelIQ, I'm Vee, how can I assist you today?";
-            
-            // Try ElevenLabs first for greeting
-            let audioBuffer: AudioBuffer;
-            try {
-                const audioUrl = await generateSpeech(greetingText, 'Vee');
-                const response = await fetch(audioUrl);
-                const arrayBuffer = await response.arrayBuffer();
-                audioBuffer = await outputCtx.decodeAudioData(arrayBuffer);
-            } catch (elevenLabsError) {
-                // Fallback to Gemini TTS
-                const ttsResponse = await ai.models.generateContent({
-                    model: "gemini-2.5-flash-preview-tts",
-                    contents: [{ parts: [{ text: greetingText }] }],
-                    config: {
-                        responseModalities: [Modality.AUDIO],
-                        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Zephyr' } } },
-                    },
-                });
-
-                const base64Audio = ttsResponse.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-                if (!base64Audio) throw new Error("TTS greeting generation failed to return audio.");
-                
-                audioBuffer = await decodeAudioData(decode(base64Audio), outputCtx, 24000, 1);
-            }
-
-            setLiveStatus('greeting');
-            setIsAiSpeaking(true);
-            const source = outputCtx.createBufferSource();
-            source.buffer = audioBuffer;
-            
-            const greetingFinishedPromise = new Promise<void>(resolve => {
-                source.onended = () => { setIsAiSpeaking(false); resolve(); };
-            });
-            source.connect(outputCtx.destination);
-            source.start();
-            await greetingFinishedPromise;
-
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            audioStreamRef.current = stream;
             inputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
             await inputAudioContextRef.current.resume();
-            
-            sessionPromiseRef.current = ai.live.connect({
-                model: 'gemini-2.5-flash-native-audio-preview-09-2025',
-                callbacks: {
-                    onopen: () => {
+
+            // Connect to ElevenLabs Conversational AI via WebSocket
+            const ws = new WebSocket(
+                `wss://api.elevenlabs.io/v1/convai/conversation?agent_id=${VEE_ELEVENLABS_AGENT_ID}`
+            );
+            wsRef.current = ws;
+
+            ws.onopen = () => {
+                setLiveStatus('greeting'); // ElevenLabs sends greeting automatically
+                // Start streaming microphone audio
+                const sourceNode = inputAudioContextRef.current!.createMediaStreamSource(stream);
+                const scriptProcessor = inputAudioContextRef.current!.createScriptProcessor(4096, 1, 1);
+                scriptProcessorRef.current = scriptProcessor;
+                scriptProcessor.onaudioprocess = (event) => {
+                    if (ws.readyState !== WebSocket.OPEN) return;
+                    const b64 = float32ToBase64PCM(event.inputBuffer.getChannelData(0));
+                    ws.send(JSON.stringify({ user_audio_chunk: b64 }));
+                };
+                sourceNode.connect(scriptProcessor);
+                scriptProcessor.connect(inputAudioContextRef.current!.destination);
+            };
+
+            ws.onmessage = async (event) => {
+                try {
+                    const msg = JSON.parse(event.data);
+
+                    if (msg.type === 'conversation_initiation_metadata') {
                         setLiveStatus('connected');
-                        const sourceNode = inputAudioContextRef.current!.createMediaStreamSource(stream);
-                        const scriptProcessor = inputAudioContextRef.current!.createScriptProcessor(4096, 1, 1);
-                        scriptProcessorRef.current = scriptProcessor;
-                        scriptProcessor.onaudioprocess = (event) => {
-                            const pcmBlob = createBlob(event.inputBuffer.getChannelData(0));
-                            sessionPromiseRef.current?.then(session => session.sendRealtimeInput({ media: pcmBlob })).catch(console.error);
-                        };
-                        sourceNode.connect(scriptProcessor);
-                        scriptProcessor.connect(inputAudioContextRef.current!.destination);
-                    },
-                    onmessage: async (message: LiveServerMessage) => {
-                        if (message.serverContent?.inputTranscription || message.serverContent?.outputTranscription) {
-                            const isInput = !!message.serverContent.inputTranscription;
-                            const text = isInput ? message.serverContent.inputTranscription!.text : message.serverContent.outputTranscription!.text;
-                            setTranscript(prev => {
-                                const newT = [...prev];
-                                const last = newT[newT.length - 1];
-                                if (last && last.speaker === (isInput ? 'You' : 'AI')) {
-                                    last.text += text;
-                                } else {
-                                    newT.push({ speaker: isInput ? 'You' : 'AI', text });
-                                }
-                                return newT;
-                            });
-                        }
-                        const base64Audio = message.serverContent?.modelTurn?.parts[0]?.inlineData?.data;
-                        if (base64Audio) {
-                            setIsAiSpeaking(true);
-                            nextStartTimeRef.current = Math.max(nextStartTimeRef.current, outputCtx.currentTime);
-                            const responseAudioBuffer = await decodeAudioData(decode(base64Audio), outputCtx, 24000, 1);
-                            const source = outputCtx.createBufferSource();
-                            source.buffer = responseAudioBuffer;
-                            source.connect(outputCtx.destination);
-                            source.addEventListener('ended', () => {
-                                outputSourcesRef.current.delete(source);
-                                if (outputSourcesRef.current.size === 0) setIsAiSpeaking(false);
-                            });
-                            source.start(nextStartTimeRef.current);
-                            nextStartTimeRef.current += responseAudioBuffer.duration;
-                            outputSourcesRef.current.add(source);
-                        }
-                    },
-                    onerror: (e: ErrorEvent) => { 
-                        console.error('Session error:', e); 
-                        setLiveStatus('error');
-                        cleanupLiveSession();
-                    },
-                    onclose: () => {
-                        cleanupLiveSession();
-                        if (mode === 'live') resetToIdle();
-                    },
-                },
-                config: {
-                    responseModalities: [Modality.AUDIO],
-                    speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Zephyr' } } },
-                    systemInstruction: `You are 'Vee', TravelIQ's AI platform expert. You are warm, natural, and confident in conversation. You have already greeted the user — get straight into helping them.
+                    } else if (msg.type === 'audio' && msg.audio_event?.audio_base_64) {
+                        setIsAiSpeaking(true);
+                        await playPCMChunk(msg.audio_event.audio_base_64, outputCtx);
+                    } else if (msg.type === 'agent_response' && msg.agent_response_event?.agent_response) {
+                        const text = msg.agent_response_event.agent_response;
+                        setTranscript(prev => {
+                            const newT = [...prev];
+                            const last = newT[newT.length - 1];
+                            if (last?.speaker === 'AI') { last.text += text; return [...newT]; }
+                            return [...newT, { speaker: 'AI' as const, text }];
+                        });
+                        setLiveStatus('connected');
+                    } else if (msg.type === 'user_transcript' && msg.user_transcription_event?.user_transcript) {
+                        const text = msg.user_transcription_event.user_transcript;
+                        setTranscript(prev => {
+                            const newT = [...prev];
+                            const last = newT[newT.length - 1];
+                            if (last?.speaker === 'You') { last.text += text; return [...newT]; }
+                            return [...newT, { speaker: 'You' as const, text }];
+                        });
+                    } else if (msg.type === 'interruption') {
+                        outputSourcesRef.current.forEach(s => { try { s.stop(); } catch {} });
+                        outputSourcesRef.current.clear();
+                        setIsAiSpeaking(false);
+                    } else if (msg.type === 'ping') {
+                        ws.send(JSON.stringify({ type: 'pong', event_id: msg.ping_event?.event_id }));
+                    }
+                } catch (parseError) {
+                    console.error('Failed to parse WS message:', parseError);
+                }
+            };
 
-**WHAT TRAVELIQ IS:** The first dedicated Voice AI platform for the travel trade. Travel suppliers (airlines, hotels, cruise lines) get a dedicated AI Sales Assistant that answers travel agents' questions 24/7 — instantly, accurately, in any language. Agents use it for free. Suppliers pay to be listed with their AI.
+            ws.onerror = (e) => {
+                console.error('ElevenLabs WS error:', e);
+                setLiveStatus('error');
+            };
 
-**THE PLATFORM — how to describe it in voice:**
-"Imagine a travel agent visits TravelIQ at 11pm needing a quick answer on commission rates or group booking policies. Instead of waiting for a BDM to call back, they just talk to the supplier's dedicated AI — and get the exact answer in seconds. That's what every supplier on TravelIQ gives their agents."
-
-**SUPPLIERS LIVE ON PLATFORM:** British Airways, Virgin Atlantic, Emirates, Qatar Airways, Malaysia Airlines, EL AL, Ritz Carlton, Four Seasons, Leonardo Hotels, Prima Hotels, Royal Caribbean.
-
-**ONBOARDING — two paths:**
-1. Fully managed: supplier sends content, we build it, live in 3–5 days
-2. Self-serve: they log in, paste their knowledge base, live within hours
-
-**PLANS (no specific prices — all contact-us):**
-- Starter: directory listing, standard AI chat, interaction count
-- Standard: adds named leads (name, email, agency, question asked), analytics, custom voice, video embed
-- Enterprise (most popular): adds custom branded voice, live speaking avatar, advanced analytics, featured placement
-
-**FOR TRAVEL AGENTS:** Free to use. Browse the supplier directory, talk or chat with any supplier's AI. Direct them to traveliq.biz/suppliers.
-
-**FOR SUPPLIERS:** After explaining the platform, collect: name, company, email, phone number. Say: "Our team will be in touch within one business day to book a demo."
-
-**NEVER:** Quote specific prices. Answer product questions about individual suppliers. Make booking decisions.
-
-**ALWAYS:** Be conversational, not scripted. Give real examples. Move naturally toward collecting contact details for a demo.`,
-                    inputAudioTranscription: {},
-                    outputAudioTranscription: {},
-                },
-            });
+            ws.onclose = () => {
+                cleanupLiveSession();
+                resetToIdle();
+            };
 
         } catch (error) {
-            console.error('Failed to start session:', error);
+            console.error('Failed to start voice session:', error);
             setLiveStatus('error');
-            setIsAiSpeaking(false);
         }
-    }, [cleanupLiveSession, resetToIdle, ai, mode]);
+    }, [cleanupLiveSession, resetToIdle]);
     
     const renderContent = () => {
         if (aiError) {
