@@ -26,6 +26,9 @@ import SupplierChatbot from './components/SupplierChatbot.tsx';
 import BlogPage from './pages/BlogPage.tsx';
 import BlogPostPage from './pages/BlogPostPage.tsx';
 import AffiliateProgramPage from './pages/AffiliateProgramPage.tsx';
+import AffiliateHubLoginPage from './pages/AffiliateHubLoginPage.tsx';
+import AffiliateHubPage from './pages/AffiliateHubPage.tsx';
+import AffiliateAdminPage from './pages/AffiliateAdminPage.tsx';
 import SupplierRegisterPage from './pages/SupplierRegisterPage.tsx';
 import SupplierLoginPage from './pages/SupplierLoginPage.tsx';
 import SupplierDashboardPage from './pages/SupplierDashboardPage.tsx';
@@ -72,6 +75,8 @@ const AppContent: React.FC = () => {
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:id" element={<BlogPostPage />} />
               <Route path="/affiliate-program" element={<AffiliateProgramPage />} />
+              <Route path="/affiliate-hub/login" element={<AffiliateHubLoginPage />} />
+              <Route path="/affiliate-hub" element={<AffiliateHubPage />} />
               <Route path="/supplier-portal/register" element={<SupplierRegisterPage />} />
               <Route path="/supplier-portal/login" element={<SupplierLoginPage />} />
               <Route path="/supplier-portal/dashboard" element={<SupplierDashboardPage />} />
@@ -96,6 +101,14 @@ const AppContent: React.FC = () => {
                         <Route path="/" element={<Navigate to="image-edit" replace />} />
                       </Routes>
                     </AIStudioLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/affiliate-admin"
+                element={
+                  <ProtectedRoute>
+                    <AffiliateAdminPage />
                   </ProtectedRoute>
                 }
               />
@@ -132,7 +145,6 @@ const AppContent: React.FC = () => {
           <span className="font-bold text-lg pr-4">Speak to Vee</span>
         </button>
       )}
-      {/* FIX: Replaced undefined `handleClose` with `closeVeeChat` from the useUI hook. */}
       <SupplierChatbot isOpen={isVeeChatOpen} onClose={closeVeeChat} />
     </>
   );
