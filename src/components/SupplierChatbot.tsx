@@ -5,7 +5,7 @@ import { useAI } from '../context/AIContext.tsx';
 import { useLeads } from '../context/LeadContext.tsx';
 import { Link, useNavigate } from 'react-router-dom';
 import { elevenLabsService } from '../services/elevenLabsVoiceService.ts';
-import { SEED_SUPPLIERS, VEE_ELEVENLABS_AGENT_ID } from '../constants.ts';
+import { SEED_SUPPLIERS, VEE_ELEVENLABS_AGENT_ID, VEE_ELEVENLABS_VOICE_ID } from '../constants.ts';
 
 interface SupplierChatbotProps {
   isOpen: boolean;
@@ -600,7 +600,7 @@ When an agent asks "is [supplier] on TravelIQ?", check this list and direct them
         try {
             const correctedText = getPhoneticallyCorrectedText(text);
             // ElevenLabs only — no Gemini TTS fallback
-            const audioUrl = await elevenLabsService.generateSpeech(correctedText, VEE_ELEVENLABS_AGENT_ID);
+            const audioUrl = await elevenLabsService.generateSpeech(correctedText, VEE_ELEVENLABS_VOICE_ID);
             const audio = new Audio(audioUrl);
             audio.onended = () => setPlayingMessageIndex(null);
             audio.onerror = () => setPlayingMessageIndex(null);

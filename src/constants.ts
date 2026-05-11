@@ -1,6 +1,7 @@
 import { Supplier, SupplierType } from './types.ts';
 
 export const VEE_ELEVENLABS_AGENT_ID = 'agent_9701k60px56gezba55q83jamzhbk';
+export const VEE_ELEVENLABS_VOICE_ID = 'Hh0rE70WfnSFN80K8uJC';
 
 export const SEED_SUPPLIERS: Supplier[] = [
   {
