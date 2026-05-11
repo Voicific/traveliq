@@ -30,7 +30,7 @@ const AffiliateHubLoginPage: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-cyan-400/10 border border-cyan-400/20 mb-4">
-            <AffiliateIcon className="w-8 h-8 text-cyan-400" strokeWidth={1.5} />
+            <AffiliateIcon className="w-8 h-8 text-cyan-400" />
           </div>
           <h1 className="text-3xl font-extrabold font-heading text-white">Affiliate Hub</h1>
           <p className="mt-2 text-gray-300">

@@ -337,7 +337,7 @@ const DashboardSection: React.FC = () => {
         ].map(({ label, value, icon: Icon, color }) => (
           <Card key={label} className="flex items-center gap-4">
             <div className="p-3 rounded-lg bg-[#0a1628]/60">
-              <Icon className={`w-6 h-6 ${color}`} strokeWidth={1.5} />
+              <Icon className={`w-6 h-6 ${color}`} />
             </div>
             <div>
               <p className="text-2xl font-extrabold text-white">{value}</p>
@@ -718,7 +718,7 @@ const LinksSection: React.FC<LinksSectionProps> = ({ affiliateId, trackingCode }
           <p className="text-sm text-gray-500">Loading…</p>
         ) : introductions.length === 0 ? (
           <div className="text-center py-10 text-gray-500">
-            <AffiliateIcon className="w-10 h-10 mx-auto mb-3 text-gray-700" strokeWidth={1.5} />
+            <AffiliateIcon className="w-10 h-10 mx-auto mb-3 text-gray-700" />
             <p className="text-sm">No introductions registered yet.</p>
             <p className="text-xs mt-1 text-gray-600">Use the form below to register your first introduction.</p>
           </div>
@@ -831,7 +831,7 @@ const CommunitySection: React.FC = () => (
     <Card>
       <div className="flex items-start gap-4">
         <div className="p-3 bg-[#0a1628]/60 rounded-lg shrink-0">
-          <GlobalIcon className="w-6 h-6 text-cyan-400" strokeWidth={1.5} />
+          <GlobalIcon className="w-6 h-6 text-cyan-400" />
         </div>
         <div>
           <h3 className="font-bold text-white mb-1">Affiliate Slack Community</h3>
@@ -994,7 +994,7 @@ const AffiliateHubPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-[#0a1628] flex items-center justify-center px-4">
         <div className="max-w-md text-center">
-          <AffiliateIcon className="w-12 h-12 mx-auto mb-4 text-gray-600" strokeWidth={1.5} />
+          <AffiliateIcon className="w-12 h-12 mx-auto mb-4 text-gray-600" />
           <h2 className="text-xl font-bold text-white mb-2">Hub access pending</h2>
           <p className="text-gray-400 text-sm mb-4">
             Your affiliate profile hasn't been activated yet. If you've been accepted into the programme, please allow up to one business day or contact us.
