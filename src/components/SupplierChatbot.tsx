@@ -591,64 +591,20 @@ When an agent asks "is [supplier] on TravelIQ?", check this list and direct them
     }, [conversation, isLoading, addMessage, addLead, ai]);
     
     const handlePlayTTS = async (text: string, index: number) => {
+        // Clicking the same message again stops playback
         if (playingMessageIndex === index) {
-            ttsCurrentAudioSourceRef.current?.stop();
             setPlayingMessageIndex(null);
             return;
         }
-        if (!ai) return;
         setPlayingMessageIndex(index);
         try {
-            if (!outputAudioContextRef.current || outputAudioContextRef.current.state === 'closed') {
-                outputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
-            }
-            if (outputAudioContextRef.current.state === 'suspended') {
-                await outputAudioContextRef.current.resume();
-            }
-            
             const correctedText = getPhoneticallyCorrectedText(text);
-
-            // Try ElevenLabs first for Vee chatbot
-            try {
-                const audioUrl = await generateSpeech(correctedText, 'Vee');
-                // Create audio element and play
-                const audio = new Audio(audioUrl);
-                audio.onended = () => setPlayingMessageIndex(null);
-                audio.onerror = () => {
-                    console.error('Audio playback error');
-                    setPlayingMessageIndex(null);
-                };
-                await audio.play();
-                return;
-            } catch (elevenLabsError) {
-                console.log('ElevenLabs failed, falling back to Gemini TTS');
-            }
-
-            // Fallback to Gemini TTS
-            const response = await ai.models.generateContent({
-                model: "gemini-2.5-flash-preview-tts",
-                contents: [{ parts: [{ text: correctedText }] }],
-                config: {
-                    responseModalities: [Modality.AUDIO],
-                    speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Zephyr' } } },
-                },
-            });
-            
-            const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-            if (base64Audio) {
-                const audioBuffer = await decodeAudioData(decode(base64Audio), outputAudioContextRef.current!, 24000, 1);
-                const source = outputAudioContextRef.current!.createBufferSource();
-                source.buffer = audioBuffer;
-                source.connect(outputAudioContextRef.current!.destination);
-                source.onended = () => {
-                    setPlayingMessageIndex(null);
-                    ttsCurrentAudioSourceRef.current = null;
-                };
-                source.start();
-                ttsCurrentAudioSourceRef.current = source;
-            } else {
-                setPlayingMessageIndex(null);
-            }
+            // ElevenLabs only — no Gemini TTS fallback
+            const audioUrl = await elevenLabsService.generateSpeech(correctedText, VEE_ELEVENLABS_AGENT_ID);
+            const audio = new Audio(audioUrl);
+            audio.onended = () => setPlayingMessageIndex(null);
+            audio.onerror = () => setPlayingMessageIndex(null);
+            await audio.play();
         } catch (error) {
             console.error("TTS Error:", error);
             setPlayingMessageIndex(null);
