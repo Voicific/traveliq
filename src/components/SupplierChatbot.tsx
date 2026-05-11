@@ -625,23 +625,26 @@ When an agent asks "is [supplier] on TravelIQ?", check this list and direct them
         return btoa(binary);
     };
 
-    // Helper: decode base64 PCM Int16 → play via AudioContext
+    // Helper: decode base64 audio chunk → schedule via AudioContext queue
     const playPCMChunk = async (base64: string, outputCtx: AudioContext) => {
         try {
             const binary = atob(base64);
             const bytes = new Uint8Array(binary.length);
             for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-            // Try decodeAudioData first (handles MP3 and raw PCM containers)
+            // Try decodeAudioData first (handles MP3 from ElevenLabs)
             try {
                 const audioBuffer = await outputCtx.decodeAudioData(bytes.buffer.slice(0));
                 const source = outputCtx.createBufferSource();
                 source.buffer = audioBuffer;
                 source.connect(outputCtx.destination);
+                // Schedule chunk to start after the previous one ends — prevents overlap
+                const startTime = Math.max(outputCtx.currentTime, nextStartTimeRef.current);
+                nextStartTimeRef.current = startTime + audioBuffer.duration;
                 source.addEventListener('ended', () => {
                     outputSourcesRef.current.delete(source);
                     if (outputSourcesRef.current.size === 0) setIsAiSpeaking(false);
                 });
-                source.start();
+                source.start(startTime);
                 outputSourcesRef.current.add(source);
             } catch {
                 // Fallback: treat as raw Int16 PCM at 16kHz
@@ -653,11 +656,13 @@ When an agent asks "is [supplier] on TravelIQ?", check this list and direct them
                 const source = outputCtx.createBufferSource();
                 source.buffer = audioBuffer;
                 source.connect(outputCtx.destination);
+                const startTime = Math.max(outputCtx.currentTime, nextStartTimeRef.current);
+                nextStartTimeRef.current = startTime + audioBuffer.duration;
                 source.addEventListener('ended', () => {
                     outputSourcesRef.current.delete(source);
                     if (outputSourcesRef.current.size === 0) setIsAiSpeaking(false);
                 });
-                source.start();
+                source.start(startTime);
                 outputSourcesRef.current.add(source);
             }
         } catch (e) {
@@ -745,6 +750,7 @@ When an agent asks "is [supplier] on TravelIQ?", check this list and direct them
                     } else if (msg.type === 'interruption') {
                         outputSourcesRef.current.forEach(s => { try { s.stop(); } catch {} });
                         outputSourcesRef.current.clear();
+                        nextStartTimeRef.current = 0; // Reset audio queue on interruption
                         setIsAiSpeaking(false);
                     } else if (msg.type === 'ping') {
                         ws.send(JSON.stringify({ type: 'pong', event_id: msg.ping_event?.event_id }));
