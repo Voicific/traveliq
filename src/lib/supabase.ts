@@ -36,5 +36,6 @@ export interface Profile {
   company_name: string | null;
   role: SupplierRole;
   supplier_id: string | null;
+  is_approved: boolean | null;
   created_at: string;
 }

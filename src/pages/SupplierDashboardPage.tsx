@@ -45,6 +45,7 @@ const SupplierDashboardPage: React.FC = () => {
   const [tab, setTab] = useState<'profile' | 'leads'>('profile');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [logoUploading, setLogoUploading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -121,6 +122,28 @@ const SupplierDashboardPage: React.FC = () => {
     setTimeout(() => setMessage(null), 3000);
   };
 
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !supplier) return;
+    setLogoUploading(true);
+    try {
+      const ext = file.name.split('.').pop() ?? 'png';
+      const path = `logos/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: uploadError } = await supabase.storage
+        .from('supplier-logos')
+        .upload(path, file, { upsert: true, contentType: file.type });
+      if (uploadError) throw uploadError;
+      const { data: { publicUrl } } = supabase.storage.from('supplier-logos').getPublicUrl(path);
+      setSupplier(prev => prev ? { ...prev, logo_url: publicUrl } : prev);
+      setMessage('Logo uploaded. Remember to save your profile.');
+    } catch (err: any) {
+      setMessage(`Logo upload failed: ${err.message}`);
+    } finally {
+      setLogoUploading(false);
+      e.target.value = '';
+    }
+  };
+
   if (!isConfigured) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
@@ -135,6 +158,35 @@ const SupplierDashboardPage: React.FC = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="w-10 h-10 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  // Subscription / approval gate — block access until admin approves the account
+  if (profile && profile.is_approved === false) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-[#0a1628] via-[#0f1c2e] to-[#0a1628]">
+        <div className="max-w-md w-full p-10 bg-[#0f1c2e]/80 border border-cyan-400/10 rounded-xl text-center">
+          <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center mx-auto mb-5">
+            <svg className="w-8 h-8 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold text-white">Pending Approval</h2>
+          <p className="mt-3 text-gray-300">
+            Your supplier account is awaiting approval from the TravelIQ team.
+            You'll receive an email once your account is activated and you can access your dashboard.
+          </p>
+          <p className="mt-3 text-sm text-gray-400">
+            Questions? <a className="text-cyan-400 hover:underline" href="mailto:hello@beeancy.com">hello@beeancy.com</a>
+          </p>
+          <button
+            onClick={() => { signOut(); navigate('/'); }}
+            className="mt-6 text-sm text-gray-300 hover:text-white border border-cyan-400/20 hover:border-cyan-400/50 px-6 py-2 rounded-lg transition-colors"
+          >
+            Sign out
+          </button>
+        </div>
       </div>
     );
   }
@@ -209,7 +261,34 @@ const SupplierDashboardPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div><label className={labelClass}>Logo URL</label><input value={supplier.logo_url ?? ''} onChange={e => setSupplier({ ...supplier, logo_url: e.target.value })} placeholder="https://…" className={inputClass} /></div>
+                <div>
+                  <label className={labelClass}>Logo</label>
+                  <div className="flex items-center gap-2 mt-1">
+                    <input
+                      value={supplier.logo_url ?? ''}
+                      onChange={e => setSupplier({ ...supplier, logo_url: e.target.value })}
+                      placeholder="Paste a URL or upload a file →"
+                      className={inputClass + ' flex-grow'}
+                    />
+                    <label
+                      htmlFor="logoUpload"
+                      className={`cursor-pointer whitespace-nowrap px-4 py-3 rounded-lg border border-cyan-400/20 text-sm font-semibold transition-colors ${logoUploading ? 'text-gray-500 cursor-not-allowed' : 'text-cyan-400 hover:bg-cyan-400/10'}`}
+                    >
+                      {logoUploading ? 'Uploading…' : 'Upload file'}
+                    </label>
+                    <input
+                      type="file"
+                      id="logoUpload"
+                      accept="image/*"
+                      onChange={handleLogoUpload}
+                      disabled={logoUploading}
+                      className="hidden"
+                    />
+                  </div>
+                  {supplier.logo_url && (
+                    <img src={supplier.logo_url} alt="Logo preview" className="mt-2 h-12 w-12 rounded-full object-cover border border-cyan-400/20" />
+                  )}
+                </div>
                 <div><label className={labelClass}>Banner URL</label><input value={supplier.banner_url ?? ''} onChange={e => setSupplier({ ...supplier, banner_url: e.target.value })} placeholder="https://…" className={inputClass} /></div>
                 <div><label className={labelClass}>Video Presentation URL</label><input value={supplier.video_url ?? ''} onChange={e => setSupplier({ ...supplier, video_url: e.target.value })} placeholder="YouTube / Vimeo / HeyGen / Synthesia URL" className={inputClass} /></div>
                 <div><label className={labelClass}>Website URL</label><input value={supplier.website_url ?? ''} onChange={e => setSupplier({ ...supplier, website_url: e.target.value })} placeholder="https://yourbrand.com" className={inputClass} /></div>

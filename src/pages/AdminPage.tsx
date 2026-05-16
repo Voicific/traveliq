@@ -11,6 +11,15 @@ import {
 } from '../services/sheetsService.ts';
 import type { ManagedBlogPost } from '../services/sheetsService.ts';
 
+interface SupplierAccount {
+  id: string;
+  email: string;
+  full_name: string | null;
+  company_name: string | null;
+  is_approved: boolean | null;
+  created_at: string;
+}
+
 interface AffiliateApplication {
   id: string;
   created_at: string;
@@ -63,6 +72,7 @@ const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<
   const [isGeneratingLong, setIsGeneratingLong] = useState(false);
   const [isScraping, setIsScraping] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState(false);
+  const [logoUploading, setLogoUploading] = useState(false);
   const [processingFiles, setProcessingFiles] = useState<Array<{ name: string; status: 'processing' | 'success' | 'error'; message?: string }>>([]);
 
   useEffect(() => {
@@ -84,12 +94,24 @@ const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setFormData(prev => ({ ...prev, logoUrl: reader.result as string }));
-      reader.readAsDataURL(file);
+    if (!file) return;
+    setLogoUploading(true);
+    try {
+      const ext = file.name.split('.').pop() ?? 'png';
+      const path = `logos/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: uploadError } = await supabase.storage
+        .from('supplier-logos')
+        .upload(path, file, { upsert: true, contentType: file.type });
+      if (uploadError) throw uploadError;
+      const { data: { publicUrl } } = supabase.storage.from('supplier-logos').getPublicUrl(path);
+      setFormData(prev => ({ ...prev, logoUrl: publicUrl }));
+    } catch (err: any) {
+      alert(`Upload failed: ${err.message}. Paste a URL instead (e.g. from your GitHub Public-Imgs repo).`);
+    } finally {
+      setLogoUploading(false);
+      e.target.value = '';
     }
   };
 
@@ -185,7 +207,19 @@ const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<
         <div><div className={labelContainerClass}><label className={labelClass}>Name</label><Tooltip text="The official name of the supplier." /></div><input type="text" name="name" value={formData.name} onChange={handleChange} required className={inputClass} /></div>
         <div><div className={labelContainerClass}><label className={labelClass}>Type</label><Tooltip text="Category of the supplier." /></div><select name="type" value={formData.type} onChange={handleChange} className={inputClass}>{Object.values(SupplierType).map(t => <option key={t} value={t}>{t}</option>)}</select></div>
       </div>
-      <div><div className={labelContainerClass}><label className={labelClass}>Logo URL</label><Tooltip text="Direct link to the supplier's logo, or upload a file." /></div><div className="flex items-center gap-2 mt-1"><input type="text" name="logoUrl" value={formData.logoUrl} onChange={handleChange} required className={inputClass + ' flex-grow'} /><label htmlFor="logoUpload" className="cursor-pointer bg-brand-light/10 text-white font-bold py-2 px-4 rounded-md hover:bg-brand-light/20 whitespace-nowrap">Upload</label><input type="file" id="logoUpload" onChange={handleFileChange} accept="image/*" className="hidden" /></div></div>
+      <div>
+        <div className={labelContainerClass}><label className={labelClass}>Logo URL</label><Tooltip text="Paste a GitHub Public-Imgs URL, or upload a file to Supabase Storage." /></div>
+        <div className="flex items-center gap-2 mt-1">
+          <input type="text" name="logoUrl" value={formData.logoUrl} onChange={handleChange} required placeholder="https://raw.githubusercontent.com/…" className={inputClass + ' flex-grow'} />
+          <label htmlFor="logoUpload" className={`cursor-pointer font-bold py-2 px-4 rounded-md whitespace-nowrap text-sm transition-colors ${logoUploading ? 'bg-brand-light/5 text-gray-500 cursor-not-allowed' : 'bg-brand-light/10 text-cyan-400 hover:bg-brand-light/20'}`}>
+            {logoUploading ? 'Uploading…' : 'Upload file'}
+          </label>
+          <input type="file" id="logoUpload" onChange={handleFileChange} accept="image/*" className="hidden" disabled={logoUploading} />
+        </div>
+        {formData.logoUrl && (
+          <img src={formData.logoUrl} alt="Logo preview" className="mt-2 h-10 w-10 rounded-full object-cover border border-cyan-400/20" onError={e => (e.currentTarget.style.display = 'none')} />
+        )}
+      </div>
       <div><div className={labelContainerClass}><label className={labelClass}>Banner URL</label><Tooltip text="Wide-format image for the profile page." /></div><input type="text" name="bannerUrl" value={formData.bannerUrl} onChange={handleChange} required className={inputClass} /></div>
       <div><div className={labelContainerClass}><label className={labelClass}>Video Presentation URL</label><Tooltip text="Optional: YouTube, Vimeo, HeyGen, or Synthesia embed link. Displayed on the supplier profile page." /></div><input type="url" name="videoUrl" value={formData.videoUrl} onChange={handleChange} placeholder="https://www.youtube.com/watch?v=... or Vimeo / HeyGen URL" className={inputClass} /></div>
       <div><div className={labelContainerClass}><label className={labelClass}>Website URL</label><Tooltip text="The supplier's official website." /></div><input type="url" name="websiteUrl" value={formData.websiteUrl} onChange={handleChange} placeholder="https://example.com" className={inputClass} /></div>
@@ -576,7 +610,7 @@ const SetupInstructions: React.FC<{ onDismiss: () => void }> = ({ onDismiss }) =
 
 // ─── Main Admin Page ───────────────────────────────────────────────────────────
 
-type Tab = 'suppliers' | 'leads' | 'blog' | 'affiliates';
+type Tab = 'suppliers' | 'leads' | 'blog' | 'affiliates' | 'supplier-accounts';
 
 const AdminPage: React.FC = () => {
   const { suppliers, addSupplier, updateSupplier, deleteSupplier, resetToSeedData, isLoading: isSuppliersLoading, loadStatus } = useSuppliers();
@@ -602,6 +636,11 @@ const AdminPage: React.FC = () => {
   const [affiliates, setAffiliates] = useState<AffiliateApplication[]>([]);
   const [affiliateLoading, setAffiliateLoading] = useState(false);
   const [affiliateLoaded, setAffiliateLoaded] = useState(false);
+
+  // Supplier accounts state
+  const [supplierAccounts, setSupplierAccounts] = useState<SupplierAccount[]>([]);
+  const [supplierAccountsLoading, setSupplierAccountsLoading] = useState(false);
+  const [supplierAccountsLoaded, setSupplierAccountsLoaded] = useState(false);
 
   // Shared notification
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -708,6 +747,40 @@ const AdminPage: React.FC = () => {
       loadAffiliates();
     }
   }, [activeTab, affiliateLoaded, loadAffiliates]);
+
+  const loadSupplierAccounts = useCallback(async () => {
+    setSupplierAccountsLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, email, full_name, company_name, is_approved, created_at')
+        .eq('role', 'supplier')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      setSupplierAccounts((data ?? []) as SupplierAccount[]);
+      setSupplierAccountsLoaded(true);
+    } catch (err: any) {
+      showNotification('error', `Failed to load supplier accounts: ${err.message}`);
+    } finally {
+      setSupplierAccountsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === 'supplier-accounts' && !supplierAccountsLoaded) {
+      loadSupplierAccounts();
+    }
+  }, [activeTab, supplierAccountsLoaded, loadSupplierAccounts]);
+
+  const handleSupplierApproval = async (id: string, is_approved: boolean) => {
+    const { error } = await supabase
+      .from('profiles')
+      .update({ is_approved })
+      .eq('id', id);
+    if (error) { showNotification('error', `Failed: ${error.message}`); return; }
+    setSupplierAccounts(prev => prev.map(a => a.id === id ? { ...a, is_approved } : a));
+    showNotification('success', is_approved ? 'Supplier approved — they can now access the dashboard.' : 'Access revoked.');
+  };
 
   const handleAffiliateStatus = async (id: string, status: 'approved' | 'rejected' | 'pending') => {
     const { error } = await supabase
@@ -820,6 +893,9 @@ const AdminPage: React.FC = () => {
           <button className={tabClass('blog')} onClick={() => setActiveTab('blog')}>Blog</button>
           <button className={tabClass('affiliates')} onClick={() => setActiveTab('affiliates')}>
             Affiliates {affiliates.filter(a => a.status === 'pending').length > 0 && <span className="ml-1.5 bg-amber-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">{affiliates.filter(a => a.status === 'pending').length}</span>}
+          </button>
+          <button className={tabClass('supplier-accounts')} onClick={() => setActiveTab('supplier-accounts')}>
+            Supplier Accounts {supplierAccounts.filter(a => a.is_approved === false || a.is_approved === null).length > 0 && <span className="ml-1.5 bg-amber-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">{supplierAccounts.filter(a => a.is_approved === false || a.is_approved === null).length}</span>}
           </button>
         </div>
 
@@ -1012,6 +1088,98 @@ const AdminPage: React.FC = () => {
                 </table>
               </div>
             ) : null}
+          </section>
+        )}
+
+        {/* ── SUPPLIER ACCOUNTS TAB ── */}
+        {activeTab === 'supplier-accounts' && (
+          <section>
+            <div className="flex flex-wrap justify-between items-center mb-4 gap-3">
+              <div>
+                <h2 className="text-3xl font-bold font-heading text-white">
+                  Supplier Accounts
+                  {!supplierAccountsLoading && (
+                    <span className="ml-3 text-lg text-gray-400 font-normal">
+                      {supplierAccounts.filter(a => a.is_approved === false || a.is_approved === null).length} pending
+                    </span>
+                  )}
+                </h2>
+                <p className="text-sm text-gray-400 mt-1">Approve accounts to grant dashboard access. Suppliers see a "Pending Approval" screen until approved.</p>
+              </div>
+              <button onClick={() => { setSupplierAccountsLoaded(false); loadSupplierAccounts(); }} disabled={supplierAccountsLoading} className="text-sm bg-white/10 hover:bg-white/20 text-white font-medium px-3 py-1.5 rounded-lg disabled:opacity-50 flex items-center gap-1">
+                {supplierAccountsLoading ? <LoadingSpinner className="h-4 w-4" /> : '↻'} Refresh
+              </button>
+            </div>
+
+            {supplierAccountsLoading ? (
+              <div className="flex justify-center py-16"><LoadingSpinner className="h-8 w-8 text-cyan-400" /></div>
+            ) : supplierAccounts.length === 0 ? (
+              <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 border border-cyan-400/10 rounded-lg p-16 text-center text-gray-400">
+                No supplier accounts yet. They'll appear here when suppliers register via the portal.
+              </div>
+            ) : (
+              <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 border border-cyan-400/10 shadow-lg rounded-lg overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-brand-light/10">
+                    <thead className="bg-[#0a1628]/50">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Registered</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Name</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Company</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Email</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Status</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-brand-light/10">
+                      {supplierAccounts.map(a => {
+                        const isPending = a.is_approved === false || a.is_approved === null;
+                        return (
+                          <tr key={a.id} className={`hover:bg-white/5 ${isPending ? 'bg-amber-900/5' : ''}`}>
+                            <td className="px-4 py-3 text-gray-400 text-xs whitespace-nowrap">
+                              {new Date(a.created_at).toLocaleDateString('en-GB')}
+                            </td>
+                            <td className="px-4 py-3 text-white font-medium whitespace-nowrap">
+                              {a.full_name || '—'}
+                            </td>
+                            <td className="px-4 py-3 text-gray-300 text-sm whitespace-nowrap">
+                              {a.company_name || '—'}
+                            </td>
+                            <td className="px-4 py-3 text-cyan-400 text-sm">
+                              <a href={`mailto:${a.email}`} className="hover:underline">{a.email}</a>
+                            </td>
+                            <td className="px-4 py-3 whitespace-nowrap">
+                              <span className={`px-2 py-0.5 inline-flex text-xs font-semibold rounded-full ${
+                                a.is_approved === true ? 'bg-green-900/50 text-green-300' : 'bg-amber-900/50 text-amber-300'
+                              }`}>
+                                {a.is_approved === true ? 'Approved' : 'Pending'}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3 text-sm font-medium whitespace-nowrap">
+                              {isPending ? (
+                                <button
+                                  onClick={() => handleSupplierApproval(a.id, true)}
+                                  className="bg-green-700 hover:bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-md transition-colors"
+                                >
+                                  Approve
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => handleSupplierApproval(a.id, false)}
+                                  className="text-xs text-gray-500 hover:text-red-400 transition-colors"
+                                >
+                                  Revoke access
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </section>
         )}
 
