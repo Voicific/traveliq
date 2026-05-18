@@ -12,6 +12,78 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: 'end-of-cold-sales-rep-outreach',
+    title: 'Every Agent Conversation Should Generate a Lead. Most Don\'t.',
+    date: 'May 18, 2026',
+    imageUrl: '/imgs/blog-agent-lead-capture-ai.jpg',
+    summary: 'Travel suppliers spend heavily on sales representatives to reach agents — then capture almost nothing from those interactions. AI Sales Assistants are changing the equation entirely, turning every agent conversation into a named lead.',
+    author: 'TravelIQ Team',
+    content: (
+      <>
+        <p>
+          The travel industry spends millions on sales representatives to reach agents. And then captures almost nothing from those interactions.
+        </p>
+        <p>
+          That is not a niche problem. It is the defining inefficiency of travel distribution — and it's been hiding in plain sight for decades.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">The Model That Doesn't Scale</h2>
+        <p>
+          A good sales representative is genuinely valuable. They build relationships, navigate complex group enquiries, and represent your brand at events with a warmth no chatbot will replicate. Nobody serious is arguing otherwise.
+        </p>
+        <p>
+          But here is what a sales representative cannot do: be in 40 places at once. Work fluently in six languages. Answer questions at 11pm on a Tuesday. Remember every conversation they have ever had and surface it as structured data.
+        </p>
+        <p>
+          A sales rep can carry 80 to 150 meaningful agent relationships before quality degrades. They cover a territory. They work office hours. And when they leave, they frequently take the relationships with them. At £60,000–£90,000 fully loaded per year, that's an expensive constraint.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">The Data Nobody Is Capturing</h2>
+        <p>
+          Here is the question every head of trade sales should ask themselves right now: of every agent who enquired about your product in the last twelve months — how many are a named contact in your pipeline?
+        </p>
+        <p>
+          Most suppliers would struggle to answer. Agents call general inboxes. They speak to reps at roadshows. They click through brochures. They ask questions — good, specific, intent-rich questions — and then they disappear, leaving no record, no follow-up trigger, nothing.
+        </p>
+        <p>
+          Meanwhile, every e-commerce retailer in the world can tell you which product a customer hovered over, for how long, and what they searched for next. Travel suppliers are operating a distribution model that produces almost no usable intelligence about the agents who represent them. The cost of that gap is invisible, which is exactly why it persists.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">What AI Actually Changes</h2>
+        <p>
+          An AI Sales Assistant does not replace your sales team. It does something your sales team has never been able to do: capture every single interaction.
+        </p>
+        <p>
+          Not traffic. Not page views. A name. An agency. An email. The exact product they were asking about. The specific questions your content didn't answer. That is a lead. Every time. Automatically.
+        </p>
+        <p>
+          And it is available around the clock, across the UK and Europe, in whatever language the agent prefers. When an agent in Lyon is building an itinerary on a Sunday afternoon and wants to know your group booking policy — your AI Sales Assistant is there. Your sales representative is not.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Better for Agents Too</h2>
+        <p>
+          This is not only a supplier story. Agents have always been underserved by supplier information. They spend hours chasing commission structures, ATOL protection status, live availability. Sales representatives are rarely reachable on demand. Supplier websites are usually built for consumers.
+        </p>
+        <p>
+          An AI Sales Assistant gives agents instant, accurate, trade-specific answers — on their terms, in their language, at any hour. Agents who get better information faster book with more confidence. That is not a hypothesis. It is how trust converts to bookings.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">The Asset Most Suppliers Are Not Building</h2>
+        <p>
+          The suppliers who win over the next decade will be those who own the agent relationship as a first-party data asset. Every agent interaction with your AI Sales Assistant adds to a GDPR-compliant database of trade professionals who have actively self-identified interest in your product. That database is yours. It compounds. It gets more valuable every month.
+        </p>
+        <p>
+          Compare that to paying commission to a platform that holds the agent relationship on your behalf — and charges you again every time you want to reach them.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">The Honest Conversation</h2>
+        <p>
+          Pair AI with your sales team, not against it. Sales representatives focus on strategic accounts and key market events. AI handles the long tail — 24 hours a day, generating qualified leads that your reps can follow up with full context.
+        </p>
+        <p>
+          That is a capacity conversation, not a cost-cutting one. The suppliers who move first will have twelve months of qualified pipeline whilst their competitors are still building from scratch.
+        </p>
+        <p className="mt-6 font-semibold text-cyan-400">
+          TravelIQ helps travel suppliers build that pipeline — through AI Sales Assistants that turn every agent interaction into a named lead. Find out how at traveliq.app
+        </p>
+      </>
+    ),
+  },
+  {
     id: 'multilingual-ai-travel-trade',
     title: 'Lost in Translation: How Multilingual AI Is Helping UK & European Suppliers Reach More Agents',
     date: 'May 3, 2026',
