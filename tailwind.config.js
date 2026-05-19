@@ -104,6 +104,10 @@ module.exports = {
 					'0%': { transform: 'translateX(0)' },
 					'100%': { transform: 'translateX(-50%)' },
 				},
+				'logo-scroll': {
+					'0%': { transform: 'translateX(0)' },
+					'100%': { transform: 'translateX(-50%)' },
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
@@ -113,6 +117,7 @@ module.exports = {
 				'fade-in-up-color-cycle': 'fade-in-up-color-cycle 3s ease-in-out infinite',
 				'slide-in': 'slide-in 0.8s ease-out forwards',
 				'news-scroll': 'news-scroll 30s linear infinite',
+			'logo-scroll': 'logo-scroll 30s linear infinite',
 			},
 		},
 	},

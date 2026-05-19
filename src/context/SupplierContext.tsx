@@ -75,7 +75,15 @@ export const SupplierProvider: React.FC<{ children: ReactNode }> = ({ children }
 
         if (error) throw error;
 
-        const loaded = (data || []).map(mapRowToSupplier);
+        const rawLoaded = (data || []).map(mapRowToSupplier);
+
+        // Remap Supabase UUIDs back to slug IDs for seed suppliers so that
+        // carousel links (which use slug IDs from constants.ts) resolve correctly.
+        const seedIdByName = Object.fromEntries(SEED_SUPPLIERS.map(s => [s.name, s.id]));
+        const loaded = rawLoaded.map(s => ({
+          ...s,
+          id: seedIdByName[s.name] ?? s.id,
+        }));
 
         const loadedNames = new Set(loaded.map(s => s.name));
         const missingSeedSuppliers = SEED_SUPPLIERS.filter(s => !loadedNames.has(s.name));

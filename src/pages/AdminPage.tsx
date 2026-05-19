@@ -101,14 +101,24 @@ const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<
     try {
       const ext = file.name.split('.').pop() ?? 'png';
       const path = `logos/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-      const { error: uploadError } = await supabase.storage
-        .from('supplier-logos')
-        .upload(path, file, { upsert: true, contentType: file.type });
+      const doUpload = () =>
+        supabase.storage.from('supplier-logos').upload(path, file, { upsert: true, contentType: file.type });
+
+      let { error: uploadError } = await doUpload();
+
+      // If bucket doesn't exist yet, create it (public) and retry once
+      if (uploadError && (uploadError.message?.toLowerCase().includes('bucket') || (uploadError as any).statusCode === 404 || (uploadError as any).statusCode === '404')) {
+        await supabase.storage.createBucket('supplier-logos', { public: true });
+        const retry = await doUpload();
+        uploadError = retry.error;
+      }
+
       if (uploadError) throw uploadError;
+
       const { data: { publicUrl } } = supabase.storage.from('supplier-logos').getPublicUrl(path);
       setFormData(prev => ({ ...prev, logoUrl: publicUrl }));
     } catch (err: any) {
-      alert(`Upload failed: ${err.message}. Paste a URL instead (e.g. from your GitHub Public-Imgs repo).`);
+      alert(`Logo upload failed: ${err.message ?? 'Unknown error'}. You can paste a direct image URL into the Logo URL field instead.`);
     } finally {
       setLogoUploading(false);
       e.target.value = '';
