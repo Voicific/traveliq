@@ -24,7 +24,7 @@ const SupplierCard: React.FC<SupplierCardProps> = ({ supplier }) => {
           <div className="flex items-center gap-4">
             <div className="relative bg-brand-light/90 p-1 rounded-full flex-shrink-0">
               <div className="absolute inset-0 rounded-full bg-cyan-400 blur-md opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
-              <img className="relative h-16 w-16 rounded-full object-contain opacity-95 group-hover:opacity-100 transition-all duration-300 transform group-hover:scale-105" src={supplier.logoUrl} alt={`${supplier.name} logo`} />
+              <img className="relative h-16 w-16 rounded-full object-contain opacity-95 group-hover:opacity-100 transition-all duration-300 transform group-hover:scale-105" src={supplier.logoUrl} alt={`${supplier.name} logo`} onError={(e) => { e.currentTarget.src = '/traveliq-ai-avatar.png'; }} />
             </div>
             <div>
               <h3 className="text-xl font-bold font-heading text-white">{supplier.name}</h3>
