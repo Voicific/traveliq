@@ -122,7 +122,7 @@ export const SEED_SUPPLIERS: Supplier[] = [
     id: 'four-seasons',
     name: 'Four Seasons',
     type: SupplierType.HotelResort,
-    logoUrl: '/images/four-seasons-logo.png',
+    logoUrl: '/imgs/Four_season logo.png',
     bannerUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop',
     shortDescription: 'World-renowned luxury hospitality, offering exceptional service and experiences in premier global destinations.',
     longDescription: 'Four Seasons Hotels and Resorts is a global leader in luxury hospitality, operating a portfolio of more than 100 hotels and resorts in major city centers and resort destinations in 47 countries. Known for its highly personalized 24-hour service, elegant accommodations, and focus on guest experience, Four Seasons is a preferred choice for discerning travelers. Our AI can provide details on specific properties, the Four Seasons Preferred Partner program, and exclusive amenities for agents to offer clients.',
