@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { SEED_SUPPLIERS } from '../constants.ts';
 
 const SupplierCarousel: React.FC = () => {
-  // Use static seed data so carousel always shows well-known logos regardless of DB state
+  // Use static seed data so the carousel always shows the demo supplier logos regardless of DB state
   const duplicatedSuppliers = [...SEED_SUPPLIERS, ...SEED_SUPPLIERS];
 
   return (

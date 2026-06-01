@@ -23,6 +23,7 @@ import ChatHistoryPage from './pages/ChatHistoryPage.tsx';
 import { VeeChatProvider } from './context/VeeChatContext.tsx';
 
 import SupplierChatbot from './components/SupplierChatbot.tsx';
+import CookieConsent from './components/CookieConsent.tsx';
 import BlogPage from './pages/BlogPage.tsx';
 import BlogPostPage from './pages/BlogPostPage.tsx';
 import AffiliateProgramPage from './pages/AffiliateProgramPage.tsx';
@@ -146,6 +147,7 @@ const AppContent: React.FC = () => {
         </button>
       )}
       <SupplierChatbot isOpen={isVeeChatOpen} onClose={closeVeeChat} />
+      <CookieConsent />
     </>
   );
 };

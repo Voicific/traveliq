@@ -656,7 +656,7 @@ export const blogPosts: BlogPost[] = [
         </p>
         <ul className="list-disc ml-6 mt-4 space-y-2">
             <li><strong>Instantaneous Knowledge:</strong> Access details in seconds.</li>
-            <li><strong>Guaranteed Accuracy:</strong> Sourced directly from the supplier.</li>
+            <li><strong>Accuracy you can trust:</strong> Answers come straight from the supplier's own content.</li>
             <li><strong>24/7 Availability:</strong> Your co-pilot never sleeps.</li>
         </ul>
         <p className="mt-8">

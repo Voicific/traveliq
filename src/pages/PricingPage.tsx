@@ -39,7 +39,7 @@ const PricingPage: React.FC = () => {
         <div className="relative max-w-4xl mx-auto animate-fade-in">
           <div className="inline-flex items-center gap-2 bg-cyan-400/10 border border-cyan-400/30 text-cyan-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-6">
             <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
-            Now serving suppliers across Europe
+            Built for travel suppliers across the UK and Europe
           </div>
           <h1 className="text-4xl sm:text-6xl font-extrabold font-heading text-white leading-tight drop-shadow-lg">
             Partnerships
@@ -78,8 +78,8 @@ const PricingPage: React.FC = () => {
             </p>
             <div className="mt-6 grid md:grid-cols-3 gap-6 text-left">
               <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 p-6 rounded-lg border border-cyan-400/10">
-                <h3 className="text-xl font-bold text-cyan-400">100% Accurate, Guaranteed</h3>
-                <p className="mt-2 text-gray-300 text-sm">Your AI learns exclusively from the content you provide. Every answer is accurate, verified, and perfectly on-brand — never improvised.</p>
+                <h3 className="text-xl font-bold text-cyan-400">Trained on your content for accurate, on-brand answers</h3>
+                <p className="mt-2 text-gray-300 text-sm">Your AI learns from the content you provide, so answers stay on-brand and grounded in your own material rather than improvised.</p>
               </div>
               <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 p-6 rounded-lg border border-cyan-400/10">
                 <h3 className="text-xl font-bold text-cyan-400">Multilingual by Design</h3>

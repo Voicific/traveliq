@@ -67,7 +67,6 @@ function createBlob(data:Float32Array):Blob{const l=data.length;const int16=new 
 // --- PRONUNCIATION CORRECTION ---
 const getPhoneticallyCorrectedText = (text: string): string => {
   return text
-    .replace(/\bEL AL\b/gi, 'el-AHL')
     .replace(/\bTUI\b/gi, 'Too-ee');
 };
 
@@ -389,11 +388,11 @@ Each supplier profile shows:
 - Their dedicated AI Sales Assistant (voice or chat)
 - The agent can click the chat button or speak directly to the supplier's AI — which answers questions specific to that supplier's products, policies, commissions, and routes
 
-**Example — British Airways:** An agent can ask "What's the commission structure for long-haul bookings?" and British Airways' AI answers instantly, accurately, from BA's own knowledge base. No hold music. No waiting for a BDM callback.
+**Example — Skyline Airways:** An agent can ask "What's the commission structure for long-haul bookings?" and Skyline Airways' AI answers instantly, accurately, from Skyline's own knowledge base. No hold music. No waiting for a sales rep callback.
 
-**Example — Royal Caribbean:** An agent asks about group booking policies or itinerary changes. Royal Caribbean's AI responds in seconds — in the agent's language if they're based in France or Germany.
+**Example — Azure Cruises:** An agent asks about group booking policies or itinerary changes. Azure Cruises' AI responds in seconds — in the agent's language if they're based in France or Germany.
 
-**Example — Four Seasons:** A luxury agent wants to know about agent rates and FAM trip availability. They speak directly to Four Seasons' dedicated AI and get an immediate, branded answer.
+**Example — The Meridian Collection:** A luxury agent wants to know about agent rates and FAM trip availability. They speak directly to The Meridian Collection's dedicated AI and get an immediate, branded answer.
 
 This is what agents experience on every supplier profile on TravelIQ. It's instant, verified, on-brand, and available at 3am on a Sunday.
 
@@ -476,18 +475,18 @@ Three tiers. All pricing is contact-us (no public figures — direct to a demo f
 ---
 
 ## SUPPLIERS CURRENTLY ON THE PLATFORM
-The following suppliers are featured on TravelIQ as **demonstration examples** — they showcase what a supplier's AI Sales Assistant looks and feels like on the platform. These are not all confirmed paying clients; they are demo profiles built to illustrate the platform's capabilities to prospective suppliers and agents.
+The following suppliers are featured on TravelIQ as **fictional demonstration profiles** — invented brands created to showcase what a supplier's AI Sales Assistant looks and feels like on the platform. They are not real companies and not paying clients; they exist purely to illustrate the platform's capabilities to prospective suppliers and agents.
 
-- Airlines: British Airways, Virgin Atlantic, Emirates, Qatar Airways, Malaysia Airlines, EL AL Israel Airlines
-- Hotels & Resorts: Ritz Carlton, Four Seasons, Leonardo Hotels, Prima Hotels
-- Cruise: Royal Caribbean
+- Airlines: Skyline Airways (flagship demo), Northwind Air
+- Hotels & Resorts: The Meridian Collection, Hartwell Hotels
+- Cruise: Azure Cruises, Coralline Cruise Line
 
-When an agent asks "is [supplier] on TravelIQ?", direct them to the [Suppliers](/suppliers) directory to explore the demo profiles.
+When an agent asks "is [supplier] on TravelIQ?", explain that the current profiles are fictional demos and direct them to the [Suppliers](/suppliers) directory to explore how the AI works.
 
 **Important — set expectations correctly:**
-- These are demo profiles to show what the platform can do — the AI draws on publicly available information about each supplier
-- If an agent asks a very specific trade question the AI can't answer, say: "These profiles are demonstration examples to show how the platform works — once a supplier is fully onboarded with their own trade content, their AI answers those specific questions directly."
-- When speaking to suppliers, use this as a selling point: "You can see exactly what your AI Sales Assistant will feel like for agents — these demos use public information, but once we load in your trade-specific content, commissions, policies, and FAQs, it becomes a genuinely powerful tool for your agent network."
+- These are fictional demo profiles to show what the platform can do — the AI draws on the made-up knowledge base built into each demo brand
+- If an agent asks a very specific trade question the AI can't answer, say: "These are demonstration profiles using invented brands to show how the platform works — once a real supplier is onboarded with their own trade content, their AI answers those specific questions directly."
+- When speaking to suppliers, use this as a selling point: "You can see exactly what your AI Sales Assistant will feel like for agents — these demos use fictional content, but once we load in your real trade-specific content, commissions, policies, and FAQs, it becomes a genuinely powerful tool for your agent network."
 
 ---
 
