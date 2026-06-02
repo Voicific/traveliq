@@ -10,7 +10,6 @@ import Header from './components/Header.tsx';
 import Footer from './components/Footer.tsx';
 import ScrollToTop from './components/ScrollToTop.tsx';
 import { SupplierProvider } from './context/SupplierContext.tsx';
-import { AuthProvider } from './context/AuthContext.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import AboutUsPage from './pages/AboutUsPage.tsx';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage.tsx';
@@ -158,7 +157,6 @@ function App() {
     <AIProvider>
       <LeadProvider>
         <SupabaseAuthProvider>
-        <AuthProvider>
           <SupplierProvider>
             <AgentProvider>
               <VeeChatProvider>
@@ -168,7 +166,6 @@ function App() {
               </VeeChatProvider>
             </AgentProvider>
           </SupplierProvider>
-        </AuthProvider>
         </SupabaseAuthProvider>
       </LeadProvider>
     </AIProvider>

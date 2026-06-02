@@ -89,15 +89,21 @@ export const SupplierProvider: React.FC<{ children: ReactNode }> = ({ children }
         const missingSeedSuppliers = SEED_SUPPLIERS.filter(s => !loadedNames.has(s.name));
 
         if (missingSeedSuppliers.length > 0) {
-          // Seed any missing demo suppliers (handles first load and cases where DB had non-seed data)
+          // Seed any missing demo suppliers (handles first load and cases where DB had non-seed data).
+          // Supplier writes are RLS-locked to admins, so for anonymous/non-admin visitors this insert
+          // will be rejected — that's expected. Treat it as non-fatal: fall back to whatever loaded.
           const rows = missingSeedSuppliers.map(s => ({ ...mapSupplierToRow(s), is_demo: true }));
           const { data: inserted, error: insertError } = await supabase
             .from('suppliers')
             .insert(rows)
             .select();
-          if (insertError) throw insertError;
-          const seeded = (inserted || []).map(mapRowToSupplier);
-          setSuppliers([...seeded, ...loaded]);
+          if (insertError) {
+            console.warn('Seeding missing suppliers skipped (writes are admin-only):', insertError.message);
+            setSuppliers(loaded);
+          } else {
+            const seeded = (inserted || []).map(mapRowToSupplier);
+            setSuppliers([...seeded, ...loaded]);
+          }
         } else {
           setSuppliers(loaded);
         }
