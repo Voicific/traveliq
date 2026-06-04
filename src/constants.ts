@@ -3,161 +3,142 @@ import { Supplier, SupplierType } from './types.ts';
 export const VEE_ELEVENLABS_AGENT_ID = 'agent_9701k60px56gezba55q83jamzhbk';
 export const VEE_ELEVENLABS_VOICE_ID = 'Hh0rE70WfnSFN80K8uJC';
 
+// NOTE: All suppliers below are FICTIONAL demo brands created to showcase the
+// TravelIQ AI Sales Assistant. They do not represent real companies. Logos use
+// neutral text placeholders (palette: navy #0a1628 / cyan #22d3ee) until branded
+// demo assets are supplied. "Skyline Airways" is the flagship demo profile and
+// carries a full agent-facing knowledge base.
 export const SEED_SUPPLIERS: Supplier[] = [
   {
-    id: 'british-airways',
-    name: 'British Airways',
+    id: 'skyline-airways',
+    name: 'Skyline Airways',
     type: SupplierType.Airline,
-    logoUrl: '/images/british-airways-logo.png',
+    logoUrl: 'https://placehold.co/280x110/0a1628/22d3ee/png?text=Skyline+Airways&font=montserrat',
     bannerUrl: 'https://images.unsplash.com/photo-1570299434827-c30b0a8c64b3?q=80&w=2070&auto=format&fit=crop',
-    shortDescription: 'The UK\'s flagship carrier, connecting travelers worldwide with premium service and a vast global route network.',
-    longDescription: 'British Airways, the United Kingdom\'s flagship airline, is renowned for its extensive global network and commitment to premium service. From its main hubs at London Heathrow and Gatwick, it serves hundreds of destinations worldwide. Travel agents can access information on its various cabin classes, including the luxurious First, the innovative Club World, World Traveller Plus, and World Traveller, as well as details on earning and redeeming Avios points through the Executive Club.',
-    avatarImageUrl: 'https://picsum.photos/seed/ba_avatar/512/512',
-    websiteUrl: 'https://www.britishairways.com',
+    shortDescription: 'A fictional flagship carrier connecting the UK and Europe to long-haul destinations with award-style service and a generous trade programme.',
+    longDescription: 'Skyline Airways is a demonstration airline created to showcase how TravelIQ\'s AI Sales Assistant supports travel agents. Operating from its primary hub at London Gateway (LGW-demo) with a secondary European base in Amsterdam, Skyline serves a fictional network of long-haul and short-haul destinations. It offers four cabins — First, Skyline Business, Premium and Economy — and a loyalty programme called SkyMiles Club. Ask the AI about routes, cabin features, baggage, fare rules, group bookings and trade commission.',
+    avatarImageUrl: 'https://picsum.photos/seed/skyline_avatar/512/512',
+    websiteUrl: '#',
     knowledgeBaseUrl: '',
-    knowledgeBaseText: '',
+    knowledgeBaseText: `SKYLINE AIRWAYS — TRAVEL TRADE KNOWLEDGE BASE (fictional demo content)
+
+ABOUT
+Skyline Airways is a fictional full-service carrier used to demonstrate the TravelIQ AI Sales Assistant. Primary hub: London Gateway (code SKG, demo). Secondary European hub: Amsterdam (code AMS-demo). Fleet: modern wide-body and narrow-body aircraft. All figures below are illustrative and for demonstration only.
+
+ROUTE NETWORK
+- Long-haul from London: New York, Toronto, Dubai, Singapore, Bangkok, Cape Town, Los Angeles.
+- Short/medium-haul from London & Amsterdam: Barcelona, Rome, Lisbon, Athens, Vienna, Dublin, Geneva.
+- Seasonal leisure routes (Apr–Oct): Faro, Palma, Heraklion, Dubrovnik.
+- Codeshare partners (fictional): Northwind Air (domestic US connections) and Coralline feeder routes.
+
+CABIN CLASSES
+1. First — private suites, lie-flat 200cm bed, direct aisle access, dine-on-demand. Available on long-haul wide-body only.
+2. Skyline Business — lie-flat seat, 1-2-1 layout, lounge access, fast-track security.
+3. Premium — wider seat, 38" pitch, enhanced meal service, priority boarding.
+4. Economy — 31" pitch, complimentary meal and bag on long-haul; hand baggage only on the lowest "Light" short-haul fare.
+
+BAGGAGE (illustrative)
+- First: 3 x 32kg checked, 2 x cabin. Business: 2 x 32kg, 2 x cabin. Premium: 2 x 23kg, 1 x cabin + personal item. Economy Classic: 1 x 23kg. Economy Light: cabin bag only (checked bag purchasable).
+- Excess/extra bags can be pre-purchased up to 4 hours before departure at a discount versus airport rates.
+
+FARE FAMILIES & RULES
+- Light: hand baggage only, no changes, no seat selection.
+- Classic: 1 checked bag, changes permitted for a fee + fare difference, standard seat selection.
+- Flex: 2 checked bags, free changes, free seat selection, refundable less an admin fee.
+- Infants (under 2) travel at 10% of the adult fare without a seat; children 2–11 receive a 25% discount in Economy and Premium.
+
+SKYMILES CLUB (loyalty)
+- Tiers: Blue, Silver, Gold, Platinum. Members earn miles by distance and fare family.
+- Silver and above: extra checked bag, priority check-in, lounge access on Business fares.
+- Miles can be redeemed for reward flights, upgrades and partner hotel stays.
+
+TRAVEL TRADE / AGENT INFORMATION
+- Standard trade commission: 7% on published Flex and Classic fares; 3% on Light fares (illustrative).
+- Group bookings (10+ passengers): dedicated desk, held seats for 14 days without deposit, complimentary tour-conductor seat for every 20 paying passengers.
+- Agents book via the Skyline Trade Portal (demo) or through major GDS using the fictional code "SK".
+- Name changes permitted up to 48 hours before departure on Classic/Flex for an admin fee.
+- Ancillary commission paid on pre-purchased seats, bags and lounge passes.
+
+COMMON AGENT QUESTIONS
+- "Can my client change a Light fare?" No — Light fares are non-changeable and non-refundable; recommend Classic if flexibility is needed.
+- "What's the baggage for a Premium passenger to New York?" 2 x 23kg checked plus a cabin bag and personal item.
+- "Is there a child discount?" Yes — 25% off Economy/Premium for ages 2–11; infants under 2 at 10% without a seat.
+- "How do groups hold seats?" 10+ passengers can hold seats for 14 days with no deposit via the group desk.
+
+CONTACT (demo)
+- Trade support: trade@skyline-demo.example (illustrative, not monitored).
+- Group desk: groups@skyline-demo.example (illustrative).
+All details above are fictional and provided to demonstrate AI-assisted agent support within TravelIQ.`,
     geminiVoiceName: 'Charon',
   },
   {
-    id: 'el-al-israel-airlines',
-    name: 'EL AL Israel Airlines',
+    id: 'northwind-air',
+    name: 'Northwind Air',
     type: SupplierType.Airline,
-    logoUrl: '/images/el-al-logo.png',
-    bannerUrl: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2074&auto=format&fit=crop',
-    shortDescription: 'Israel\'s national airline, known for world-class security, nonstop routes from London Heathrow and London Luton to Tel Aviv, and tailored service.',
-    longDescription: 'EL AL Israel Airlines is the national carrier of Israel, celebrated for its stringent security protocols, reliability and direct flights from London Heathrow and London Luton from the UK to Tel Aviv and from major cities worldwide. It offers a range of services for both business and leisure travelers, including a frequent flyer program, Matmid. Our AI can provide details on sales related issues for the travel trade.',
-    avatarImageUrl: '/images/el-al-logo.png',
-    websiteUrl: 'https://www.elal.com/eng/uk',
-    knowledgeBaseUrl: '',
-    knowledgeBaseText: '',
-    geminiVoiceName: 'Zephyr',
-    elevenLabsAgentId: 'agent_4301kcfn2ygeeh393v1mv46v40s0',
-    useElevenLabs: true,
-  },
-  {
-    id: 'virgin-atlantic',
-    name: 'Virgin Atlantic',
-    type: SupplierType.Airline,
-    logoUrl: '/images/virgin-atlantic-logo.png',
+    logoUrl: 'https://placehold.co/280x110/0a1628/22d3ee/png?text=Northwind+Air&font=montserrat',
     bannerUrl: 'https://images.unsplash.com/photo-1554992309-5a10f3747416?q=80&w=1974&auto=format&fit=crop',
-    shortDescription: 'An iconic British airline, offering stylish cabins, friendly service, and long-haul flights with a touch of fun.',
-    longDescription: 'Virgin Atlantic, founded by Sir Richard Branson, is known for its stylish and innovative approach to long-haul travel. Operating from London Heathrow and Manchester, the airline flies to key destinations across North America, the Caribbean, Africa, and Asia. It features unique cabin experiences like Upper Class with its iconic bar, Premium, and Economy. Our AI can help with route information, Flying Club loyalty program queries, and commission structures.',
-    avatarImageUrl: 'https://picsum.photos/seed/virgin_avatar/512/512',
-    websiteUrl: 'https://www.virginatlantic.com',
+    shortDescription: 'A fictional regional and short-haul airline offering friendly service and value fares across the UK and Europe.',
+    longDescription: 'Northwind Air is a demonstration short-haul carrier built to show how TravelIQ helps agents get fast answers. It operates a fictional point-to-point network across UK regional cities and European leisure destinations, with simple fare families and a focus on value. Ask the AI about routes, baggage, seat selection and trade booking.',
+    avatarImageUrl: 'https://picsum.photos/seed/northwind_avatar/512/512',
+    websiteUrl: '#',
     knowledgeBaseUrl: '',
     knowledgeBaseText: '',
     geminiVoiceName: 'Puck',
   },
   {
-    id: 'emirates',
-    name: 'Emirates',
-    type: SupplierType.Airline,
-    logoUrl: '/images/emirates-logo.png',
-    bannerUrl: 'https://images.unsplash.com/photo-1582794711333-6831d3f63b65?q=80&w=2070&auto=format&fit=crop',
-    shortDescription: 'Dubai\'s award-winning airline, famous for luxury onboard experiences, modern fleet, and extensive global connectivity.',
-    longDescription: 'Emirates is a world-renowned airline based in Dubai, celebrated for its luxury, innovation, and extensive global network. Flying one of the youngest fleets, including the iconic A380, it offers unparalleled onboard experiences like private suites in First Class and the Onboard Lounge. Its hub in Dubai provides seamless connections to over 150 destinations. Ask our AI about its Skywards loyalty program, chauffeur-drive services, and multi-stopover options.',
-    avatarImageUrl: 'https://picsum.photos/seed/emirates_avatar/512/512',
-    websiteUrl: 'https://www.emirates.com',
+    id: 'azure-cruises',
+    name: 'Azure Cruises',
+    type: SupplierType.CruiseLine,
+    logoUrl: 'https://placehold.co/280x110/0a1628/22d3ee/png?text=Azure+Cruises&font=montserrat',
+    bannerUrl: 'https://images.unsplash.com/photo-1563404227-993c8cf14227?q=80&w=2070&auto=format&fit=crop',
+    shortDescription: 'A fictional premium cruise line sailing Mediterranean and Caribbean itineraries with modern ships and inclusive fares.',
+    longDescription: 'Azure Cruises is a demonstration cruise brand created for TravelIQ. Its fictional fleet sails Mediterranean, Caribbean and Northern Europe itineraries, with cabin grades from interior staterooms to suites. Ask the AI about itineraries, cabin types, dining, inclusions and agent commission.',
+    avatarImageUrl: 'https://picsum.photos/seed/azure_avatar/512/512',
+    websiteUrl: '#',
     knowledgeBaseUrl: '',
     knowledgeBaseText: '',
     geminiVoiceName: 'Kore',
   },
   {
-    id: 'qatar-airways',
-    name: 'Qatar Airways',
-    type: SupplierType.Airline,
-    logoUrl: '/images/qatar-airways-logo.png',
-    bannerUrl: 'https://images.unsplash.com/photo-1619462879836-8a71d02a3f89?q=80&w=2070&auto=format&fit=crop',
-    shortDescription: 'A 5-star airline, offering world-class service, Doha hub connectivity, and premium onboard comfort.',
-    longDescription: 'Qatar Airways, the state-owned flag carrier of Qatar, is a multiple award-winning, 5-star airline. From its hub at Hamad International Airport in Doha, it connects to over 160 destinations worldwide. It is acclaimed for its Qsuite in Business Class, offering a highly personalized and private experience. Our AI can provide details on its network, Privilege Club loyalty program, and multi-destination booking policies.',
-    avatarImageUrl: 'https://picsum.photos/seed/qatar_avatar/512/512',
-    websiteUrl: 'https://www.qatarairways.com',
+    id: 'coralline-cruise-line',
+    name: 'Coralline Cruise Line',
+    type: SupplierType.CruiseLine,
+    logoUrl: 'https://placehold.co/280x110/0a1628/22d3ee/png?text=Coralline+Cruise+Line&font=montserrat',
+    bannerUrl: 'https://images.unsplash.com/photo-1599640842225-85d111c60e6b?q=80&w=2070&auto=format&fit=crop',
+    shortDescription: 'A fictional boutique, small-ship cruise line focused on immersive coastal and expedition voyages.',
+    longDescription: 'Coralline Cruise Line is a demonstration small-ship brand for TravelIQ, specialising in fictional expedition and coastal sailings with an emphasis on destination immersion and relaxed onboard atmosphere. Ask the AI about expedition itineraries, suite categories, what\'s included and group rates.',
+    avatarImageUrl: 'https://picsum.photos/seed/coralline_avatar/512/512',
+    websiteUrl: '#',
     knowledgeBaseUrl: '',
     knowledgeBaseText: '',
     geminiVoiceName: 'Aoide',
   },
   {
-    id: 'malaysia-airlines',
-    name: 'Malaysia Airlines',
-    type: SupplierType.Airline,
-    logoUrl: '/images/malaysia-airlines-logo.png',
-    bannerUrl: 'https://images.unsplash.com/photo-1596779350144-124c9c7457d5?q=80&w=2070&auto=format&fit=crop',
-    shortDescription: 'Experience Malaysian Hospitality with world-class service to destinations across the globe.',
-    longDescription: 'Malaysia Airlines is the national carrier of Malaysia, famed for its signature Malaysian Hospitality. Operating from its main hub in Kuala Lumpur International Airport (KLIA), it is a member of the oneworld alliance, offering seamless connectivity to a vast network of destinations across Asia, Australia, Europe, and the Middle East. The airline provides a range of cabin classes including the luxurious Business Suite, a comfortable Business Class with lie-flat seats and a Chef-on-Call dining service, and a welcoming Economy Class. Key information for travel agents includes: The Enrich loyalty program allows members to earn and redeem miles for flights, upgrades, and other lifestyle rewards. For passenger queries, baggage allowance varies by fare type and destination. Check-in is available online, via mobile app, or at the airport. The airline offers comprehensive special assistance for passengers with specific needs, including medical requirements and special dietary meals. For up-to-date flight schedules, booking management, and detailed FAQ answers on topics like flight changes or refunds, the official website, malaysiaairlines.com, is the primary resource. The core of the experience is Malaysian Hospitality, ensuring a warm and welcoming journey for all passengers.',
-    avatarImageUrl: 'https://picsum.photos/seed/malaysia_avatar/512/512',
-    websiteUrl: 'https://www.malaysiaairlines.com',
-    knowledgeBaseUrl: '',
-    knowledgeBaseText: '',
-    geminiVoiceName: 'Fenrir',
-  },
-  {
-    id: 'ritz-carlton-hotels',
-    name: 'Ritz Carlton Hotels',
+    id: 'meridian-collection',
+    name: 'The Meridian Collection',
     type: SupplierType.HotelResort,
-    logoUrl: '/images/ritz-carlton-logo.png',
-    bannerUrl: 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=2070&auto=format&fit=crop',
-    shortDescription: 'Luxury redefined, delivering legendary service and unforgettable stays in the world\'s most iconic destinations.',
-    longDescription: 'The Ritz-Carlton is a global symbol of luxury, with an unwavering commitment to service excellence. With a portfolio of iconic hotels and resorts in premier destinations, it offers unforgettable experiences tailored to each guest. As part of Marriott Bonvoy, it allows for extensive loyalty benefits. Our AI rep can assist with property details, room types, and the STARS & Luminous travel advisor programs.',
-    avatarImageUrl: 'https://picsum.photos/seed/ritz_avatar/512/512',
-    websiteUrl: 'https://www.ritzcarlton.com',
-    knowledgeBaseUrl: '',
-    knowledgeBaseText: '',
-    geminiVoiceName: 'Asher',
-  },
-  {
-    id: 'leonardo-hotels',
-    name: 'Leonardo Hotels',
-    type: SupplierType.HotelResort,
-    logoUrl: '/images/leonardo-hotels-logo.png',
-    bannerUrl: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=2071&auto=format&fit=crop',
-    shortDescription: 'Modern European hotel chain, blending comfort and design across city and resort locations.',
-    longDescription: 'Leonardo Hotels is a prominent hotel chain with a strong presence across Europe and the UK. Known for its modern design, central locations, and excellent value, it caters to both business and leisure travelers. The brand family includes Leonardo Royal, Leonardo Boutique, and NYX Hotels. Our AI can provide information on property locations, amenities, and group booking policies.',
-    avatarImageUrl: 'https://picsum.photos/seed/leo_avatar/512/512',
-    websiteUrl: 'https://www.leonardo-hotels.com',
-    knowledgeBaseUrl: '',
-    knowledgeBaseText: '',
-    geminiVoiceName: 'Chara',
-  },
-  {
-    id: 'four-seasons',
-    name: 'Four Seasons',
-    type: SupplierType.HotelResort,
-    logoUrl: '/imgs/Four_season logo.png',
+    logoUrl: 'https://placehold.co/280x110/0a1628/22d3ee/png?text=The+Meridian+Collection&font=montserrat',
     bannerUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop',
-    shortDescription: 'World-renowned luxury hospitality, offering exceptional service and experiences in premier global destinations.',
-    longDescription: 'Four Seasons Hotels and Resorts is a global leader in luxury hospitality, operating a portfolio of more than 100 hotels and resorts in major city centers and resort destinations in 47 countries. Known for its highly personalized 24-hour service, elegant accommodations, and focus on guest experience, Four Seasons is a preferred choice for discerning travelers. Our AI can provide details on specific properties, the Four Seasons Preferred Partner program, and exclusive amenities for agents to offer clients.',
-    avatarImageUrl: 'https://picsum.photos/seed/fourseasons_avatar/512/512',
-    websiteUrl: 'https://www.fourseasons.com',
+    shortDescription: 'A fictional luxury hotel collection offering design-led city and resort properties across the UK and Europe.',
+    longDescription: 'The Meridian Collection is a demonstration luxury hotel group built for TravelIQ. Its fictional portfolio spans flagship city hotels and coastal resorts, with a preferred-partner programme for agents. Ask the AI about properties, room categories, amenities, rates and group bookings.',
+    avatarImageUrl: 'https://picsum.photos/seed/meridian_avatar/512/512',
+    websiteUrl: '#',
     knowledgeBaseUrl: '',
     knowledgeBaseText: '',
     geminiVoiceName: 'Icarus',
   },
   {
-    id: 'royal-caribbean',
-    name: 'Royal Caribbean',
-    type: SupplierType.CruiseLine,
-    logoUrl: '/images/royal-caribbean-logo.png',
-    bannerUrl: 'https://images.unsplash.com/photo-1563404227-993c8cf14227?q=80&w=2070&auto=format&fit=crop',
-    shortDescription: 'Innovative ships, global destinations, and unforgettable adventures for travelers of all ages on the high seas.',
-    longDescription: 'Royal Caribbean International is known for driving innovation at sea and has continuously redefined cruise vacationing since its launch in 1969. Each successive class of ships is an architectural marvel and pushes the envelope of what is possible on a cruise ship. The cruise line\'s itineraries call on more than 270 destinations in 60 countries on six continents. Our AI can assist with ship details, itineraries, and booking information through CruisingPower.',
-    avatarImageUrl: 'https://picsum.photos/seed/rc_avatar/512/512',
-    websiteUrl: 'https://www.royalcaribbean.com',
-    knowledgeBaseUrl: '',
-    knowledgeBaseText: '',
-    geminiVoiceName: 'Zephyr',
-  },
-  {
-    id: 'prima-hotels',
-    name: 'Prima Hotels',
+    id: 'hartwell-hotels',
+    name: 'Hartwell Hotels',
     type: SupplierType.HotelResort,
-    logoUrl: '/images/prima-hotels-logo.jpeg',
-    bannerUrl: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=2070&auto=format&fit=crop',
-    shortDescription: 'Leading Israeli hotel chain offering premium accommodations and exceptional service in prime locations across Israel.',
-    longDescription: 'Prima Hotels is one of Israel\'s premier hotel chains, with a distinguished portfolio of properties in Tel Aviv, Jerusalem, Eilat, and other key destinations throughout Israel. The Prima Hotels Group combines modern hospitality with authentic Israeli warmth, catering to both business and leisure travelers. Their diverse range of hotels includes city hotels, boutique properties, and resort accommodations, each designed to provide guests with comfort, convenience, and personalized service. The chain is renowned for its strategic locations, contemporary design, and commitment to excellence. Prima Hotels offers comprehensive amenities including business centers, fitness facilities, spa services, and fine dining options. For travel agents, Prima Hotels provides competitive rates, group booking capabilities, and dedicated support for organizing conferences, events, and group travel. The hotels are well-connected to major tourist attractions, business districts, and transportation hubs, making them an ideal choice for travelers seeking quality accommodations in Israel. Prima Hotels is committed to sustainable tourism practices and actively supports local communities.',
-    avatarImageUrl: 'https://picsum.photos/seed/prima_avatar/512/512',
-    websiteUrl: 'https://www.prima-hotels-israel.com',
+    logoUrl: 'https://placehold.co/280x110/0a1628/22d3ee/png?text=Hartwell+Hotels&font=montserrat',
+    bannerUrl: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=2071&auto=format&fit=crop',
+    shortDescription: 'A fictional mid-market hotel chain blending comfort, value and central locations across UK and European cities.',
+    longDescription: 'Hartwell Hotels is a demonstration hotel chain for TravelIQ, offering fictional city-centre and airport properties aimed at both business and leisure travellers. Ask the AI about locations, room types, amenities, corporate rates and group booking policies.',
+    avatarImageUrl: 'https://picsum.photos/seed/hartwell_avatar/512/512',
+    websiteUrl: '#',
     knowledgeBaseUrl: '',
     knowledgeBaseText: '',
-    geminiVoiceName: 'Puck',
+    geminiVoiceName: 'Chara',
   },
 ];

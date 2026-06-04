@@ -12,6 +12,11 @@ const Footer: React.FC = () => {
     openContactModal();
   };
 
+  const handleCookiePrefsClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.dispatchEvent(new Event('traveliq:open-cookie-settings'));
+  };
+
   const handleFaqClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     // Check if we are already on the homepage
@@ -55,6 +60,7 @@ const Footer: React.FC = () => {
               <li><a href="#" onClick={handleContactClick} className="text-base text-gray-200 hover:text-cyan-400 transition-colors">Contact</a></li>
               <li><Link to="/privacy" className="text-base text-gray-200 hover:text-cyan-400 transition-colors">Privacy Policy</Link></li>
               <li><Link to="/terms" className="text-base text-gray-200 hover:text-cyan-400 transition-colors">Terms & Conditions</Link></li>
+              <li><a href="#" onClick={handleCookiePrefsClick} className="text-base text-gray-200 hover:text-cyan-400 transition-colors">Cookie Preferences</a></li>
               <li><a href="#faqs" onClick={handleFaqClick} className="text-base text-gray-200 hover:text-cyan-400 transition-colors">FAQs</a></li>
               <li><Link to="/login" className="text-base text-gray-200 hover:text-cyan-400 transition-colors">Admin Login</Link></li>
             </ul>

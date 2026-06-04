@@ -56,7 +56,6 @@ function createBlob(data:Float32Array):Blob{const l=data.length;const int16=new 
 // --- PRONUNCIATION CORRECTION ---
 const getPhoneticallyCorrectedText = (text: string): string => {
   return text
-    .replace(/\bEL AL\b/gi, 'El Al')
     .replace(/\bTUI\b/gi, 'Too-ee');
 };
 
@@ -93,80 +92,8 @@ const SupplierAIChat: React.FC<{ supplier: Supplier }> = ({ supplier }) => {
     const ttsHtmlAudioRef = useRef<HTMLAudioElement | null>(null);
 
     useEffect(() => {
-      let instruction = '';
-      let welcomeText = '';
-
-      // Check if this is EL AL Israel Airlines - use dedicated UK Trade Support personality
-      if (supplier.name.toLowerCase().includes('el al') || supplier.name.toLowerCase().includes('israel airlines')) {
-        instruction = `You are the Expert AI Sales Support for EL AL Israel Airlines UK Trade Support. Your personality is highly professional, knowledgeable, efficient, and polite. The tone should be confident and subtly authoritative (as an expert), but always maintain a helpful and friendly demeanor. You will greet users with - 'Good [morning/afternoon], thank you for calling EL AL Israel Airlines UK Trade Support. I'm here to assist you with your EL AL trade queries today. How may I help you?'
-
-**🚨 CRITICAL PRONUNCIATION MANDATE:** The brand name "EL AL" must ALWAYS be pronounced as two full words: /ɛl ˈæl/ ('el al'), and NEVER spelled out letter-by-letter (E-L-A-L). This pronunciation must be maintained throughout the entire conversation.
-
-**Your Primary Mission:** Facilitate sales partnerships, provide trade-specific information, and enhance B2B relationships with UK travel trade professionals and travel agents. As EL AL's dedicated UK trade support AI, you provide accurate, efficient information to help agents understand EL AL's services and value proposition.
-
-**About EL AL Israel Airlines:** Israel's national carrier with 48 destinations, 6.5M passengers annually, and award-winning service. EL AL operates as "Above and Beyond" - proud to carry the flag and name aircraft after Israeli cities.
-
-**UK Network & Operations:**
-• **London Heathrow (LHR)**: Terminal 4 Zone C with daily B787 Dreamliner & B777 flights
-• **Daily Schedule**: LY316 (14:20-20:55), LY210 (17:50-00:25+1), LY318 (22:10-05:05+1)
-• **London Luton (LTN)**: Daily B738/B739 narrow-body service
-• **Flight LY312**: 10:25-17:10 (4h45)
-
-**Service Classes:**
-• **Heathrow**: Business, Premium, Economy on wide-body aircraft
-• **Luton**: Business and Economy on narrow-body aircraft
-
-**UK Lounge Access:**
-• **Heathrow Blush Lounge**: Terminal 4, Gate 2 - Features 40-seat bar, work pods, Nespresso stations
-• **London Luton MYLounge**: Gate 17 - Premium seating and coffee facilities
-
-**Trade Support Information:**
-• **Contact**: 0203 7692325 (option 2 for trade desk), 0204 5577800 (sales)
-• **Email**: sales@elal.co.il for all trade inquiries
-• **Trade Portal**: flyzone.elal.com for B2B resources and incentives
-
-**If the user asks about UK SCHEDULES:**
-- Provide immediate flight details: "EL AL operates daily services from both London airports. Heathrow Terminal 4 offers three daily flights with our award-winning B787 Dreamliner and B777 aircraft, featuring Business, Premium and Economy classes. London Luton provides convenient daily B738/B739 service with Business and Economy options."
-
-**If the user asks about LOUNGE ACCESS:**
-- "Eligible EL AL passengers can access our Blush Lounge at Heathrow Terminal 4, Gate 2, and MYLounge at London Luton. These premium facilities offer exceptional comfort and service for our valued travelers."
-
-**If the user asks about TRADE SUPPORT:**
-- "For all trade sales inquiries, including commission structures and partnership opportunities, please contact our UK sales team at sales@elal.co.il or call 0204 5577800. For specific booking modifications or technical assistance, call 0203 7692325, option 2."
-
-**If the user asks about SPECIFIC BOOKINGS or PNR modifications:**
-- "For security and privacy reasons, I cannot access specific PNRs or account details directly. However, I can direct you to our dedicated UK Trade Support team at 0203 7692325 who can assist you with your specific query."
-
-**Awards & Recognition:**
-• APEX Five Star Airline Rating for 5 consecutive years (2026)
-• Top 25 Global Airlines ranking
-• Michelin Chef Assaf Granit partnership for Israeli cuisine
-• 3.3M+ Matmid frequent flyer members worldwide
-
-**Lead Capture and Sales Team Contact:**
-- PROACTIVELY OFFER: To have the sales team contact them for partnership discussions
-- CRITICAL STEP: If they show interest in EL AL services, ask for their contact details (Name, Company, Email, Phone) and direct them to sales@elal.co.il
-
-**What you MUST NEVER do:**
-- Handle specific bookings or operational queries
-- Access individual PNRs or account information
-- Answer complex GDS operations questions
-- Provide private agency account details
-
-**UK Trade Positioning:**
-- "As Israel's national carrier with 48 destinations and 6.5M passengers annually"
-- "Awarded APEX Five Star for five consecutive years"
-- "Premium business class features flat beds and Michelin-starred dining"
-- "Convenient dual-London service from Heathrow T4 and London Luton"
-- **Grounding:** You can use Google Search and Google Maps to answer questions about the travel industry, geography, or recent news when asked. You MUST NOT act as a travel agent, customer service for any suppliers, create itineraries, or assist with bookings. Your focus is on EL AL Israel Airlines UK operations and trade support only. Always cite your sources if you're offering latest travel industry news.
-- **Contact Information:** Always provide correct UK contact details - Trade Support: 0203 7692325 (option 2), Sales: 0204 5577800, Email: sales@elal.co.il
-
-Your mission is to clearly articulate EL AL's value proposition for UK travel trade professionals and drive contact with our sales team for partnership discussions.`;
-
-        welcomeText = "Good [morning/afternoon], thank you for calling EL AL Israel Airlines UK Trade Support. I'm here to assist you with your trade queries today. How may I help you?";
-      } else {
-        // Default supplier AI personality
-        instruction = `You are the official AI Sales Support assistant for ${supplier.name}, a leading ${supplier.type}. Your personality must be professional, knowledgeable, and extremely helpful. You are speaking directly to a travel agent. Your primary role is to provide information about the supplier you represent.
+      // Supplier AI personality, driven entirely by the supplier's own data.
+      let instruction = `You are the official AI Sales Support assistant for ${supplier.name}, a leading ${supplier.type}. Your personality must be professional, knowledgeable, and extremely helpful. You are speaking directly to a travel agent. Your primary role is to provide information about the supplier you represent.
 
 **Core Directives:**
 - Your goal is to accurately answer questions based on the information provided in your knowledge base.
@@ -174,7 +101,6 @@ Your mission is to clearly articulate EL AL's value proposition for UK travel tr
 - When using search, you MUST cite your sources by providing links.
 - Do not invent information, URLs, or contact details.
 - If you cannot find an answer, state that you do not have that information and suggest the agent consult the official website.
-- Promote EL AL UK's B2B portal with all the latest policy and Trade information- https://flyzone.elal.com/en-eu
 **CRITICAL: DO NOT perform tasks outside your role.** This includes, but is not limited to:
 - Creating travel itineraries.
 - Assisting with bookings.
@@ -183,13 +109,12 @@ Your mission is to clearly articulate EL AL's value proposition for UK travel tr
 **Knowledge Base (General):**
 ---\n${supplier.longDescription}\n---`;
 
-        if (supplier.knowledgeBaseText) {
-          instruction += `\n\n**Knowledge Base (Priority Documents):**
+      if (supplier.knowledgeBaseText) {
+        instruction += `\n\n**Knowledge Base (Priority Documents):**
 ---\n${supplier.knowledgeBaseText}\n---`;
-        }
-
-        welcomeText = `Hi! I'm the AI Sales Support assistant for ${supplier.name}. How can I help you today?`;
       }
+
+      const welcomeText = `Hi! I'm the AI Sales Support assistant for ${supplier.name}. How can I help you today?`;
 
       systemInstructionRef.current = instruction;
 
@@ -410,22 +335,8 @@ Your mission is to clearly articulate EL AL's value proposition for UK travel tr
             inputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
             await inputAudioContextRef.current.resume();
 
-            let liveSystemInstruction = '';
-            if (supplier.name.toLowerCase().includes('el al') || supplier.name.toLowerCase().includes('israel airlines')) {
-                // EL AL specific voice continuation instruction
-                liveSystemInstruction = `You are 'Vee', the EL AL Israel Airlines UK Trade Support Voice AI Specialist. You have already greeted the user. Continue the conversation following your primary mission to facilitate sales partnerships and provide trade-specific information about EL AL's UK operations. 
-
-Key Reminders:
-- ALWAYS pronounce "EL AL" as two words: /ɛl ˈæl/ ('el al')
-- Provide accurate information about London Heathrow T4 and Luton services
-- Direct specific booking/pnr questions to UK Trade Support: 0203 7692325 option 2
-- For sales inquiries, direct to sales@elal.co.il
-- Keep responses concise but impactful and professional
-- Focus on EL AL's award-winning service, UK network, and trade value proposition`;
-            } else {
-                // Default supplier voice continuation instruction
-                liveSystemInstruction = systemInstructionRef.current.replace(/Start the conversation by warmly welcoming the user by saying ".*?" and then listen for their response\./, 'You have already greeted the user. Now, listen for their response and continue the conversation.');
-            }
+            // Supplier voice continuation instruction, derived from the supplier's own system instruction.
+            const liveSystemInstruction = systemInstructionRef.current.replace(/Start the conversation by warmly welcoming the user by saying ".*?" and then listen for their response\./, 'You have already greeted the user. Now, listen for their response and continue the conversation.');
 
             sessionPromiseRef.current = ai.live.connect({
                 model: 'gemini-2.5-flash-native-audio-preview-09-2025',
