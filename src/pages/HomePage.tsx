@@ -26,31 +26,18 @@ const NewsTicker: React.FC = () => {
                 { headline: "Sustainable travel initiatives gaining momentum", link: "https://www.sustainable-travel-international.org/" }
             ];
 
-            const SERPER_API_KEY = import.meta.env.VITE_SERPER_API_KEY;
-
-            if (!SERPER_API_KEY || SERPER_API_KEY.includes('demo_key_replace_with_real') || SERPER_API_KEY.includes('YOUR_SERPER_API_KEY')) {
-                 console.warn("SERPER_API_KEY is not configured. Using fallback news articles.");
-                 setNews(fallbackNews);
-                 return;
-            }
-
             try {
-                const response = await fetch('https://google.serper.dev/news', {
+                // The Serper API key now lives server-side in the Cloudflare Pages
+                // Function at /api/news. If it isn't configured (503) or the function
+                // isn't deployed (404, e.g. plain `vite dev`), we fall back to the
+                // hardcoded headlines below.
+                const response = await fetch('/api/news', {
                     method: 'POST',
-                    headers: {
-                        'X-API-KEY': SERPER_API_KEY,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        q: "travel trade news 2025 UK agents suppliers",
-                        gl: "uk",
-                        num: 10,
-                        tbs: "qdr:d" // Last day
-                    }),
+                    headers: { 'Content-Type': 'application/json' },
                 });
 
                 if (!response.ok) {
-                    throw new Error(`Serper API responded with status: ${response.status}`);
+                    throw new Error(`News proxy responded with status: ${response.status}`);
                 }
                 
                 const data = await response.json();

@@ -226,9 +226,10 @@ const SupplierAIChat: React.FC<{ supplier: Supplier }> = ({ supplier }) => {
 
         const correctedText = getPhoneticallyCorrectedText(text);
 
-        // Try ElevenLabs first when supplier opts in and a voice ID is configured
-        const elevenKey = import.meta.env.VITE_ELEVENLABS_API_KEY;
-        if (supplier.useElevenLabs && supplier.elevenLabsAgentId && elevenKey) {
+        // Try ElevenLabs first when supplier opts in and a voice ID is configured.
+        // The key now lives server-side in /api/elevenlabs-tts; if that proxy is
+        // unavailable the call throws and we fall back to Gemini TTS below.
+        if (supplier.useElevenLabs && supplier.elevenLabsAgentId) {
             try {
                 const audioUrl = await elevenLabsService.generateSpeech(correctedText, supplier.elevenLabsAgentId);
                 const audio = new Audio(audioUrl);
