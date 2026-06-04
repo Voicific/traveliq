@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext.tsx';
+import { useSupabaseAuth } from '../context/SupabaseAuthContext.tsx';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { LogoIcon } from '../components/icons/LogoIcon.tsx';
 
@@ -8,7 +8,7 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const auth = useAuth();
+  const { signIn } = useSupabaseAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -19,11 +19,11 @@ const LoginPage: React.FC = () => {
     setError('');
     setIsLoading(true);
     try {
-      const success = await auth.login(email, password);
-      if (success) {
-        navigate(from, { replace: true });
+      const { error: signInError } = await signIn(email, password);
+      if (signInError) {
+        setError(signInError || 'Invalid credentials. Please try again.');
       } else {
-        setError('Invalid credentials. Please try again.');
+        navigate(from, { replace: true });
       }
     } catch (err) {
       setError('An unexpected error occurred.');

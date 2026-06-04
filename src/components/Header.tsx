@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { LogoIcon } from './icons/LogoIcon.tsx';
 import { useUI } from '../context/UIContext.tsx';
-import { useAuth } from '../context/AuthContext.tsx';
+import { useSupabaseAuth } from '../context/SupabaseAuthContext.tsx';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,7 +12,8 @@ const Header: React.FC = () => {
   const [isMobileProductsDropdownOpen, setIsMobileProductsDropdownOpen] = useState(false);
 
   const { openContactModal } = useUI();
-  const { isAuthenticated, logout } = useAuth();
+  const { user, profile, signOut } = useSupabaseAuth();
+  const isAdmin = !!user && profile?.role === 'admin';
   const navigate = useNavigate();
 
   const closeMenu = () => {
@@ -23,9 +24,9 @@ const Header: React.FC = () => {
     setIsMobileProductsDropdownOpen(false);
   };
   
-  const handleLogout = () => {
+  const handleLogout = async () => {
     closeMenu();
-    logout();
+    await signOut();
     navigate('/');
   };
 
@@ -95,7 +96,7 @@ const Header: React.FC = () => {
       )}
       <NavLink to="/pricing" onClick={closeMenu} className={navLinkClassName}>Work With Us</NavLink>
       <NavLink to="/blog" onClick={closeMenu} className={navLinkClassName}>Blog</NavLink>
-      {isAuthenticated && (
+      {isAdmin && (
         <>
             <div className={isMobile ? "pt-4 mt-4 border-t border-brand-light/10" : "relative"}>
                 <button 
