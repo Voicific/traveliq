@@ -1,7 +1,11 @@
-import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect, useRef } from 'react';
 import { Supplier, SupplierType } from '../types.ts';
 import { SEED_SUPPLIERS } from '../constants.ts';
 import { supabase } from '../lib/supabase.ts';
+
+// Slug IDs used in constants.ts (e.g. 'british-airways') keyed by supplier name.
+// These never change at runtime since SEED_SUPPLIERS is a constant.
+const SEED_SLUG_BY_NAME = Object.fromEntries(SEED_SUPPLIERS.map(s => [s.name, s.id]));
 
 type LoadStatus = 'pending' | 'success' | 'error';
 
@@ -62,6 +66,10 @@ export const SupplierProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadStatus, setLoadStatus] = useState<LoadStatus>('pending');
+  // Maps the slug id used in local state (e.g. 'british-airways') → actual DB UUID.
+  // Needed because seed suppliers are remapped to slug IDs so carousel links work,
+  // but writes (UPDATE/DELETE) must use the real UUID or PostgreSQL rejects the cast.
+  const dbIdBySlug = useRef<Record<string, string>>({});
 
   useEffect(() => {
     const loadData = async () => {
@@ -79,11 +87,12 @@ export const SupplierProvider: React.FC<{ children: ReactNode }> = ({ children }
 
         // Remap Supabase UUIDs back to slug IDs for seed suppliers so that
         // carousel links (which use slug IDs from constants.ts) resolve correctly.
-        const seedIdByName = Object.fromEntries(SEED_SUPPLIERS.map(s => [s.name, s.id]));
-        const loaded = rawLoaded.map(s => ({
-          ...s,
-          id: seedIdByName[s.name] ?? s.id,
-        }));
+        // Record slug → UUID in dbIdBySlug so write operations can use the real UUID.
+        const loaded = rawLoaded.map(s => {
+          const slugId = SEED_SLUG_BY_NAME[s.name];
+          if (slugId && slugId !== s.id) dbIdBySlug.current[slugId] = s.id;
+          return slugId ? { ...s, id: slugId } : s;
+        });
 
         const loadedNames = new Set(loaded.map(s => s.name));
         const missingSeedSuppliers = SEED_SUPPLIERS.filter(s => !loadedNames.has(s.name));
@@ -101,7 +110,12 @@ export const SupplierProvider: React.FC<{ children: ReactNode }> = ({ children }
             console.warn('Seeding missing suppliers skipped (writes are admin-only):', insertError.message);
             setSuppliers(loaded);
           } else {
-            const seeded = (inserted || []).map(mapRowToSupplier);
+            const seeded = (inserted || []).map(row => {
+              const s = mapRowToSupplier(row as Record<string, unknown>);
+              const slugId = SEED_SLUG_BY_NAME[s.name];
+              if (slugId) dbIdBySlug.current[slugId] = s.id;
+              return slugId ? { ...s, id: slugId } : s;
+            });
             setSuppliers([...seeded, ...loaded]);
           }
         } else {
@@ -129,14 +143,18 @@ export const SupplierProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   const updateSupplier = async (updated: Supplier) => {
     const { id, ...rest } = updated;
+    // id may be a slug ('british-airways') for seed suppliers — translate to real DB UUID.
+    const dbId = dbIdBySlug.current[id] ?? id;
     const row = mapSupplierToRow(rest);
-    const { data, error } = await supabase.from('suppliers').update(row).eq('id', id).select().single();
+    const { data, error } = await supabase.from('suppliers').update(row).eq('id', dbId).select().single();
     if (error) throw error;
-    setSuppliers(prev => prev.map(s => s.id === id ? mapRowToSupplier(data) : s));
+    // Preserve the slug id in state so carousel links keep working.
+    setSuppliers(prev => prev.map(s => s.id === id ? { ...mapRowToSupplier(data), id } : s));
   };
 
   const deleteSupplier = async (id: string) => {
-    const { error } = await supabase.from('suppliers').delete().eq('id', id);
+    const dbId = dbIdBySlug.current[id] ?? id;
+    const { error } = await supabase.from('suppliers').delete().eq('id', dbId);
     if (error) throw error;
     setSuppliers(prev => prev.filter(s => s.id !== id));
   };
@@ -149,7 +167,15 @@ export const SupplierProvider: React.FC<{ children: ReactNode }> = ({ children }
       const rows = SEED_SUPPLIERS.map(s => ({ ...mapSupplierToRow(s), is_demo: true }));
       const { data, error } = await supabase.from('suppliers').insert(rows).select();
       if (error) throw error;
-      setSuppliers((data || []).map(mapRowToSupplier));
+      // Rebuild the slug→UUID map and remap IDs in state.
+      dbIdBySlug.current = {};
+      const seeded = (data || []).map(row => {
+        const s = mapRowToSupplier(row as Record<string, unknown>);
+        const slugId = SEED_SLUG_BY_NAME[s.name];
+        if (slugId) dbIdBySlug.current[slugId] = s.id;
+        return slugId ? { ...s, id: slugId } : s;
+      });
+      setSuppliers(seeded);
     } finally {
       setIsLoading(false);
     }
