@@ -4,16 +4,15 @@ export const VEE_ELEVENLABS_AGENT_ID = 'agent_9701k60px56gezba55q83jamzhbk';
 export const VEE_ELEVENLABS_VOICE_ID = 'Hh0rE70WfnSFN80K8uJC';
 
 // NOTE: All suppliers below are FICTIONAL demo brands created to showcase the
-// TravelIQ AI Sales Assistant. They do not represent real companies. Logos use
-// neutral text placeholders (palette: navy #0a1628 / cyan #22d3ee) until branded
-// demo assets are supplied. "Skyline Airways" is the flagship demo profile and
-// carries a full agent-facing knowledge base.
+// TravelIQ AI Sales Assistant. They do not represent real companies. Logos are
+// branded demo wordmarks served from /public/imgs. "Skyline Airways" is the
+// flagship demo profile and carries a full agent-facing knowledge base.
 export const SEED_SUPPLIERS: Supplier[] = [
   {
     id: 'skyline-airways',
     name: 'Skyline Airways',
     type: SupplierType.Airline,
-    logoUrl: 'https://placehold.co/280x110/0a1628/22d3ee/png?text=Skyline+Airways&font=montserrat',
+    logoUrl: '/imgs/skyline_airways_logo.svg',
     bannerUrl: 'https://images.unsplash.com/photo-1570299434827-c30b0a8c64b3?q=80&w=2070&auto=format&fit=crop',
     shortDescription: 'A fictional flagship carrier connecting the UK and Europe to long-haul destinations with award-style service and a generous trade programme.',
     longDescription: 'Skyline Airways is a demonstration airline created to showcase how TravelIQ\'s AI Sales Assistant supports travel agents. Operating from its primary hub at London Gateway (LGW-demo) with a secondary European base in Amsterdam, Skyline serves a fictional network of long-haul and short-haul destinations. It offers four cabins — First, Skyline Business, Premium and Economy — and a loyalty programme called SkyMiles Club. Ask the AI about routes, cabin features, baggage, fare rules, group bookings and trade commission.',
@@ -75,7 +74,7 @@ All details above are fictional and provided to demonstrate AI-assisted agent su
     id: 'northwind-air',
     name: 'Northwind Air',
     type: SupplierType.Airline,
-    logoUrl: 'https://placehold.co/280x110/0a1628/22d3ee/png?text=Northwind+Air&font=montserrat',
+    logoUrl: '/imgs/northwind_air_logo.png',
     bannerUrl: 'https://images.unsplash.com/photo-1554992309-5a10f3747416?q=80&w=1974&auto=format&fit=crop',
     shortDescription: 'A fictional regional and short-haul airline offering friendly service and value fares across the UK and Europe.',
     longDescription: 'Northwind Air is a demonstration short-haul carrier built to show how TravelIQ helps agents get fast answers. It operates a fictional point-to-point network across UK regional cities and European leisure destinations, with simple fare families and a focus on value. Ask the AI about routes, baggage, seat selection and trade booking.',
@@ -89,7 +88,7 @@ All details above are fictional and provided to demonstrate AI-assisted agent su
     id: 'azure-cruises',
     name: 'Azure Cruises',
     type: SupplierType.CruiseLine,
-    logoUrl: 'https://placehold.co/280x110/0a1628/22d3ee/png?text=Azure+Cruises&font=montserrat',
+    logoUrl: '/imgs/azure_cruises_logo.png',
     bannerUrl: 'https://images.unsplash.com/photo-1563404227-993c8cf14227?q=80&w=2070&auto=format&fit=crop',
     shortDescription: 'A fictional premium cruise line sailing Mediterranean and Caribbean itineraries with modern ships and inclusive fares.',
     longDescription: 'Azure Cruises is a demonstration cruise brand created for TravelIQ. Its fictional fleet sails Mediterranean, Caribbean and Northern Europe itineraries, with cabin grades from interior staterooms to suites. Ask the AI about itineraries, cabin types, dining, inclusions and agent commission.',
@@ -103,7 +102,7 @@ All details above are fictional and provided to demonstrate AI-assisted agent su
     id: 'coralline-cruise-line',
     name: 'Coralline Cruise Line',
     type: SupplierType.CruiseLine,
-    logoUrl: 'https://placehold.co/280x110/0a1628/22d3ee/png?text=Coralline+Cruise+Line&font=montserrat',
+    logoUrl: '/imgs/coralline_cruise_line_logo.png',
     bannerUrl: 'https://images.unsplash.com/photo-1599640842225-85d111c60e6b?q=80&w=2070&auto=format&fit=crop',
     shortDescription: 'A fictional boutique, small-ship cruise line focused on immersive coastal and expedition voyages.',
     longDescription: 'Coralline Cruise Line is a demonstration small-ship brand for TravelIQ, specialising in fictional expedition and coastal sailings with an emphasis on destination immersion and relaxed onboard atmosphere. Ask the AI about expedition itineraries, suite categories, what\'s included and group rates.',
@@ -117,7 +116,7 @@ All details above are fictional and provided to demonstrate AI-assisted agent su
     id: 'meridian-collection',
     name: 'The Meridian Collection',
     type: SupplierType.HotelResort,
-    logoUrl: 'https://placehold.co/280x110/0a1628/22d3ee/png?text=The+Meridian+Collection&font=montserrat',
+    logoUrl: '/imgs/meridian_collection_logo.png',
     bannerUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop',
     shortDescription: 'A fictional luxury hotel collection offering design-led city and resort properties across the UK and Europe.',
     longDescription: 'The Meridian Collection is a demonstration luxury hotel group built for TravelIQ. Its fictional portfolio spans flagship city hotels and coastal resorts, with a preferred-partner programme for agents. Ask the AI about properties, room categories, amenities, rates and group bookings.',
@@ -131,7 +130,7 @@ All details above are fictional and provided to demonstrate AI-assisted agent su
     id: 'hartwell-hotels',
     name: 'Hartwell Hotels',
     type: SupplierType.HotelResort,
-    logoUrl: 'https://placehold.co/280x110/0a1628/22d3ee/png?text=Hartwell+Hotels&font=montserrat',
+    logoUrl: '/imgs/hartwell_hotels_logo.png',
     bannerUrl: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=2071&auto=format&fit=crop',
     shortDescription: 'A fictional mid-market hotel chain blending comfort, value and central locations across UK and European cities.',
     longDescription: 'Hartwell Hotels is a demonstration hotel chain for TravelIQ, offering fictional city-centre and airport properties aimed at both business and leisure travellers. Ask the AI about locations, room types, amenities, corporate rates and group booking policies.',
