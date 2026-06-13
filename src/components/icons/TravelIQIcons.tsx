@@ -35,6 +35,8 @@ import {
   Lock,
   TrendingUp,
   Sparkles,
+  Handshake,
+  Target,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -108,6 +110,9 @@ export type TierIconName =
   | 'recurring'
   | 'attribution'
   | 'growth'
+  | 'partnership'
+  | 'target'
+  | 'lock'
   | 'sparkle';
 
 const iconMap: Record<TierIconName, React.FC<{ size: number; className: string }>> = {
@@ -123,6 +128,9 @@ const iconMap: Record<TierIconName, React.FC<{ size: number; className: string }
   recurring:       ({ size, className }) => <RefreshCw size={size} strokeWidth={1.5} className={className} />,
   attribution:     ({ size, className }) => <Lock size={size} strokeWidth={1.5} className={className} />,
   growth:          ({ size, className }) => <TrendingUp size={size} strokeWidth={1.5} className={className} />,
+  partnership:     ({ size, className }) => <Handshake size={size} strokeWidth={1.5} className={className} />,
+  target:          ({ size, className }) => <Target size={size} strokeWidth={1.5} className={className} />,
+  lock:            ({ size, className }) => <Lock size={size} strokeWidth={1.5} className={className} />,
   sparkle:         ({ size, className }) => <Sparkles size={size} strokeWidth={1.5} className={className} />,
 };
 
@@ -189,6 +197,15 @@ export const AttributionIcon = (p: { size?: number; className?: string }) =>
 
 export const GrowthIcon = (p: { size?: number; className?: string }) =>
   <TrendingUp size={p.size ?? 20} strokeWidth={1.5} className={p.className ?? 'text-cyan-400'} />;
+
+export const PartnershipIcon = (p: { size?: number; className?: string }) =>
+  <Handshake size={p.size ?? 20} strokeWidth={1.5} className={p.className ?? 'text-cyan-400'} />;
+
+export const TargetIcon = (p: { size?: number; className?: string }) =>
+  <Target size={p.size ?? 20} strokeWidth={1.5} className={p.className ?? 'text-cyan-400'} />;
+
+export const LockIcon = (p: { size?: number; className?: string }) =>
+  <Lock size={p.size ?? 20} strokeWidth={1.5} className={p.className ?? 'text-cyan-400'} />;
 
 export const SparkleIcon = (p: { size?: number; className?: string }) =>
   <Sparkles size={p.size ?? 14} strokeWidth={1.5} className={p.className ?? 'text-cyan-300'} />;
