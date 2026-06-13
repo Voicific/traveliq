@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 500" role="img" aria-label="Skyline Airways">
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="40">
+    <path stroke="#94a3b8" d="M80 360 L220 250 L360 360" />
+    <path stroke="#334155" d="M100 290 L220 200 L340 290" />
+    <path stroke="#3b82f6" d="M120 220 L220 150 L320 220" />
+  </g>
+  <text x="480" y="300" font-family="Arial, Helvetica, sans-serif" font-size="150" font-weight="800" fill="#0f1c2e">Skyline</text>
+  <text x="485" y="380" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="600" letter-spacing="12" fill="#3b82f6">AIRWAYS</text>
+</svg>
