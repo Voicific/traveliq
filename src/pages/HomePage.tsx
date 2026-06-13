@@ -235,7 +235,7 @@ const HomePage: React.FC = () => {
             step={3}
             icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-16 h-16"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-4.68c.34-1.017.64-2.09.87-3.186a11.03 11.03 0 00.13-1.014c0-1.113-.285-2.16-.786-3.07m-3.672 8.422A3.723 3.723 0 017.5 15.75c0-1.52.923-2.834 2.226-3.411a3.723 3.723 0 014.288 0c1.303.577 2.226 1.891 2.226 3.411a3.723 3.723 0 01-1.258 2.654l-3.022.043z" /></svg>}
             title="Convert & Analyse"
-            description="Every agent interaction is logged. On Standard and above, each agent becomes a named lead in your dashboard — name, email, agency, and what they asked — so your team can follow up with warm, qualified intent."
+            description="Every agent interaction is logged. On Growth and above, each agent becomes a named lead in your dashboard — name, email, agency, and what they asked — so your team can follow up with warm, qualified intent."
           />
         </div>
       </section>
@@ -252,7 +252,7 @@ const HomePage: React.FC = () => {
               Every Conversation.<br />A Qualified Lead.
             </h2>
             <p className="mt-6 text-xl text-gray-300 leading-relaxed">
-              Every travel agent who interacts with your AI Sales Assistant becomes a named lead in your dashboard — name, email, agency, and the exact question they asked. <span className="text-cyan-300 font-semibold">Available on Standard and above.</span>
+              Every travel agent who interacts with your AI Sales Assistant becomes a named lead in your dashboard — name, email, agency, and the exact question they asked. <span className="text-cyan-300 font-semibold">Available on Growth and above.</span>
             </p>
             <div className="mt-8 space-y-5">
               <div className="flex items-start gap-4">
@@ -377,7 +377,7 @@ const HomePage: React.FC = () => {
                         <tr className="hover:bg-white/5 transition-colors duration-200">
                             <td className="p-5 font-medium text-white">Named Agent Leads</td>
                             <td className="p-5 text-gray-400">Manual & inconsistent</td>
-                            <td className="p-5 font-bold text-white">Standard+ <span className="text-cyan-400 text-sm font-normal">— name, email, agency</span></td>
+                            <td className="p-5 font-bold text-white">Growth+ <span className="text-cyan-400 text-sm font-normal">— name, email, agency</span></td>
                         </tr>
                          <tr className="hover:bg-white/5 transition-colors duration-200">
                             <td className="p-5 font-medium text-white">Info Consistency</td>
@@ -436,7 +436,7 @@ const HomePage: React.FC = () => {
               <p>Yes — anytime. Log in to your supplier dashboard, edit the knowledge base, and save. Updates are live immediately, so when promotions, schedules, or policies change, your AI reflects them in real-time without any back-and-forth with us.</p>
             </FAQItem>
             <FAQItem question="What kind of analytics and lead data do we get?">
-              <p>On the <strong className="text-white">Starter</strong> plan, you receive interaction counts — how many agents engaged with your profile. On <strong className="text-white">Standard and above</strong>, every agent becomes a named lead in your dashboard: name, email, agency, and the exact question they asked, plus email notifications so your team can follow up immediately. <strong className="text-white">Enterprise</strong> adds advanced analytics — trending queries, knowledge gaps, and engagement patterns — so you can continuously optimise your AI's performance.</p>
+              <p>On the <strong className="text-white">Starter</strong> plan, you receive interaction counts — how many agents engaged with your profile. On <strong className="text-white">Growth and above</strong>, every agent becomes a named lead in your dashboard: name, email, agency, and the exact question they asked, plus email notifications so your team can follow up immediately. <strong className="text-white">Enterprise</strong> adds advanced analytics — trending queries, knowledge gaps, and engagement patterns — so you can continuously optimise your AI's performance.</p>
             </FAQItem>
 
             <h4 className="text-2xl font-bold font-heading text-cyan-300 mt-12 mb-4 drop-shadow-[0_0_10px_rgba(0,212,255,0.3)]">Common Supplier Objections & Our Responses</h4>

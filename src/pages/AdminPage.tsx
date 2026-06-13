@@ -456,7 +456,7 @@ function addLead(payload) {
     var sheet = ss.getSheetByName('Leads');
     if (!sheet) {
       sheet = ss.insertSheet('Leads');
-      sheet.appendRow(['timestamp','type','firstName','lastName','name','email','agency','plan','message','wantsDemo']);
+      sheet.appendRow(['timestamp','type','firstName','lastName','name','email','agency','supplierType','plan','message','wantsDemo']);
     }
     sheet.appendRow([
       lead.timestamp || new Date().toISOString(),
@@ -466,6 +466,7 @@ function addLead(payload) {
       lead.name || '',
       lead.email || '',
       lead.agency || '',
+      lead.supplierType || '',
       lead.plan || '',
       lead.message || '',
       lead.wantsDemo ? 'true' : 'false'
