@@ -10,7 +10,12 @@ const DirectoryPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState<SupplierType | 'All'>('All');
 
-  const supplierTypes = ['All', ...Object.values(SupplierType)];
+  // Only surface categories that have at least one published profile. The full
+  // SupplierType taxonomy stays defined in types.ts for when more verticals go live.
+  const supplierTypes = useMemo(() => {
+    const present = new Set(suppliers.map(s => s.type));
+    return ['All', ...Object.values(SupplierType).filter(type => present.has(type))];
+  }, [suppliers]);
 
   const filteredSuppliers = useMemo(() => {
     return suppliers.filter(supplier => {

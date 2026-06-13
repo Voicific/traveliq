@@ -509,7 +509,7 @@ const HomePage: React.FC = () => {
             Get your brand in front of every agent who matters
           </h2>
           <p className="mt-6 text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            TravelIQ puts your AI Sales Assistant in front of UK and European travel agents — answering their questions, capturing their details, and building your agent database. Sign up for updates and early access.
+            Your AI Sales Assistant can be live within 48 hours of receiving your content — answering agents' questions, capturing their details, and building your agent database. Book a 15-minute demo and see your own brand answered by AI.
           </p>
 
           {/* Trust & Security badge row */}
