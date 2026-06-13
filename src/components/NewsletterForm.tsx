@@ -86,7 +86,7 @@ const NewsletterForm: React.FC = () => {
               type="submit"
               className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold px-6 py-3 rounded-md shadow-lg hover:opacity-90 transition-all duration-300 transform hover:scale-105"
             >
-              Book a 15-Minute Demo
+              Join our Newsletter
             </button>
         </div>
       </form>
