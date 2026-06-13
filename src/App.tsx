@@ -44,7 +44,7 @@ const AppContent: React.FC = () => {
 
   const handleContactSubmit = (details: { name: string; email: string; message: string; agency: string; }) => {
     addLead({
-      type: 'Contact Inquiry',
+      type: 'Demo Request',
       name: details.name,
       email: details.email,
       agency: details.agency,
