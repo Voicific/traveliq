@@ -75,7 +75,7 @@ const LeadCaptureModal: React.FC<{ supplierName: string, onSubmit: (details: {fi
                 </Link>
                 <h2 className="font-heading text-2xl font-bold text-white">Connect with AI Sales Support</h2>
                 <p className="text-gray-300 mt-2">Enter your details to begin your session with the AI Sales Support for <span className="font-semibold text-cyan-400">{supplierName}</span>.</p>
-                <p className="text-gray-300 mt-2 text-sm">Join our database of over 2,000 agents to get exclusive updates. Your details will be remembered for future visits.</p>
+                <p className="text-gray-300 mt-2 text-sm">Create your free agent profile once — it works across every supplier on the network, and your details are remembered for future visits.</p>
                 <form onSubmit={handleSubmit} className="mt-6 space-y-4">
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>

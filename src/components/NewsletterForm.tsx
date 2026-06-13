@@ -2,25 +2,29 @@
 import React, { useState } from 'react';
 import { useLeads } from '../context/LeadContext.tsx';
 
+const SUPPLIER_TYPES = ['Airline', 'Cruise Line', 'Hotel & Resort', 'Tour Operator or DMC', 'Other'];
+
 const NewsletterForm: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [agency, setAgency] = useState('');
+  const [supplierType, setSupplierType] = useState('');
   const [message, setMessage] = useState('');
   const { addLead } = useLeads();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email && name && agency) {
-      addLead({ type: 'Newsletter', name, email, agency });
-      setMessage(`Thank you, ${name}! Your subscription has been confirmed.`);
+    if (email && name && agency && supplierType) {
+      addLead({ type: 'Newsletter', name, email, agency, supplierType });
+      setMessage(`Thank you, ${name}! We'll be in touch to book your 15-minute demo.`);
       setName('');
       setEmail('');
       setAgency('');
+      setSupplierType('');
       setTimeout(() => setMessage(''), 5000);
     }
   };
-  
+
   const inputClass = "w-full px-4 py-3 text-brand-light bg-brand-primary border border-brand-light/20 rounded-md shadow-sm focus:ring-2 focus:ring-brand-cyan focus:border-brand-cyan transition-all";
 
   return (
@@ -62,12 +66,27 @@ const NewsletterForm: React.FC = () => {
               className={inputClass}
             />
         </div>
+        <div className="md:col-span-3">
+            <label htmlFor="supplierType" className="sr-only">Supplier type</label>
+            <select
+              id="supplierType"
+              value={supplierType}
+              onChange={(e) => setSupplierType(e.target.value)}
+              required
+              className={`${inputClass} ${supplierType ? '' : 'text-gray-400'}`}
+            >
+              <option value="" disabled>Supplier type…</option>
+              {SUPPLIER_TYPES.map(type => (
+                <option key={type} value={type} className="text-brand-primary">{type}</option>
+              ))}
+            </select>
+        </div>
          <div className="md:col-span-3">
              <button
               type="submit"
               className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold px-6 py-3 rounded-md shadow-lg hover:opacity-90 transition-all duration-300 transform hover:scale-105"
             >
-              Request Early Access
+              Book a 15-Minute Demo
             </button>
         </div>
       </form>

@@ -1,89 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import NewsletterForm from '../components/NewsletterForm.tsx';
-import SupplierCarousel from '../components/SupplierCarousel.tsx';
+import { TierIcon, type TierIconName } from '../components/icons/TravelIQIcons.tsx';
 import { useUI } from '../context/UIContext.tsx';
 
 // --- SUB-COMPONENTS ---
-
-interface NewsArticle {
-  headline: string;
-  link: string;
-}
-
-const NewsTicker: React.FC = () => {
-    const [news, setNews] = useState<NewsArticle[]>([]);
-    
-    useEffect(() => {
-        const fetchNews = async () => {
-            const fallbackNews = [
-                { headline: "UK travel industry adapts to changing consumer demands", link: "https://travelweekly.co.uk/news" },
-                { headline: "Latest travel trade insights and market updates", link: "https://www.ttgmedia.com/news" },
-                { headline: "Global travel industry trends and analysis", link: "https://skift.com/" },
-                { headline: "Travel technology innovations reshaping the industry", link: "https://www.phocuswire.com/" },
-                { headline: "Breaking: Travel trade partnerships and new developments", link: "https://www.breakingtravelnews.com/" },
-                { headline: "AI and digital transformation in travel sector", link: "https://www.traveldailymedia.com/" },
-                { headline: "Sustainable travel initiatives gaining momentum", link: "https://www.sustainable-travel-international.org/" }
-            ];
-
-            try {
-                // The Serper API key now lives server-side in the Cloudflare Pages
-                // Function at /api/news. If it isn't configured (503) or the function
-                // isn't deployed (404, e.g. plain `vite dev`), we fall back to the
-                // hardcoded headlines below.
-                const response = await fetch('/api/news', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                });
-
-                if (!response.ok) {
-                    throw new Error(`News proxy responded with status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                if (data.news && data.news.length > 0) {
-                     const fetchedNews = data.news
-                        .map((item: { title: string; link: string; }) => ({
-                            headline: item.title,
-                            link: item.link,
-                        }))
-                        .filter((item: { headline: string; link: string; }) => item.headline && item.link);
-
-                    if (fetchedNews.length > 0) {
-                        setNews(fetchedNews);
-                    } else {
-                        setNews(fallbackNews);
-                    }
-                } else {
-                    setNews(fallbackNews);
-                }
-            } catch (error) {
-                console.error("Failed to fetch live news from Serper, using fallback articles:", error);
-                setNews(fallbackNews);
-            }
-        };
-        fetchNews();
-    }, []);
-
-    const newsItems = news.length > 0 ? news : [{ headline: "Loading latest travel updates...", link: "#" }];
-    const duplicatedNews = [...newsItems, ...newsItems, ...newsItems, ...newsItems]; 
-
-    return (
-        <div className="bg-gradient-to-r from-[#0a1628] via-[#0d2d3d] to-[#0a1628] border-y border-cyan-400/20 py-3 overflow-hidden">
-            <div className="flex">
-                <div className="flex animate-news-scroll hover:[animation-play-state:paused]">
-                    {duplicatedNews.map((item, index) => (
-                        <a key={index} href={item.link} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300 flex-shrink-0 mx-6 text-sm font-medium flex items-center gap-3">
-                            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_rgba(0,212,255,0.8)]"></span>
-                            <span>{item.headline}</span>
-                        </a>
-                    ))}
-                </div>
-            </div>
-        </div>
-    );
-};
 
 const FeatureCard: React.FC<{ icon: React.ReactNode; title: string; description: string; step: number; }> = ({ icon, title, description, step }) => (
     <div className="feature-card-premium relative bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 backdrop-blur-xl p-8 rounded-2xl border border-cyan-400/20 text-center transform transition-all duration-500 hover:scale-105 hover:border-cyan-400/50 hover:shadow-[0_0_30px_rgba(0,212,255,0.3)] group">
@@ -126,11 +47,11 @@ const StatsBar: React.FC = () => (
   <section className="py-12 bg-gradient-to-r from-[#0a1628] via-[#0d2d3d] to-[#0a1628] border-y border-cyan-400/10">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-5 gap-8 text-center">
       {[
+        { stat: '48 hrs', label: 'From Content to Live' },
         { stat: '24/7', label: 'Always-On AI Support' },
         { stat: '10+', label: 'Languages Supported' },
-        { stat: 'UK & EU', label: 'Coverage Across Europe' },
+        { stat: 'UK & EU', label: 'Trade Coverage' },
         { stat: 'Free', label: 'For Travel Agents' },
-        { stat: '2 Ways', label: 'Self-Serve or Managed' },
       ].map(item => (
         <div key={item.label} className="group">
           <p className="text-4xl sm:text-5xl font-extrabold font-heading bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(0,212,255,0.4)] group-hover:scale-105 transition-transform duration-300">{item.stat}</p>
@@ -143,13 +64,9 @@ const StatsBar: React.FC = () => (
 
 const HomePage: React.FC = () => {
   const { openVeeChat } = useUI();
-  const headlineText = "Smart. Instant. Voice AI Supplier Support.";
-  const words = headlineText.split(' ');
 
   return (
     <div className="text-white bg-[#0a1628]">
-      <NewsTicker />
-      
       {/* Hero Section with Video Background */}
       <section className="relative text-center py-24 sm:py-36 px-4 overflow-hidden bg-[#0a1628]">
         {/* Simple Video Background */}
@@ -177,39 +94,39 @@ const HomePage: React.FC = () => {
 
         <div className="relative z-10 max-w-5xl mx-auto" style={{ zIndex: 10 }}>
           <p className="text-cyan-400 font-bold tracking-[0.3em] uppercase mb-6 text-sm sm:text-base animate-fade-in drop-shadow-[0_0_15px_rgba(0,212,255,0.8)]">
-            Europe's First AI Voice Support Network for Travel
+            The Intelligent AI Supplier Network for the Travel Trade
           </p>
 
           {/* Continuously Animated Hero Text with Gradient */}
-          <h1 className="text-5xl sm:text-7xl lg:text-8xl font-extrabold font-heading leading-tight mb-8 hero-gradient-animated">
-            {headlineText}
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold font-heading leading-tight mb-8 hero-gradient-animated text-balance">
+            Europe's <span className="whitespace-nowrap">AI voice</span> support network for the travel trade.
           </h1>
 
           <p className="mt-8 max-w-3xl mx-auto text-xl sm:text-2xl text-gray-300 leading-relaxed animate-fade-in" style={{ animationDelay: '1.2s' }}>
-            Your agents are asking questions you can't answer 24/7. We fix that. Deploy a multilingual AI Sales Assistant that engages travel agents across the UK and Europe — instantly, in any language, any time of day.
+            One platform where airlines, cruise lines, hotel groups and tour operators give travel agents instant, accurate answers — by voice or chat, in 10+ languages, 24/7 — and build a living database of the agents who sell them.
           </p>
 
           <div className="mt-12 flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center animate-fade-in" style={{ animationDelay: '1.5s' }}>
+            <Link to="/pricing" className="group relative bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold px-10 py-5 rounded-xl shadow-[0_0_30px_rgba(0,212,255,0.4)] hover:shadow-[0_0_50px_rgba(0,212,255,0.7)] transition-all duration-500 transform hover:scale-105 overflow-hidden flex items-center justify-center">
+              <span className="relative z-10">List Your Brand →</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            </Link>
+            <Link to="/suppliers" className="group relative bg-white/10 backdrop-blur-md border-2 border-cyan-400/40 text-white font-bold px-10 py-5 rounded-xl hover:bg-cyan-400/20 hover:border-cyan-400 transition-all duration-500 transform hover:scale-105 shadow-[0_0_20px_rgba(0,212,255,0.2)] hover:shadow-[0_0_40px_rgba(0,212,255,0.5)]">
+              <span className="relative z-10">Free for Agents — Try It Now</span>
+            </Link>
             <button
               onClick={openVeeChat}
-              className="group relative bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold px-10 py-5 rounded-xl shadow-[0_0_30px_rgba(0,212,255,0.4)] hover:shadow-[0_0_50px_rgba(0,212,255,0.7)] transition-all duration-500 transform hover:scale-110 overflow-hidden flex items-center justify-center gap-3"
+              className="group relative bg-white/5 backdrop-blur-md border border-cyan-400/20 text-white font-bold px-10 py-5 rounded-xl hover:bg-cyan-400/10 hover:border-cyan-400/50 transition-all duration-500 transform hover:scale-105 flex items-center justify-center gap-3"
             >
               <span className="relative z-10 flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 016 0v8.25a3 3 0 01-3 3z" /></svg>
                 Try the AI Demo
               </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             </button>
-            <Link to="/pricing" className="group relative bg-white/10 backdrop-blur-md border-2 border-cyan-400/40 text-white font-bold px-10 py-5 rounded-xl hover:bg-cyan-400/20 hover:border-cyan-400 transition-all duration-500 transform hover:scale-105 shadow-[0_0_20px_rgba(0,212,255,0.2)] hover:shadow-[0_0_40px_rgba(0,212,255,0.5)]">
-              <span className="relative z-10">List Your Brand</span>
-            </Link>
-            <Link to="/suppliers" className="group relative bg-white/5 backdrop-blur-md border border-cyan-400/20 text-white font-bold px-10 py-5 rounded-xl hover:bg-cyan-400/10 hover:border-cyan-400/50 transition-all duration-500 transform hover:scale-105">
-              <span className="relative z-10">Explore Suppliers</span>
-            </Link>
           </div>
 
           <p className="mt-8 text-sm text-gray-400 animate-fade-in" style={{ animationDelay: '1.8s' }}>
-            <span className="text-cyan-400">●</span> Free for travel agents · GDPR compliant · No software required
+            <span className="text-cyan-400">●</span> Live in 48 hours · Free for travel agents · GDPR compliant · No software required
           </p>
         </div>
       </section>
@@ -217,14 +134,45 @@ const HomePage: React.FC = () => {
       {/* Stats / Social Proof Bar */}
       <StatsBar />
 
-      {/* Supplier Logos */}
-      <section className="py-16 bg-gradient-to-b from-[#0d2d3d]/50 to-[#0a1628]/50 border-y border-cyan-400/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-center text-sm font-semibold text-gray-400 tracking-wider uppercase mb-4">
-                Built for travel brands like these
+      {/* One network. Every kind of travel brand. */}
+      <section className="py-20 sm:py-28 px-4 bg-gradient-to-b from-[#0d2d3d]/50 to-[#0a1628]/50 border-y border-cyan-400/10">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center max-w-3xl mx-auto">
+            <h2 className="text-4xl sm:text-5xl font-extrabold font-heading bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(0,212,255,0.3)]">
+              One network. Every kind of travel brand.
             </h2>
-            <p className="text-center text-xs text-gray-500 mb-10">Supplier profiles are illustrative. Join to get yours listed.</p>
-            <SupplierCarousel />
+            <p className="mt-6 text-xl text-gray-300 leading-relaxed">
+              Your AI assistant speaks your product — fares, cabins, rate plans or itineraries — and answers like your best BDM.
+            </p>
+          </div>
+          <div className="mt-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {([
+              { icon: 'airline', name: 'Airlines', quote: "What's the group booking process and commission on long-haul?", copy: "Fare families, baggage rules, trade programmes — answered instantly, in the agent's language.", cta: 'For Airlines', to: '/airlines' },
+              { icon: 'cruise', name: 'Cruise Lines', quote: "What's included in the drinks package on Med sailings?", copy: 'Cabin categories, itineraries, onboard inclusions — explained without hold music.', cta: 'For Cruise Lines', to: '/cruise' },
+              { icon: 'hotel', name: 'Hotel Groups', quote: 'Do you have family rooms with half board in July?', copy: 'Room types, rate plans, child policies — accurate at 2am as well as 2pm.', cta: 'For Hotel Groups', to: '/hotels' },
+              { icon: 'tour-operator', name: 'Tour Operators & DMCs', quote: 'Is the Day 4 hike suitable for a guest with limited mobility?', copy: 'Day-by-day itineraries, departures, booking terms — every detail, every time.', cta: 'For Tour Operators', to: '/tour-operators' },
+            ] as { icon: TierIconName; name: string; quote: string; copy: string; cta: string; to: string }[]).map((tile) => (
+              <Link
+                key={tile.name}
+                to={tile.to}
+                className="group flex flex-col bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 backdrop-blur-xl p-6 rounded-2xl border border-cyan-400/20 transition-all duration-300 hover:-translate-y-2 hover:border-cyan-400/50 hover:shadow-[0_0_30px_rgba(0,212,255,0.25)]"
+              >
+                <TierIcon name={tile.icon} size="lg" />
+                <h3 className="mt-5 text-xl font-bold font-heading text-white">{tile.name}</h3>
+                <p className="mt-3 text-cyan-300 text-sm italic leading-relaxed">"{tile.quote}"</p>
+                <p className="mt-3 text-gray-400 text-sm leading-relaxed flex-grow">{tile.copy}</p>
+                <span className="mt-5 inline-flex items-center gap-1 text-cyan-400 font-semibold text-sm group-hover:gap-2 transition-all">
+                  {tile.cta} <span aria-hidden="true">→</span>
+                </span>
+              </Link>
+            ))}
+          </div>
+          <p className="mt-12 text-center text-gray-400">
+            Founding supplier profiles now onboarding across all four categories.{' '}
+            <Link to="/pricing" className="text-cyan-400 font-semibold hover:text-cyan-300 transition-colors">
+              Join the Founding Supplier Programme →
+            </Link>
+          </p>
         </div>
       </section>
 
@@ -287,7 +235,7 @@ const HomePage: React.FC = () => {
             step={3}
             icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-16 h-16"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-4.68c.34-1.017.64-2.09.87-3.186a11.03 11.03 0 00.13-1.014c0-1.113-.285-2.16-.786-3.07m-3.672 8.422A3.723 3.723 0 017.5 15.75c0-1.52.923-2.834 2.226-3.411a3.723 3.723 0 014.288 0c1.303.577 2.226 1.891 2.226 3.411a3.723 3.723 0 01-1.258 2.654l-3.022.043z" /></svg>}
             title="Convert & Analyse"
-            description="Every agent interaction is logged. On Standard and above, each agent becomes a named lead in your dashboard — name, email, agency, and what they asked — so your team can follow up with warm, qualified intent."
+            description="Every agent interaction is logged. On Growth and above, each agent becomes a named lead in your dashboard — name, email, agency, and what they asked — so your team can follow up with warm, qualified intent."
           />
         </div>
       </section>
@@ -304,7 +252,7 @@ const HomePage: React.FC = () => {
               Every Conversation.<br />A Qualified Lead.
             </h2>
             <p className="mt-6 text-xl text-gray-300 leading-relaxed">
-              Every travel agent who interacts with your AI Sales Assistant becomes a named lead in your dashboard — name, email, agency, and the exact question they asked. <span className="text-cyan-300 font-semibold">Available on Standard and above.</span>
+              Every travel agent who interacts with your AI Sales Assistant becomes a named lead in your dashboard — name, email, agency, and the exact question they asked. <span className="text-cyan-300 font-semibold">Available on Growth and above.</span>
             </p>
             <div className="mt-8 space-y-5">
               <div className="flex items-start gap-4">
@@ -344,17 +292,20 @@ const HomePage: React.FC = () => {
             <h3 className="text-lg font-bold text-white mb-6">Your Lead Dashboard</h3>
             <div className="space-y-3">
               {[
-                { name: 'Sarah Mitchell', agency: 'Midlands Travel Group', q: 'What are your agent commission rates?' },
-                { name: 'James Okafor', agency: 'Elite Escapes Ltd', q: 'Do you offer group booking support?' },
-                { name: 'Luisa Fernández', agency: 'Viajes Barcelona', q: '¿Tienen tarifas de temporada baja?' },
-                { name: 'Tom Brennan', agency: 'Dublin Travel Experts', q: 'What training resources do you offer?' },
+                { name: 'Sarah Mitchell', agency: 'Midlands Travel Group', q: 'What are your agent commission rates?', badge: 'Airline' },
+                { name: 'James Okafor', agency: 'Elite Escapes Ltd', q: 'Do you offer group booking support?', badge: 'Tour Operator' },
+                { name: 'Luisa Fernández', agency: 'Viajes Barcelona', q: '¿Tienen tarifas de temporada baja?', badge: 'Hotel Group' },
+                { name: 'Tom Brennan', agency: 'Dublin Travel Experts', q: 'What training resources do you offer?', badge: 'Cruise Line' },
               ].map((lead, i) => (
                 <div key={i} className="flex items-start gap-4 p-4 bg-white/5 rounded-lg border border-cyan-400/10 hover:border-cyan-400/30 transition-colors">
                   <div className="flex-shrink-0 w-9 h-9 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
                     {lead.name[0]}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-white font-semibold text-sm">{lead.name}</p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-white font-semibold text-sm">{lead.name}</p>
+                      <span className="text-[10px] uppercase tracking-wide bg-blue-900/40 text-blue-200 px-2 py-0.5 rounded-full border border-blue-400/20">{lead.badge}</span>
+                    </div>
                     <p className="text-gray-400 text-xs">{lead.agency}</p>
                     <p className="text-cyan-300 text-xs mt-1 truncate italic">"{lead.q}"</p>
                   </div>
@@ -426,7 +377,7 @@ const HomePage: React.FC = () => {
                         <tr className="hover:bg-white/5 transition-colors duration-200">
                             <td className="p-5 font-medium text-white">Named Agent Leads</td>
                             <td className="p-5 text-gray-400">Manual & inconsistent</td>
-                            <td className="p-5 font-bold text-white">Standard+ <span className="text-cyan-400 text-sm font-normal">— name, email, agency</span></td>
+                            <td className="p-5 font-bold text-white">Growth+ <span className="text-cyan-400 text-sm font-normal">— name, email, agency</span></td>
                         </tr>
                          <tr className="hover:bg-white/5 transition-colors duration-200">
                             <td className="p-5 font-medium text-white">Info Consistency</td>
@@ -444,6 +395,18 @@ const HomePage: React.FC = () => {
                 </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Built by the trade, for the trade. */}
+      <section className="py-20 sm:py-24 px-4 bg-gradient-to-br from-[#0a1628] via-[#0d2d3d] to-[#0a1628] border-y border-cyan-400/10">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl sm:text-4xl font-extrabold font-heading bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(0,212,255,0.3)]">
+            Built by the trade, for the trade.
+          </h2>
+          <p className="mt-6 text-lg text-gray-300 leading-relaxed">
+            TravelIQ was founded by a senior airline commercial leader with two decades managing trade sales, marketing and call-centre performance across UK &amp; European markets. We built the tool we always wished our trade partners had: instant, accurate, multilingual answers for every agent — without adding headcount.
+          </p>
         </div>
       </section>
 
@@ -473,7 +436,7 @@ const HomePage: React.FC = () => {
               <p>Yes — anytime. Log in to your supplier dashboard, edit the knowledge base, and save. Updates are live immediately, so when promotions, schedules, or policies change, your AI reflects them in real-time without any back-and-forth with us.</p>
             </FAQItem>
             <FAQItem question="What kind of analytics and lead data do we get?">
-              <p>On the <strong className="text-white">Starter</strong> plan, you receive interaction counts — how many agents engaged with your profile. On <strong className="text-white">Standard and above</strong>, every agent becomes a named lead in your dashboard: name, email, agency, and the exact question they asked, plus email notifications so your team can follow up immediately. <strong className="text-white">Enterprise</strong> adds advanced analytics — trending queries, knowledge gaps, and engagement patterns — so you can continuously optimise your AI's performance.</p>
+              <p>On the <strong className="text-white">Starter</strong> plan, you receive interaction counts — how many agents engaged with your profile. On <strong className="text-white">Growth and above</strong>, every agent becomes a named lead in your dashboard: name, email, agency, and the exact question they asked, plus email notifications so your team can follow up immediately. <strong className="text-white">Enterprise</strong> adds advanced analytics — trending queries, knowledge gaps, and engagement patterns — so you can continuously optimise your AI's performance.</p>
             </FAQItem>
 
             <h4 className="text-2xl font-bold font-heading text-cyan-300 mt-12 mb-4 drop-shadow-[0_0_10px_rgba(0,212,255,0.3)]">Common Supplier Objections & Our Responses</h4>
@@ -546,8 +509,26 @@ const HomePage: React.FC = () => {
             Get your brand in front of every agent who matters
           </h2>
           <p className="mt-6 text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            TravelIQ puts your AI Sales Assistant in front of UK and European travel agents — answering their questions, capturing their details, and building your agent database. Sign up for updates and early access.
+            Your AI Sales Assistant can be live within 48 hours of receiving your content — answering agents' questions, capturing their details, and building your agent database. Book a 15-minute demo and see your own brand answered by AI.
           </p>
+
+          {/* Trust & Security badge row */}
+          <div className="mt-12 flex flex-col sm:flex-row flex-wrap items-stretch justify-center gap-4 text-left">
+            {([
+              { icon: 'insurance', title: 'GDPR compliant', sub: 'across all operating markets' },
+              { icon: 'attribution', title: 'Your content stays confidential', sub: 'never shared, sold or reused' },
+              { icon: 'global', title: 'Built for the UK & European trade', sub: '' },
+            ] as { icon: TierIconName; title: string; sub: string }[]).map((badge) => (
+              <div key={badge.title} className="flex items-center gap-3 bg-white/5 border border-cyan-400/20 rounded-xl px-5 py-4 backdrop-blur-md">
+                <TierIcon name={badge.icon} size="md" />
+                <div>
+                  <p className="text-white font-semibold text-sm leading-tight">{badge.title}</p>
+                  {badge.sub && <p className="text-gray-400 text-xs mt-0.5">{badge.sub}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+
           <NewsletterForm />
         </div>
       </section>

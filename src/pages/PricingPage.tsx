@@ -34,18 +34,20 @@ const PricingPage: React.FC = () => {
       )}
 
       {/* Hero */}
-      <section className="relative text-center py-20 sm:py-28 px-4 overflow-hidden bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1932&auto=format&fit=crop')" }}>
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/30 to-transparent" />
+      <section className="relative text-center py-20 sm:py-28 px-4 overflow-hidden bg-gradient-to-br from-[#0a1628] via-[#0d2d3d] to-[#0a1628]">
+        {/* Dark-theme brand panel — cyan glow on navy, no stock photo */}
+        <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_50%_0%,rgba(34,211,238,0.18),transparent_60%)]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a1628] via-transparent to-transparent" />
         <div className="relative max-w-4xl mx-auto animate-fade-in">
           <div className="inline-flex items-center gap-2 bg-cyan-400/10 border border-cyan-400/30 text-cyan-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-6">
             <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
             Built for travel suppliers across the UK and Europe
           </div>
-          <h1 className="text-4xl sm:text-6xl font-extrabold font-heading text-white leading-tight drop-shadow-lg">
-            Partnerships
+          <h1 className="text-4xl sm:text-6xl font-extrabold font-heading bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent leading-tight drop-shadow-lg">
+            Pricing &amp; Plans
           </h1>
           <p className="mt-6 max-w-3xl mx-auto text-lg sm:text-xl text-white/90 leading-relaxed drop-shadow-md">
-            Deploy a dedicated AI Sales Assistant that engages travel agents across the UK and Europe — 24/7, in any language. Fully managed by us, or self-serve through your own dashboard. You choose.
+            Deploy a dedicated AI Sales Assistant that engages travel agents across the UK and Europe — 24/7, in any language. Fully managed by us, or self-serve through your own dashboard. You choose. Live within 48 hours of receiving your content.
           </p>
         </div>
       </section>
@@ -109,7 +111,7 @@ const PricingPage: React.FC = () => {
                     <ul className="space-y-3 text-gray-300 text-sm">
                       <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-1" /><span><strong className="text-white">AI Sales Support:</strong> 24/7 answers trained on your brand's knowledge.</span></li>
                       <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-1" /><span><strong className="text-white">Multilingual Voice AI:</strong> Responds in the agent's own language automatically.</span></li>
-                      <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-1" /><span><strong className="text-white">Agent Database:</strong> Interaction counts on Starter; named leads (name, email, agency) on Standard+.</span></li>
+                      <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-1" /><span><strong className="text-white">Agent Database:</strong> Interaction counts on Starter; named leads (name, email, agency) on Growth+.</span></li>
                       <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-1" /><span><strong className="text-white">Dashboard & Analytics:</strong> Insights into agent queries and engagement patterns.</span></li>
                     </ul>
                   </div>
@@ -150,10 +152,10 @@ const PricingPage: React.FC = () => {
             <h3 className="text-2xl font-bold font-heading text-white">Starter</h3>
             <p className="mt-2 text-gray-400 text-sm">List your brand and start conversations with agents.</p>
             <div className="mt-6">
-              <a href="mailto:hello@beeancy.com" className="text-3xl font-extrabold text-white hover:text-cyan-400 transition-colors">Contact Us</a>
-              <p className="text-sm font-medium text-gray-400 mt-1">for pricing details</p>
+              <span className="text-3xl font-extrabold text-white">From £399<span className="text-lg font-medium text-gray-400">/month</span></span>
             </div>
             <ul className="mt-8 space-y-3 text-gray-300 text-sm flex-grow">
+              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Live in 48 hours</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Directory listing with full profile</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> AI Chat Support (standard)</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Agent interaction count</li>
@@ -168,13 +170,13 @@ const PricingPage: React.FC = () => {
             </button>
           </div>
 
-          {/* Standard */}
+          {/* Growth */}
           <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 backdrop-blur-lg border border-cyan-400/20 rounded-xl p-8 shadow-lg flex flex-col transition-all duration-300 hover:shadow-2xl hover:shadow-brand-cyan/10 hover:-translate-y-1">
-            <h3 className="text-2xl font-bold font-heading text-white">Standard</h3>
+            <h3 className="text-2xl font-bold font-heading text-white">Growth</h3>
             <p className="mt-2 text-gray-400 text-sm">Build your agent database with named leads and full analytics.</p>
             <div className="mt-6">
-              <a href="mailto:hello@beeancy.com" className="text-3xl font-extrabold text-white hover:text-cyan-400 transition-colors">Contact Us</a>
-              <p className="text-sm font-medium text-gray-400 mt-1">for pricing details</p>
+              <a href="mailto:hello@beeancy.com" className="text-3xl font-extrabold text-white hover:text-cyan-400 transition-colors">Tailored</a>
+              <p className="text-sm font-medium text-gray-400 mt-1">book a consultation</p>
             </div>
             <ul className="mt-8 space-y-3 text-gray-300 text-sm flex-grow">
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /><span><strong className="text-white">Everything in Starter, plus:</strong></span></li>
@@ -186,7 +188,7 @@ const PricingPage: React.FC = () => {
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Priority email support</li>
             </ul>
             <button
-              onClick={() => handleOpenModal('Standard')}
+              onClick={() => handleOpenModal('Growth')}
               className="mt-8 block w-full text-center bg-brand-light/10 border border-cyan-400/20 text-white font-bold py-3 px-6 rounded-lg hover:bg-brand-light/20 transition-colors"
             >
               Book a Demo
@@ -206,12 +208,13 @@ const PricingPage: React.FC = () => {
               <span className="text-4xl font-extrabold text-white">Custom</span>
             </div>
             <ul className="mt-8 space-y-3 text-gray-300 text-sm flex-grow">
-              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5 text-cyan-400" /><span><strong className="text-white">Everything in Standard, plus:</strong></span></li>
+              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5 text-cyan-400" /><span><strong className="text-white">Everything in Growth, plus:</strong></span></li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5 text-cyan-400" /> Custom branded voice</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5 text-cyan-400" /> Live speaking avatar</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5 text-cyan-400" /> Advanced analytics & insights</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5 text-cyan-400" /> AI-produced video presentation</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5 text-cyan-400" /> Featured placement on platform</li>
+              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5 text-cyan-400" /> Dedicated onboarding & SLA</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5 text-cyan-400" /> Priority phone & email support</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5 text-cyan-400" /> Feature of the week / month</li>
             </ul>
@@ -226,8 +229,8 @@ const PricingPage: React.FC = () => {
 
         {/* Add-ons note */}
         <div className="mt-12 text-center">
-          <p className="text-gray-400 text-sm max-w-xl mx-auto">
-            All plans include access to our multilingual Voice AI. Custom add-ons — including targeted email campaigns, interactive training sessions, and website AI integration — are available on any plan.{' '}
+          <p className="text-gray-400 text-sm max-w-2xl mx-auto">
+            All plans include multilingual Voice AI and the choice of fully managed or self-serve setup. Vertical Playbooks for airlines, cruise lines, hotel groups and tour operators are included on Growth and above. Custom add-ons — targeted agent email campaigns, interactive training sessions, website AI integration — are available on any plan.{' '}
             <a href="mailto:hello@beeancy.com" className="text-cyan-400 hover:underline">Get in touch</a> to discuss your needs.
           </p>
         </div>
@@ -248,7 +251,7 @@ const PricingPage: React.FC = () => {
               },
               {
                 q: "How quickly can we go live?",
-                a: "On the self-serve route, you can have your profile live within hours of signing up. For fully managed onboarding, we typically turn around a complete profile within 3–5 working days of receiving your content. Either way, you'll review and approve everything before it goes live."
+                a: "On the self-serve route, you can have your profile live within 48 hours of signing up. For fully managed onboarding, we turn around a complete profile within 48 hours of receiving your content. Either way, you'll review and approve everything before it goes live."
               }
             ].map(({ q, a }) => (
               <SupplierFAQItem key={q} question={q} answer={a} />

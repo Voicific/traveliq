@@ -7,6 +7,7 @@ export interface PendingLead {
   name?: string;
   email: string;
   agency?: string;
+  supplierType?: string;
   plan?: string;
   message?: string;
   wantsDemo?: boolean;

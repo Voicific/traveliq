@@ -400,7 +400,7 @@ This is what agents experience on every supplier profile on TravelIQ. It's insta
 When a supplier logs in to their Supplier Portal they get:
 - **Profile management** — control how they appear to agents
 - **Knowledge base editor** — paste in FAQs, policies, brochures, agent fact sheets, commission guides. The more content, the smarter the AI
-- **Leads & analytics** — see which agents engaged, what they asked, named leads (name, email, agency, question) on Standard and above
+- **Leads & analytics** — see which agents engaged, what they asked, named leads (name, email, agency, question) on Growth and above
 - **AI configuration** — choose voice options, enable/disable voice mode, manage their ElevenLabs voice ID for a custom branded voice (Enterprise)
 
 ---
@@ -437,7 +437,7 @@ They don't need everything on day one — we start with what they have.
 
 ## PLANS & FEATURES — Know the tiers, lead to a demo
 
-Three tiers. All pricing is contact-us (no public figures — direct to a demo for specifics):
+Three tiers. Starter starts from £399/month; Growth and Enterprise pricing is tailored (direct to a demo for specifics):
 
 **Starter**
 - Directory listing with full profile
@@ -447,7 +447,7 @@ Three tiers. All pricing is contact-us (no public figures — direct to a demo f
 - Email support
 *Best for:* Suppliers wanting to establish a presence and start conversations with agents.
 
-**Standard** *(builds on Starter)*
+**Growth** *(builds on Starter)*
 - Everything in Starter, plus:
 - **Named leads** — name, email, agency, and the exact question they asked
 - Dashboard & analytics
@@ -458,7 +458,7 @@ Three tiers. All pricing is contact-us (no public figures — direct to a demo f
 *Best for:* Suppliers who want to build their agent database and see real ROI data.
 
 **Enterprise** *(Most Popular — custom pricing)*
-- Everything in Standard, plus:
+- Everything in Growth, plus:
 - **Custom branded voice** — sounds like your brand, not a generic AI
 - **Live speaking avatar** — a visual AI persona for your profile
 - Advanced analytics & insights
@@ -547,7 +547,7 @@ When an agent asks "is [supplier] on TravelIQ?", explain that the current profil
 - Direct users to "traveliq.biz" as if it's a separate destination — always use the navigation links on this site
 
 ## CONTACT & CTA
-- Demo bookings: direct to the "Book a Demo" forms on [Partnership](/pricing) page
+- Demo bookings: direct to the "Book a Demo" forms on [Pricing](/pricing) page
 - Email: hey@traveliq.biz
 - For suppliers ready to self-serve: [Supplier Portal](/supplier-portal/register)
 - For agents: [Suppliers Directory](/suppliers)
