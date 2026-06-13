@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import NewsletterForm from '../components/NewsletterForm.tsx';
-import SupplierCarousel from '../components/SupplierCarousel.tsx';
+import { TierIcon, type TierIconName } from '../components/icons/TravelIQIcons.tsx';
 import { useUI } from '../context/UIContext.tsx';
 
 // --- SUB-COMPONENTS ---
@@ -134,14 +134,45 @@ const HomePage: React.FC = () => {
       {/* Stats / Social Proof Bar */}
       <StatsBar />
 
-      {/* Supplier Logos */}
-      <section className="py-16 bg-gradient-to-b from-[#0d2d3d]/50 to-[#0a1628]/50 border-y border-cyan-400/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-center text-sm font-semibold text-gray-400 tracking-wider uppercase mb-4">
-                Built for travel brands like these
+      {/* One network. Every kind of travel brand. */}
+      <section className="py-20 sm:py-28 px-4 bg-gradient-to-b from-[#0d2d3d]/50 to-[#0a1628]/50 border-y border-cyan-400/10">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center max-w-3xl mx-auto">
+            <h2 className="text-4xl sm:text-5xl font-extrabold font-heading bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(0,212,255,0.3)]">
+              One network. Every kind of travel brand.
             </h2>
-            <p className="text-center text-xs text-gray-500 mb-10">Supplier profiles are illustrative. Join to get yours listed.</p>
-            <SupplierCarousel />
+            <p className="mt-6 text-xl text-gray-300 leading-relaxed">
+              Your AI assistant speaks your product — fares, cabins, rate plans or itineraries — and answers like your best BDM.
+            </p>
+          </div>
+          <div className="mt-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {([
+              { icon: 'airline', name: 'Airlines', quote: "What's the group booking process and commission on long-haul?", copy: "Fare families, baggage rules, trade programmes — answered instantly, in the agent's language.", cta: 'For Airlines', to: '/airlines' },
+              { icon: 'cruise', name: 'Cruise Lines', quote: "What's included in the drinks package on Med sailings?", copy: 'Cabin categories, itineraries, onboard inclusions — explained without hold music.', cta: 'For Cruise Lines', to: '/cruise' },
+              { icon: 'hotel', name: 'Hotel Groups', quote: 'Do you have family rooms with half board in July?', copy: 'Room types, rate plans, child policies — accurate at 2am as well as 2pm.', cta: 'For Hotel Groups', to: '/hotels' },
+              { icon: 'tour-operator', name: 'Tour Operators & DMCs', quote: 'Is the Day 4 hike suitable for a guest with limited mobility?', copy: 'Day-by-day itineraries, departures, booking terms — every detail, every time.', cta: 'For Tour Operators', to: '/tour-operators' },
+            ] as { icon: TierIconName; name: string; quote: string; copy: string; cta: string; to: string }[]).map((tile) => (
+              <Link
+                key={tile.name}
+                to={tile.to}
+                className="group flex flex-col bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 backdrop-blur-xl p-6 rounded-2xl border border-cyan-400/20 transition-all duration-300 hover:-translate-y-2 hover:border-cyan-400/50 hover:shadow-[0_0_30px_rgba(0,212,255,0.25)]"
+              >
+                <TierIcon name={tile.icon} size="lg" />
+                <h3 className="mt-5 text-xl font-bold font-heading text-white">{tile.name}</h3>
+                <p className="mt-3 text-cyan-300 text-sm italic leading-relaxed">"{tile.quote}"</p>
+                <p className="mt-3 text-gray-400 text-sm leading-relaxed flex-grow">{tile.copy}</p>
+                <span className="mt-5 inline-flex items-center gap-1 text-cyan-400 font-semibold text-sm group-hover:gap-2 transition-all">
+                  {tile.cta} <span aria-hidden="true">→</span>
+                </span>
+              </Link>
+            ))}
+          </div>
+          <p className="mt-12 text-center text-gray-400">
+            Founding supplier profiles now onboarding across all four categories.{' '}
+            <Link to="/pricing" className="text-cyan-400 font-semibold hover:text-cyan-300 transition-colors">
+              Join the Founding Supplier Programme →
+            </Link>
+          </p>
         </div>
       </section>
 
@@ -261,17 +292,20 @@ const HomePage: React.FC = () => {
             <h3 className="text-lg font-bold text-white mb-6">Your Lead Dashboard</h3>
             <div className="space-y-3">
               {[
-                { name: 'Sarah Mitchell', agency: 'Midlands Travel Group', q: 'What are your agent commission rates?' },
-                { name: 'James Okafor', agency: 'Elite Escapes Ltd', q: 'Do you offer group booking support?' },
-                { name: 'Luisa Fernández', agency: 'Viajes Barcelona', q: '¿Tienen tarifas de temporada baja?' },
-                { name: 'Tom Brennan', agency: 'Dublin Travel Experts', q: 'What training resources do you offer?' },
+                { name: 'Sarah Mitchell', agency: 'Midlands Travel Group', q: 'What are your agent commission rates?', badge: 'Airline' },
+                { name: 'James Okafor', agency: 'Elite Escapes Ltd', q: 'Do you offer group booking support?', badge: 'Tour Operator' },
+                { name: 'Luisa Fernández', agency: 'Viajes Barcelona', q: '¿Tienen tarifas de temporada baja?', badge: 'Hotel Group' },
+                { name: 'Tom Brennan', agency: 'Dublin Travel Experts', q: 'What training resources do you offer?', badge: 'Cruise Line' },
               ].map((lead, i) => (
                 <div key={i} className="flex items-start gap-4 p-4 bg-white/5 rounded-lg border border-cyan-400/10 hover:border-cyan-400/30 transition-colors">
                   <div className="flex-shrink-0 w-9 h-9 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
                     {lead.name[0]}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-white font-semibold text-sm">{lead.name}</p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-white font-semibold text-sm">{lead.name}</p>
+                      <span className="text-[10px] uppercase tracking-wide bg-blue-900/40 text-blue-200 px-2 py-0.5 rounded-full border border-blue-400/20">{lead.badge}</span>
+                    </div>
                     <p className="text-gray-400 text-xs">{lead.agency}</p>
                     <p className="text-cyan-300 text-xs mt-1 truncate italic">"{lead.q}"</p>
                   </div>
@@ -361,6 +395,18 @@ const HomePage: React.FC = () => {
                 </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Built by the trade, for the trade. */}
+      <section className="py-20 sm:py-24 px-4 bg-gradient-to-br from-[#0a1628] via-[#0d2d3d] to-[#0a1628] border-y border-cyan-400/10">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl sm:text-4xl font-extrabold font-heading bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(0,212,255,0.3)]">
+            Built by the trade, for the trade.
+          </h2>
+          <p className="mt-6 text-lg text-gray-300 leading-relaxed">
+            TravelIQ was founded by a senior airline commercial leader with two decades managing trade sales, marketing and call-centre performance across UK &amp; European markets. We built the tool we always wished our trade partners had: instant, accurate, multilingual answers for every agent — without adding headcount.
+          </p>
         </div>
       </section>
 
@@ -465,6 +511,24 @@ const HomePage: React.FC = () => {
           <p className="mt-6 text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
             TravelIQ puts your AI Sales Assistant in front of UK and European travel agents — answering their questions, capturing their details, and building your agent database. Sign up for updates and early access.
           </p>
+
+          {/* Trust & Security badge row */}
+          <div className="mt-12 flex flex-col sm:flex-row flex-wrap items-stretch justify-center gap-4 text-left">
+            {([
+              { icon: 'insurance', title: 'GDPR compliant', sub: 'across all operating markets' },
+              { icon: 'attribution', title: 'Your content stays confidential', sub: 'never shared, sold or reused' },
+              { icon: 'global', title: 'Built for the UK & European trade', sub: '' },
+            ] as { icon: TierIconName; title: string; sub: string }[]).map((badge) => (
+              <div key={badge.title} className="flex items-center gap-3 bg-white/5 border border-cyan-400/20 rounded-xl px-5 py-4 backdrop-blur-md">
+                <TierIcon name={badge.icon} size="md" />
+                <div>
+                  <p className="text-white font-semibold text-sm leading-tight">{badge.title}</p>
+                  {badge.sub && <p className="text-gray-400 text-xs mt-0.5">{badge.sub}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+
           <NewsletterForm />
         </div>
       </section>
