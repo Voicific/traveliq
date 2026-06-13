@@ -134,15 +134,15 @@ const HomePage: React.FC = () => {
       {/* Stats / Social Proof Bar */}
       <StatsBar />
 
-      {/* One network. Every kind of travel brand. */}
+      {/* The sales network behind every travel brand. */}
       <section className="py-20 sm:py-28 px-4 bg-gradient-to-b from-[#0d2d3d]/50 to-[#0a1628]/50 border-y border-cyan-400/10">
         <div className="max-w-6xl mx-auto">
           <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-4xl sm:text-5xl font-extrabold font-heading bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(0,212,255,0.3)]">
-              One network. Every kind of travel brand.
+            <h2 className="text-4xl sm:text-5xl font-extrabold font-heading text-white text-balance drop-shadow-[0_0_30px_rgba(0,212,255,0.3)]">
+              The <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">sales network</span> behind every travel brand.
             </h2>
             <p className="mt-6 text-xl text-gray-300 leading-relaxed">
-              Your AI assistant speaks your product — fares, cabins, rate plans or itineraries — and answers like your best BDM.
+              Your Voice AI assistant knows your brand inside out — and answers every agent enquiry like your sharpest account manager, in seconds, 24/7/365.
             </p>
           </div>
           <div className="mt-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
