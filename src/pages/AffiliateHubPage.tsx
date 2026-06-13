@@ -169,7 +169,7 @@ const MARKETING_ASSETS: MarketingAsset[] = [
     type: 'copy',
     previewContent: [
       'Post 1: "The question travel agents ask most..."',
-      'Post 2: "What happens when your BDM is in a meeting..."',
+      'Post 2: "What happens when your account manager is in a meeting..."',
       'Post 3: "I\'ve been recommending TravelIQ to suppliers because..."',
       'Post 4: "24/7 agent support without hiring a 24/7 team..."',
     ],
@@ -210,7 +210,7 @@ const EMAIL_SWIPE_FILES = [
 
 I hope you're well. I've been following [Company] for a while — impressive work on the trade side.
 
-Quick thought: I've recently started working with a platform called TravelIQ that gives travel suppliers a 24/7 AI Sales Assistant for their agent channel. UK and European agents can ask it product, pricing, and policy questions instantly — no waiting for a BDM to call back.
+Quick thought: I've recently started working with a platform called TravelIQ that gives travel suppliers a 24/7 AI Sales Assistant for their agent channel. UK and European agents can ask it product, pricing, and policy questions instantly — no waiting for an account manager to call back.
 
 Given the volume of agent enquiries your team handles, I thought it might be worth a quick look. Happy to send over a one-pager or jump on a short call — no pitch, just a conversation.
 
@@ -284,7 +284,7 @@ If you supply the UK and European travel trade and want to know more, I'm happy 
   },
   {
     label: 'Why I recommend TravelIQ',
-    body: `I've spent [X] years in the travel industry, and the number one complaint I hear from BDMs is always the same: "We're drowning in agent queries and never have time to get to them all."
+    body: `I've spent [X] years in the travel industry, and the number one complaint I hear from account managers is always the same: "We're drowning in agent queries and never have time to get to them all."
 
 TravelIQ solves that. Their AI Sales Assistant sits alongside your team — answering product, pricing, and policy questions for agents 24/7.
 

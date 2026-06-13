@@ -389,7 +389,7 @@ const HomePage: React.FC = () => {
                  <div className="p-8 bg-gradient-to-r from-[#0d2d3d]/80 to-[#0f1c2e]/80 text-center border-t border-cyan-400/20">
                     <h4 className="font-bold text-2xl bg-gradient-to-r from-white to-cyan-200 bg-clip-text text-transparent">Clear ROI, Immediate Impact</h4>
                     <div className="mt-6 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 p-6 rounded-xl border border-cyan-400/30 shadow-[0_0_30px_rgba(0,212,255,0.3)]">
-                        <p className="font-bold text-xl text-white">A fraction of the cost of a dedicated BDM</p>
+                        <p className="font-bold text-xl text-white">A fraction of the cost of a dedicated account manager</p>
                         <p className="text-sm text-gray-400 mt-2">No holiday cover. No sick days. No 9–5 limitations. Your AI works 24/7, 365 days a year.</p>
                     </div>
                 </div>

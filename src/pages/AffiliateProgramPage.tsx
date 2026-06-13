@@ -103,7 +103,7 @@ const PROFILES = [
     iconColor: 'text-teal-300',
     bg: 'bg-teal-900/40',
     title: 'Cruise Lines',
-    desc: 'High agent dependency, complex cabin pricing. BDMs are overwhelmed with repeat queries from agencies.',
+    desc: 'High agent dependency, complex cabin pricing. Account managers are overwhelmed with repeat queries from agencies.',
     tier: 'Tier 1 — Start Here',
     tierClass: 'bg-teal-900/50 text-teal-300',
   },
@@ -178,11 +178,11 @@ const FAQS = [
   },
   {
     q: 'Why would a travel agent use TravelIQ?',
-    a: "Travel agents often need quick answers about supplier products — fare rules, group rates, commission structures, visa requirements — and getting those answers currently means waiting on hold, sending emails, or hoping a BDM responds. TravelIQ gives agents an instant, knowledgeable resource available any time of day, in multiple languages. Agents love it because it saves them hours every week.",
+    a: "Travel agents often need quick answers about supplier products — fare rules, group rates, commission structures, visa requirements — and getting those answers currently means waiting on hold, sending emails, or hoping an account manager responds. TravelIQ gives agents an instant, knowledgeable resource available any time of day, in multiple languages. Agents love it because it saves them hours every week.",
   },
   {
     q: 'Do I need to be a sales professional to be an affiliate?',
-    a: "Not at all. Your value is your trusted relationships in the travel industry. You make the introduction; the TravelIQ team handles every step of the sales process from demo to contract. Many of our best affiliates are consultants, former BDMs, or agency principals who simply recommend TravelIQ to people they already know and trust.",
+    a: "Not at all. Your value is your trusted relationships in the travel industry. You make the introduction; the TravelIQ team handles every step of the sales process from demo to contract. Many of our best affiliates are consultants, former account managers, or agency principals who simply recommend TravelIQ to people they already know and trust.",
   },
   {
     q: 'When and how do I get paid?',
@@ -491,7 +491,7 @@ const AffiliateProgramPage: React.FC = () => {
                 You don't need to be based in the UK or Europe to participate. If you have relationships with travel suppliers anywhere — Asia, the Middle East, North America, Africa — and those suppliers want to grow their bookings through UK and European travel agents, your introduction is valuable.
               </p>
               <ul className="space-y-2">
-                {['UK & Ireland based affiliates', 'European travel industry professionals', 'Global supplier-side contacts & consultants', 'Former BDMs and trade reps worldwide'].map(item => (
+                {['UK & Ireland based affiliates', 'European travel industry professionals', 'Global supplier-side contacts & consultants', 'Former account managers and trade reps worldwide'].map(item => (
                   <li key={item} className="flex items-center gap-2 text-sm text-gray-300">
                     <svg className="h-4 w-4 text-cyan-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
                     {item}
@@ -615,7 +615,7 @@ const AffiliateProgramPage: React.FC = () => {
                       <option value="">Select your role</option>
                       <option>Travel trade consultant</option>
                       <option>Host agency principal / owner</option>
-                      <option>Former supplier BDM / trade rep</option>
+                      <option>Former supplier account manager / trade rep</option>
                       <option>Travel industry coach or educator</option>
                       <option>Travel trade journalist / media</option>
                       <option>Travel industry event organiser</option>
