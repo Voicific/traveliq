@@ -1,89 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import NewsletterForm from '../components/NewsletterForm.tsx';
 import SupplierCarousel from '../components/SupplierCarousel.tsx';
 import { useUI } from '../context/UIContext.tsx';
 
 // --- SUB-COMPONENTS ---
-
-interface NewsArticle {
-  headline: string;
-  link: string;
-}
-
-const NewsTicker: React.FC = () => {
-    const [news, setNews] = useState<NewsArticle[]>([]);
-    
-    useEffect(() => {
-        const fetchNews = async () => {
-            const fallbackNews = [
-                { headline: "UK travel industry adapts to changing consumer demands", link: "https://travelweekly.co.uk/news" },
-                { headline: "Latest travel trade insights and market updates", link: "https://www.ttgmedia.com/news" },
-                { headline: "Global travel industry trends and analysis", link: "https://skift.com/" },
-                { headline: "Travel technology innovations reshaping the industry", link: "https://www.phocuswire.com/" },
-                { headline: "Breaking: Travel trade partnerships and new developments", link: "https://www.breakingtravelnews.com/" },
-                { headline: "AI and digital transformation in travel sector", link: "https://www.traveldailymedia.com/" },
-                { headline: "Sustainable travel initiatives gaining momentum", link: "https://www.sustainable-travel-international.org/" }
-            ];
-
-            try {
-                // The Serper API key now lives server-side in the Cloudflare Pages
-                // Function at /api/news. If it isn't configured (503) or the function
-                // isn't deployed (404, e.g. plain `vite dev`), we fall back to the
-                // hardcoded headlines below.
-                const response = await fetch('/api/news', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                });
-
-                if (!response.ok) {
-                    throw new Error(`News proxy responded with status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                if (data.news && data.news.length > 0) {
-                     const fetchedNews = data.news
-                        .map((item: { title: string; link: string; }) => ({
-                            headline: item.title,
-                            link: item.link,
-                        }))
-                        .filter((item: { headline: string; link: string; }) => item.headline && item.link);
-
-                    if (fetchedNews.length > 0) {
-                        setNews(fetchedNews);
-                    } else {
-                        setNews(fallbackNews);
-                    }
-                } else {
-                    setNews(fallbackNews);
-                }
-            } catch (error) {
-                console.error("Failed to fetch live news from Serper, using fallback articles:", error);
-                setNews(fallbackNews);
-            }
-        };
-        fetchNews();
-    }, []);
-
-    const newsItems = news.length > 0 ? news : [{ headline: "Loading latest travel updates...", link: "#" }];
-    const duplicatedNews = [...newsItems, ...newsItems, ...newsItems, ...newsItems]; 
-
-    return (
-        <div className="bg-gradient-to-r from-[#0a1628] via-[#0d2d3d] to-[#0a1628] border-y border-cyan-400/20 py-3 overflow-hidden">
-            <div className="flex">
-                <div className="flex animate-news-scroll hover:[animation-play-state:paused]">
-                    {duplicatedNews.map((item, index) => (
-                        <a key={index} href={item.link} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300 flex-shrink-0 mx-6 text-sm font-medium flex items-center gap-3">
-                            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_rgba(0,212,255,0.8)]"></span>
-                            <span>{item.headline}</span>
-                        </a>
-                    ))}
-                </div>
-            </div>
-        </div>
-    );
-};
 
 const FeatureCard: React.FC<{ icon: React.ReactNode; title: string; description: string; step: number; }> = ({ icon, title, description, step }) => (
     <div className="feature-card-premium relative bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 backdrop-blur-xl p-8 rounded-2xl border border-cyan-400/20 text-center transform transition-all duration-500 hover:scale-105 hover:border-cyan-400/50 hover:shadow-[0_0_30px_rgba(0,212,255,0.3)] group">
@@ -126,11 +47,11 @@ const StatsBar: React.FC = () => (
   <section className="py-12 bg-gradient-to-r from-[#0a1628] via-[#0d2d3d] to-[#0a1628] border-y border-cyan-400/10">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-5 gap-8 text-center">
       {[
+        { stat: '48 hrs', label: 'From Content to Live' },
         { stat: '24/7', label: 'Always-On AI Support' },
         { stat: '10+', label: 'Languages Supported' },
-        { stat: 'UK & EU', label: 'Coverage Across Europe' },
+        { stat: 'UK & EU', label: 'Trade Coverage' },
         { stat: 'Free', label: 'For Travel Agents' },
-        { stat: '2 Ways', label: 'Self-Serve or Managed' },
       ].map(item => (
         <div key={item.label} className="group">
           <p className="text-4xl sm:text-5xl font-extrabold font-heading bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(0,212,255,0.4)] group-hover:scale-105 transition-transform duration-300">{item.stat}</p>
@@ -143,13 +64,9 @@ const StatsBar: React.FC = () => (
 
 const HomePage: React.FC = () => {
   const { openVeeChat } = useUI();
-  const headlineText = "Smart. Instant. Voice AI Supplier Support.";
-  const words = headlineText.split(' ');
 
   return (
     <div className="text-white bg-[#0a1628]">
-      <NewsTicker />
-      
       {/* Hero Section with Video Background */}
       <section className="relative text-center py-24 sm:py-36 px-4 overflow-hidden bg-[#0a1628]">
         {/* Simple Video Background */}
@@ -177,39 +94,39 @@ const HomePage: React.FC = () => {
 
         <div className="relative z-10 max-w-5xl mx-auto" style={{ zIndex: 10 }}>
           <p className="text-cyan-400 font-bold tracking-[0.3em] uppercase mb-6 text-sm sm:text-base animate-fade-in drop-shadow-[0_0_15px_rgba(0,212,255,0.8)]">
-            Europe's First AI Voice Support Network for Travel
+            The Intelligent AI Supplier Network for the Travel Trade
           </p>
 
           {/* Continuously Animated Hero Text with Gradient */}
-          <h1 className="text-5xl sm:text-7xl lg:text-8xl font-extrabold font-heading leading-tight mb-8 hero-gradient-animated">
-            {headlineText}
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold font-heading leading-tight mb-8 hero-gradient-animated text-balance">
+            Europe's <span className="whitespace-nowrap">AI voice</span> support network for the travel trade.
           </h1>
 
           <p className="mt-8 max-w-3xl mx-auto text-xl sm:text-2xl text-gray-300 leading-relaxed animate-fade-in" style={{ animationDelay: '1.2s' }}>
-            Your agents are asking questions you can't answer 24/7. We fix that. Deploy a multilingual AI Sales Assistant that engages travel agents across the UK and Europe — instantly, in any language, any time of day.
+            One platform where airlines, cruise lines, hotel groups and tour operators give travel agents instant, accurate answers — by voice or chat, in 10+ languages, 24/7 — and build a living database of the agents who sell them.
           </p>
 
           <div className="mt-12 flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center animate-fade-in" style={{ animationDelay: '1.5s' }}>
+            <Link to="/pricing" className="group relative bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold px-10 py-5 rounded-xl shadow-[0_0_30px_rgba(0,212,255,0.4)] hover:shadow-[0_0_50px_rgba(0,212,255,0.7)] transition-all duration-500 transform hover:scale-105 overflow-hidden flex items-center justify-center">
+              <span className="relative z-10">List Your Brand →</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            </Link>
+            <Link to="/suppliers" className="group relative bg-white/10 backdrop-blur-md border-2 border-cyan-400/40 text-white font-bold px-10 py-5 rounded-xl hover:bg-cyan-400/20 hover:border-cyan-400 transition-all duration-500 transform hover:scale-105 shadow-[0_0_20px_rgba(0,212,255,0.2)] hover:shadow-[0_0_40px_rgba(0,212,255,0.5)]">
+              <span className="relative z-10">Free for Agents — Try It Now</span>
+            </Link>
             <button
               onClick={openVeeChat}
-              className="group relative bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold px-10 py-5 rounded-xl shadow-[0_0_30px_rgba(0,212,255,0.4)] hover:shadow-[0_0_50px_rgba(0,212,255,0.7)] transition-all duration-500 transform hover:scale-110 overflow-hidden flex items-center justify-center gap-3"
+              className="group relative bg-white/5 backdrop-blur-md border border-cyan-400/20 text-white font-bold px-10 py-5 rounded-xl hover:bg-cyan-400/10 hover:border-cyan-400/50 transition-all duration-500 transform hover:scale-105 flex items-center justify-center gap-3"
             >
               <span className="relative z-10 flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 016 0v8.25a3 3 0 01-3 3z" /></svg>
                 Try the AI Demo
               </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             </button>
-            <Link to="/pricing" className="group relative bg-white/10 backdrop-blur-md border-2 border-cyan-400/40 text-white font-bold px-10 py-5 rounded-xl hover:bg-cyan-400/20 hover:border-cyan-400 transition-all duration-500 transform hover:scale-105 shadow-[0_0_20px_rgba(0,212,255,0.2)] hover:shadow-[0_0_40px_rgba(0,212,255,0.5)]">
-              <span className="relative z-10">List Your Brand</span>
-            </Link>
-            <Link to="/suppliers" className="group relative bg-white/5 backdrop-blur-md border border-cyan-400/20 text-white font-bold px-10 py-5 rounded-xl hover:bg-cyan-400/10 hover:border-cyan-400/50 transition-all duration-500 transform hover:scale-105">
-              <span className="relative z-10">Explore Suppliers</span>
-            </Link>
           </div>
 
           <p className="mt-8 text-sm text-gray-400 animate-fade-in" style={{ animationDelay: '1.8s' }}>
-            <span className="text-cyan-400">●</span> Free for travel agents · GDPR compliant · No software required
+            <span className="text-cyan-400">●</span> Live in 48 hours · Free for travel agents · GDPR compliant · No software required
           </p>
         </div>
       </section>
