@@ -251,7 +251,7 @@ const PricingPage: React.FC = () => {
               },
               {
                 q: "How quickly can we go live?",
-                a: "On the self-serve route, you can have your profile live within hours of signing up. For fully managed onboarding, we typically turn around a complete profile within 3–5 working days of receiving your content. Either way, you'll review and approve everything before it goes live."
+                a: "On the self-serve route, you can have your profile live within 48 hours of signing up. For fully managed onboarding, we turn around a complete profile within 48 hours of receiving your content. Either way, you'll review and approve everything before it goes live."
               }
             ].map(({ q, a }) => (
               <SupplierFAQItem key={q} question={q} answer={a} />
