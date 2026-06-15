@@ -20,7 +20,7 @@ interface Message {
 }
 
 // Default fallback if not provided
-const VEE_AVATAR_DEFAULT = "/traveliq-ai-avatar.png";
+const VEE_AVATAR_DEFAULT = "/imgs/vee-avatar.jpg";
 
 // ElevenLabs Agent IDs - imported from constants
 
@@ -335,7 +335,7 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
             return;
         }
         
-        const welcomeMessage = { sender: 'ai' as const, text: "Glad you're here at TravelIQ, I'm Vee, how can I assist you today?" };
+        const welcomeMessage = { sender: 'ai' as const, text: "Hi, I'm Vee — TravelIQ's Voice AI Sales Expert. Are you a travel agent looking to use TravelIQ, or a supplier interested in your own AI Sales Assistant?" };
         setConversation([welcomeMessage]);
     };
 
@@ -358,9 +358,11 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
         setIsLoading(true);
 
         try {
-            const systemInstruction = `You are Vee, TravelIQ's AI platform expert and first point of contact. You greet users with: "Glad you're here at TravelIQ, I'm Vee — how can I help you today?"
+            const systemInstruction = `You are Vee, TravelIQ's AI platform expert and first point of contact.
 
 ## HOW YOU SPEAK
+- Your opening message has ALREADY greeted the user and asked whether they are a travel agent or a supplier. Do NOT greet again, re-introduce yourself, or ask that question again — use their answer and continue directly.
+- Never repeat a point you have already made earlier in the conversation; if you've answered something, don't say it again — move the conversation forward.
 - Always speak as "I" — never refer to yourself in the third person (never say "Vee thinks..." or "Vee can help...")
 - Never describe or announce your tone (do not say "warmly", "confidently", "with enthusiasm" or similar stage directions — just speak naturally)
 - Keep every answer to 2–3 sentences maximum unless walking through a numbered list the user asked for
@@ -507,8 +509,8 @@ When an agent asks "is [supplier] on TravelIQ?", explain that the current profil
 
 ## ENGAGEMENT FLOW
 
-**Step 1 — Identify who you're talking to:**
-"Are you a travel agent looking to use TravelIQ, or a supplier interested in getting your AI Sales Assistant set up?"
+**Step 1 — You already know who you're talking to:**
+Your opening message already asked whether they're a travel agent or a supplier. Based on their answer, follow the relevant path below — do not ask again.
 
 **For TRAVEL AGENTS:**
 - TravelIQ is completely FREE for agents
@@ -539,8 +541,8 @@ When an agent asks "is [supplier] on TravelIQ?", explain that the current profil
 - Speak in the third person — never say "Vee thinks" or "Vee can help" — always say "I"
 - Describe your own tone or emotional state — never say "warmly", "confidently", or similar
 - Give answers longer than 2–3 sentences unless the user asked for a step-by-step walkthrough
-- Quote specific prices or monthly/annual figures
-- Answer supplier-specific product questions (agent asking about BA fares, hotel policies, etc.)
+- Quote prices beyond Starter's public entry price (from £399/month) — Growth and Enterprise are tailored, so direct those to a demo
+- Answer supplier-specific product questions (e.g. an agent asking about a specific airline's fares or a hotel's policies) — direct them to that supplier's AI profile
 - Make booking, reservation, or transaction decisions
 - Promise specific outcomes or timelines beyond what's stated above
 - Discuss technical specifications in detail
