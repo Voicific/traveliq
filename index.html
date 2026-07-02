@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/images/traveliq-logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
+
     <!-- SEO Meta Tags -->
     <title>TravelIQ | AI Sales Assistant for Travel Suppliers — UK & Europe</title>
     <meta name="description" content="TravelIQ deploys a dedicated AI Sales Assistant for travel suppliers — airlines, hotels, cruise lines, and DMCs — that engages travel agents 24/7, in any language. Build your agent database, capture qualified leads, and cut support costs. GDPR compliant. Now serving the UK and Europe." />
@@ -17,7 +17,7 @@
       (function() {
         var hash = window.location.hash;
         if (hash && hash.startsWith('#/')) {
-          var path = hash.slice(1); // '#/suppliers' -> '/suppliers'
+          var path = hash.slice(1);
           var search = window.location.search;
           window.history.replaceState(null, '', path + search);
         }
@@ -37,7 +37,7 @@
     <meta property="twitter:title" content="TravelIQ | AI Sales Assistant for Travel Suppliers — UK & Europe" />
     <meta property="twitter:description" content="Deploy a dedicated AI Sales Assistant that engages travel agents 24/7, captures named leads, and supports the trade in 10+ languages. Built for UK and European travel suppliers." />
     <meta property="twitter:image" content="https://traveliq.biz/images/traveliq-og-image-1200x630.png?v=2" />
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
@@ -53,13 +53,13 @@
             colors: {
               'brand-primary': '#263AD1',
               'brand-secondary': '#1D227C',
-              'brand-light': '#F9FAFB', // Very light gray
+              'brand-light': '#F9FAFB',
               'brand-gray': '#9CA3AF',
               'brand-cyan': '#06B6D4',
               'brand-magenta': '#D946EF',
               'brand-gold': '#FBBF24',
-              'brand-dark': '#111827', // A very dark blue/gray for backgrounds
-              'brand-bg': '#1F2937',   // A slightly lighter background color
+              'brand-dark': '#111827',
+              'brand-bg': '#1F2937',
             },
             animation: {
               'shimmer': 'shimmer 4s linear infinite',
@@ -86,7 +86,7 @@
                 '0%': { opacity: 0, transform: 'translateY(10px)' },
                 '100%': { opacity: 1, transform: 'translateY(0)' },
               },
-               'slide-in': {
+              'slide-in': {
                 '0%': { opacity: 0, transform: 'translateX(-20px)' },
                 '100%': { opacity: 1, transform: 'translateX(0)' },
               },
@@ -112,4 +112,18 @@
                 'to': { color: '#F9FAFB' },
               },
               'fade-in-up-color-cycle': {
-                '
+                '0%': { opacity: 0, transform: 'translateY(20px)', color: '#06B6D4' },
+                '50%': { color: '#D946EF' },
+                '100%': { opacity: 1, transform: 'translateY(0)', color: '#F9FAFB' },
+              },
+            }
+          }
+        }
+         }
+    </script>
+  </head>
+  <body class="bg-brand-dark min-h-screen">
+    <div id="root"></div>
+    <script type="module" src="/src/index.tsx"></script>
+  </body>
+</html>
