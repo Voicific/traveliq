@@ -10,7 +10,19 @@
     <meta name="description" content="TravelIQ deploys a dedicated AI Sales Assistant for travel suppliers — airlines, hotels, cruise lines, and DMCs — that engages travel agents 24/7, in any language. Build your agent database, capture qualified leads, and cut support costs. GDPR compliant. Now serving the UK and Europe." />
     <meta name="keywords" content="TravelIQ, AI sales assistant travel, travel supplier marketing, travel agent leads, voice AI travel trade, B2B travel technology, AI chatbot travel suppliers, UK travel trade, European travel suppliers, GDPR travel AI" />
     <meta name="author" content="TravelIQ" />
-    <link rel="canonical" href="https://traveliq.biz" />
+    <link rel="canonical" href="https://traveliq.biz" id="canonical-tag" />
+
+    <!-- Redirect old hash-based URLs (/#/route) to path-based (/route) -->
+    <script>
+      (function() {
+        var hash = window.location.hash;
+        if (hash && hash.startsWith('#/')) {
+          var path = hash.slice(1); // '#/suppliers' -> '/suppliers'
+          var search = window.location.search;
+          window.history.replaceState(null, '', path + search);
+        }
+      })();
+    </script>
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -100,18 +112,4 @@
                 'to': { color: '#F9FAFB' },
               },
               'fade-in-up-color-cycle': {
-                '0%': { opacity: 0, transform: 'translateY(20px)', color: '#06B6D4' },
-                '50%': { color: '#D946EF' },
-                '100%': { opacity: 1, transform: 'translateY(0)', color: '#F9FAFB' },
-              },
-            },
-          }
-        }
-      }
-    </script>
-</head>
-  <body class="bg-brand-dark min-h-screen">
-    <div id="root"></div>
-    <script type="module" src="/src/index.tsx"></script>
-  </body>
-</html>
+                '

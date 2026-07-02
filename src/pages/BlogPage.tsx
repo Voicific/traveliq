@@ -3,6 +3,7 @@ import { blogPosts, BlogPost } from '../blog/posts.tsx';
 import BlogCard from '../components/BlogCard.tsx';
 import { getBlogPostsFromSheet } from '../services/sheetsService.ts';
 import type { ManagedBlogPost } from '../services/sheetsService.ts';
+import { usePageMeta } from '../hooks/usePageMeta';
 
 function managedToDisplay(post: ManagedBlogPost): BlogPost {
   return {
@@ -31,6 +32,11 @@ function mergePosts(managed: BlogPost[], hardcoded: BlogPost[]): BlogPost[] {
 }
 
 const BlogPage: React.FC = () => {
+  usePageMeta({
+    title: 'Blog | TravelIQ',
+    description: 'Insights on AI in travel, trade distribution, and how suppliers are using TravelIQ to support UK & European travel agents 24/7.',
+    canonical: '/blog'
+  });
   const [posts, setPosts] = useState<BlogPost[]>(blogPosts);
   const [isLoading, setIsLoading] = useState(true);
 

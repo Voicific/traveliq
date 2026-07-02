@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://traveliq.biz/sitemap.xml

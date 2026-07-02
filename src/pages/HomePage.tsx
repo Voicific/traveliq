@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import NewsletterForm from '../components/NewsletterForm.tsx';
 import { TierIcon, type TierIconName } from '../components/icons/TravelIQIcons.tsx';
 import { useUI } from '../context/UIContext.tsx';
+import { usePageMeta } from '../hooks/usePageMeta';
 
 // --- SUB-COMPONENTS ---
 
@@ -63,6 +64,11 @@ const StatsBar: React.FC = () => (
 );
 
 const HomePage: React.FC = () => {
+  usePageMeta({
+    title: 'TravelIQ | Europe\'s AI Voice Support Network for the Travel Trade',
+    description: 'TravelIQ gives airlines, cruise lines, hotel groups and tour operators a 24/7 AI sales assistant — answering UK & European travel agents in 10+ languages and turning every conversation into a named lead.',
+    canonical: '/'
+  });
   const { openVeeChat } = useUI();
 
   return (

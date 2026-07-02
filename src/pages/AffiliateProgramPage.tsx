@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase.ts';
+import { usePageMeta } from '../hooks/usePageMeta';
 import {
   TierIcon,
   FeatureIcon,
@@ -221,6 +222,11 @@ const FaqItem: React.FC<{ q: string; a: string }> = ({ q, a }) => {
 };
 
 const AffiliateProgramPage: React.FC = () => {
+  usePageMeta({
+    title: 'Affiliate Programme | TravelIQ',
+    description: 'Earn commission by introducing travel suppliers to TravelIQ — the AI sales assistant network for UK & European travel trade.',
+    canonical: '/affiliate-program'
+  });
   const [form, setForm] = useState<AffiliateFormData>({
     firstName: '', lastName: '', email: '', phone: '', country: '',
     role: '', company: '', linkedin: '', experience: '',

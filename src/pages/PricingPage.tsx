@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import DemoRequestModal from '../components/DemoRequestModal.tsx';
 import { useLeads } from '../context/LeadContext.tsx';
+import { usePageMeta } from '../hooks/usePageMeta';
 
 const PricingPage: React.FC = () => {
+  usePageMeta({
+    title: 'Pricing & Plans | TravelIQ',
+    description: 'TravelIQ plans for airlines, cruise lines, hotel groups and tour operators. Starter from £399/month. Live in 48 hours.',
+    canonical: '/pricing'
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState('');
   const [submissionMessage, setSubmissionMessage] = useState('');
