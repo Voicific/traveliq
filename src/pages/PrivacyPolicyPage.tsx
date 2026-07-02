@@ -1,6 +1,11 @@
 import React from 'react';
+import { usePageMeta } from '../hooks/usePageMeta';
 
 const PrivacyPolicyPage: React.FC = () => {
+  usePageMeta({
+    title: 'Privacy Policy | TravelIQ',
+    canonical: '/privacy'
+  });
   const contentSectionClass = "mb-12";
   const headingClass = "text-2xl md:text-3xl font-bold font-heading text-brand-cyan mb-6";
   const subheadingClass = "text-xl font-semibold font-heading text-brand-cyan-light mb-4 mt-8";

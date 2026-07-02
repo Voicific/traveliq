@@ -3,9 +3,15 @@
 import React, { useState, useMemo } from 'react';
 import { useSuppliers } from '../context/SupplierContext.tsx';
 import { SupplierType } from '../types.ts';
+import { usePageMeta } from '../hooks/usePageMeta';
 import SupplierCard from '../components/SupplierCard.tsx';
 
 const DirectoryPage: React.FC = () => {
+  usePageMeta({
+    title: 'Supplier Directory | TravelIQ',
+    description: 'Browse AI-powered travel supplier profiles on TravelIQ — airlines, cruise lines, hotel groups and tour operators answering UK & European agents 24/7.',
+    canonical: '/suppliers'
+  });
   const { suppliers } = useSuppliers();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState<SupplierType | 'All'>('All');

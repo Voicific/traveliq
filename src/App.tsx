@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import HomePage from './pages/HomePage.tsx';
 import DirectoryPage from './pages/DirectoryPage.tsx';
 import SupplierProfilePage from './pages/SupplierProfilePage.tsx';
@@ -54,13 +54,12 @@ const AppContent: React.FC = () => {
 
   return (
     <>
-      <HashRouter>
+      <BrowserRouter>
         {/*
           ScrollToTop fires window.scrollTo(0,0) on every route change.
-          This fixes the HashRouter default behaviour of preserving scroll
-          position when navigating between pages (e.g. Home → Affiliate Programme).
-          It also ensures /affiliate-program and /supplier-portal always open
-          at the top of the page, regardless of where the user came from.
+          BrowserRouter: all routes are now path-based (/suppliers, /pricing, etc.)
+          instead of hash-based (/#/suppliers). Old /#/ links are handled by the
+          redirect script in index.html.
         */}
         <ScrollToTop />
         <div className="flex flex-col min-h-screen text-brand-light">
@@ -124,7 +123,7 @@ const AppContent: React.FC = () => {
           </main>
           <Footer />
         </div>
-      </HashRouter>
+      </BrowserRouter>
       <ContactModal
         isOpen={isContactModalOpen}
         onClose={closeContactModal}

@@ -1,8 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { TierIcon } from '../components/icons/TravelIQIcons';
+import { usePageMeta } from '../hooks/usePageMeta';
 
 const AboutUsPage: React.FC = () => {
+  usePageMeta({
+    title: 'About TravelIQ | Built by the Trade, for the Trade',
+    description: 'TravelIQ was founded by a senior airline commercial leader to give UK & European travel agents instant, multilingual answers from the suppliers they sell.',
+    canonical: '/about'
+  });
   return (
     <div className="bg-gradient-to-br from-[#0a1628] via-[#0f1c2e] to-[#0a1628] text-white">
 
