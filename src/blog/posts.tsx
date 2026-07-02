@@ -12,6 +12,184 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    id: 'sales-cycle-compression-ai',
+    title: 'From First Question to First Booking: How AI Is Compressing the Travel Trade Sales Cycle',
+    date: 'June 29, 2026',
+    imageUrl: '/imgs/blog-sales-cycle-ai.jpg',
+    summary: 'The gap between an agent\'s first enquiry and their first confirmed booking has always been a revenue black hole. AI Sales Assistants are closing it — by removing friction, capturing intent, and giving sales teams the context they need to close faster.',
+    author: 'TravelIQ Team',
+    content: (
+      <>
+        <p>
+          In travel trade distribution, time is not just money — it's bookings. The longer the gap between an agent's first question and their first confirmed booking, the greater the risk that they fill that gap with a competitor's product.
+        </p>
+        <p>
+          For most suppliers, that gap is measured in days, sometimes weeks. It involves missed calls, delayed email threads, and agents who've moved on by the time a response arrives. AI Sales Assistants are changing the geometry of this problem entirely.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Where the Sales Cycle Actually Loses Time</h2>
+        <p>
+          The friction in travel trade sales tends to cluster around predictable bottlenecks. An agent needs commission confirmation before presenting a product. They want to know your group booking terms. They have a client who's asking about a specific cabin type, a specific hotel category, or a specific itinerary variant.
+        </p>
+        <p>
+          None of these are complex questions. But under the traditional model, each one triggers a wait. The agent emails. The supplier's trade desk responds when capacity allows. By the time the answer arrives, the agent's client has moved on — or the agent has filled the gap with a supplier whose answer was already available.
+        </p>
+        <p>
+          This is the hidden cost of slow information flow: not failed enquiries, but enquiries that never convert because the answer took too long.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">The Instant Answer Effect</h2>
+        <p>
+          An AI Sales Assistant answers the commission question, the group terms question, the cabin category question — in seconds, at any hour, without queue. The agent doesn't need to wait. Their client doesn't need to wait. The momentum of the sale is preserved.
+        </p>
+        <p>
+          This isn't a marginal improvement. It's a structural change in the sales cycle. When agents know they can get an instant, accurate answer from your AI Sales Assistant, they stop defaulting to products where the information is already at their fingertips. Your product becomes the easy choice.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Intent Captured, Context Preserved</h2>
+        <p>
+          What makes AI Sales Assistants especially powerful in the sales cycle context is that every interaction generates data. Your sales team doesn't just get a lead — they get a lead with context. They know which agent was asking, what specific product they were interested in, which questions they had, and when they asked them.
+        </p>
+        <p>
+          A follow-up call that begins "I can see you were asking about our Mediterranean itineraries last Tuesday — did we answer your question about the group cabin categories?" is a fundamentally different conversation from a cold call. The sales cycle hasn't just shortened — it's picked up in the middle, with both parties already aligned.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Nights, Weekends, and the Booking Window</h2>
+        <p>
+          Agents don't only research your product during business hours. Many of the most productive research sessions happen in the evening, during client consultations, or at weekends when agents are preparing for Monday enquiries. Under the traditional model, those moments are dead zones — unanswered questions, unresolved objections, lost momentum.
+        </p>
+        <p>
+          An AI Sales Assistant is active during every one of those moments. An agent who gets a complete, confident answer at 9pm on a Sunday is far more likely to present your product on Monday morning than one who submitted a support request that hasn't been answered yet.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">The Compounding Advantage</h2>
+        <p>
+          Individually, each compressed step in the sales cycle is valuable. Collectively, they represent a significant shift in conversion rate. Enquiries that previously fell through friction — unanswered questions, delayed follow-ups, lost momentum — become bookings. Agents who previously defaulted to better-supported competitors find that your product is now the one with the fastest, most reliable answers.
+        </p>
+        <p>
+          The suppliers who are ahead of this curve are not waiting for the question. They've deployed AI Sales Assistants that position them as the supplier of choice before the agent even picks up the phone.
+        </p>
+        <p className="mt-6 font-semibold text-cyan-400">
+          TravelIQ helps travel suppliers close the gap between first question and first booking — with AI Sales Assistants that answer instantly, capture intent, and hand off warm leads with full context. Find out more at traveliq.biz.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: 'agent-database-strategic-asset',
+    title: 'Your Agent Database Is a Strategic Asset. Here\'s How to Build One That Compounds.',
+    date: 'June 15, 2026',
+    imageUrl: '/imgs/blog-agent-database-asset.jpg',
+    summary: 'Every supplier pays for agent access — through OTAs, aggregators, or expensive rep structures. AI Sales Assistants offer a different model: a GDPR-compliant, first-party agent database that grows with every interaction and compounds in value over time.',
+    author: 'TravelIQ Team',
+    content: (
+      <>
+        <p>
+          Most travel suppliers don't own their agent relationships. They rent them — through trade platforms, OTA partnerships, and aggregators that hold the connection and charge for access every time a supplier wants to reach the agents on their books. The agents who represent your product are, in many cases, better known to the intermediary than to you.
+        </p>
+        <p>
+          This is one of the most consequential structural weaknesses in travel distribution, and it rarely gets discussed plainly. The fix isn't more spend on third-party platforms. It's building a first-party agent database — one that grows automatically and belongs entirely to you.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">What a First-Party Agent Database Actually Means</h2>
+        <p>
+          A first-party database is one where the data was collected directly from the individual, with their knowledge and consent. In the context of trade distribution, this means agents who have actively engaged with your brand, identified themselves, and opted into communication — not a purchased list, not a scraped directory, not a segment within a platform you pay to access.
+        </p>
+        <p>
+          This distinction matters enormously in a post-GDPR world. A first-party database of trade professionals who have self-identified interest in your product is not just more ethically sound — it's more commercially valuable. The agents in it are warm. They've demonstrated intent. They're yours to communicate with directly, indefinitely, without paying a platform every time.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">How AI Sales Assistants Build the Database for You</h2>
+        <p>
+          Every time a travel agent interacts with your AI Sales Assistant, they leave a trace. A name. An agency. An email. The product they were asking about. The questions that weren't already answered by your existing content. That is a lead — and it's captured automatically, without requiring anything from your sales team.
+        </p>
+        <p>
+          Over the course of weeks and months, those individual interactions accumulate into something strategically significant: a database of named trade professionals who have proactively engaged with your brand, with a full interaction history that tells your team exactly what each agent cares about.
+        </p>
+        <p>
+          The AI Sales Assistant runs 24 hours a day, seven days a week, across every market and time zone. While your trade desk handles priority accounts and your sales reps focus on key relationships, the AI is capturing every enquiry that would otherwise go unrecorded — building your database continuously, without additional headcount.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">The Compounding Mechanic</h2>
+        <p>
+          What makes a first-party agent database genuinely strategic — rather than just useful — is the way it compounds over time. In month one, you have a modest list of engaged agents. In month six, you have a significant pipeline of warm prospects. In year two, you have a proprietary asset that no competitor can replicate quickly and no platform can take away from you.
+        </p>
+        <p>
+          This compounding effect has parallels in every data-driven industry, but travel distribution has been slow to recognise it. The suppliers who build first-party agent databases now will have a structural commercial advantage within twelve to eighteen months that will be very difficult for late movers to close.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">GDPR Compliance by Design</h2>
+        <p>
+          For UK and European suppliers, the data compliance dimension of agent databases is non-negotiable. Any lead capture mechanism that operates across the UK and EU markets must be built on a lawful basis, with appropriate transparency and data minimisation.
+        </p>
+        <p>
+          TravelIQ's platform is designed with GDPR compliance as a foundational requirement, not an afterthought. Agents understand they're interacting with an AI Sales Assistant. Data is collected with appropriate consent, stored securely, and managed in a way that supports supplier obligations under both UK GDPR and EU GDPR. The database you build is clean, compliant, and commercially usable.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">The Alternative</h2>
+        <p>
+          The alternative to building a first-party agent database is continuing to pay for access to agent relationships owned by someone else. That model is not going away — but suppliers who depend on it entirely are permanently in a position of renting commercial reach rather than owning it. The platform can change its terms. The aggregator can increase fees. The OTA can favour competing suppliers. Your first-party database cannot be taken from you.
+        </p>
+        <p className="mt-6 font-semibold text-cyan-400">
+          TravelIQ helps travel suppliers build the agent database they should own — through GDPR-compliant AI Sales Assistants that capture every interaction as a named lead. Discover how at traveliq.biz.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: 'roi-ai-sales-assistants',
+    title: 'Beyond the Chatbot: How Travel Suppliers Are Calculating Real ROI from AI Sales Assistants',
+    date: 'May 30, 2026',
+    imageUrl: '/imgs/blog-roi-ai-suppliers.jpg',
+    summary: 'The question has shifted from "should we deploy AI?" to "what return are we getting?" Discover the five metrics leading travel suppliers use to track AI Sales Assistant performance — and why the numbers are making the business case for themselves.',
+    author: 'TravelIQ Team',
+    content: (
+      <>
+        <p>
+          The conversation in travel supplier boardrooms has changed. Twelve months ago, the question was "should we be looking at AI?" Today, suppliers who have deployed AI Sales Assistants are asking a more sophisticated question: how do we measure what it's actually delivering?
+        </p>
+        <p>
+          This is a healthy development. It signals that AI has moved from pilot project to commercial infrastructure — and that the suppliers investing in it are expecting the same accountability from their AI spend as they would from any other channel investment. The good news is that AI Sales Assistants are measurable, and the metrics that matter are straightforward.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Metric 1: Leads Captured Per Month</h2>
+        <p>
+          The most immediate measure of an AI Sales Assistant's commercial value is how many named leads it generates. Not traffic. Not sessions. A name, an agency, an email, and the product they were enquiring about — captured automatically from every agent interaction.
+        </p>
+        <p>
+          Suppliers who previously had no systematic mechanism to capture agent enquiries are now generating structured lead data from interactions that would have been invisible under the old model. The baseline comparison is simple: how many named trade leads were you capturing before, and how many are you capturing now?
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Metric 2: Response Time to Agent Enquiries</h2>
+        <p>
+          The average response time to an agent enquiry through traditional channels — trade desk, email, sales rep — is measured in hours. Often significantly more during peak periods. An AI Sales Assistant answers in seconds, around the clock.
+        </p>
+        <p>
+          The commercial implication of this is not trivial. Agents asking questions are, at that moment, in an active sales process. Response time directly affects conversion rate. Suppliers who track this metric consistently find that faster response times correlate with higher booking rates from the agents who engage with their AI Sales Assistants.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Metric 3: Out-of-Hours Coverage</h2>
+        <p>
+          Agent research doesn't happen on a nine-to-five schedule. A significant proportion of trade engagement happens in the evenings and at weekends — during client consultations, travel planning sessions, and preparation for Monday morning briefings. Traditional support structures leave these windows unserved.
+        </p>
+        <p>
+          Measuring what proportion of AI Sales Assistant interactions occur outside business hours gives suppliers a clear view of demand that was previously invisible. For most, the out-of-hours engagement rate is a meaningful share of total volume — representing potential bookings that were previously falling into a void.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Metric 4: Agent Database Growth Rate</h2>
+        <p>
+          A first-party agent database that grows automatically is one of the most valuable assets a supplier can build in travel distribution. Tracking the month-on-month growth rate of named, GDPR-compliant agent contacts — and the interaction history associated with each — gives suppliers a tangible measure of the long-term commercial asset their AI Sales Assistant is creating.
+        </p>
+        <p>
+          This metric is particularly important for suppliers who are evaluating AI investment over a multi-year horizon. The database compounds. An agent who interacted with your AI Sales Assistant in month three is still in your pipeline in month twenty-four — with their full history, and with no cost to maintain that relationship.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">Metric 5: Sales Rep Efficiency</h2>
+        <p>
+          The final ROI metric is one that takes longer to see but is often the most significant: the productivity of your existing sales team. Sales reps who are handed warm leads with full interaction context — rather than cold contacts with no prior relationship — close at higher rates and waste less time on unproductive outreach.
+        </p>
+        <p>
+          Measuring the conversion rate of leads sourced through the AI Sales Assistant versus cold outreach from the same reps gives a direct read on the quality uplift the AI is delivering to the human sales function.
+        </p>
+        <h2 className="text-2xl font-bold mt-8 mb-4 text-brand-light">The Combined Picture</h2>
+        <p>
+          Taken together, these five metrics build a clear commercial case: more leads, faster responses, continuous coverage, a growing first-party database, and a more productive sales team. The suppliers who are tracking these numbers are finding that AI Sales Assistants don't just pay for themselves — they generate returns that justify significant ongoing investment.
+        </p>
+        <p>
+          The question is no longer whether AI Sales Assistants work. The question is whether you're measuring them correctly.
+        </p>
+        <p className="mt-6 font-semibold text-cyan-400">
+          TravelIQ gives travel suppliers the AI Sales Assistant and the analytics dashboard to measure what it's delivering. Find out how at traveliq.biz.
+        </p>
+      </>
+    ),
+  },
+  {
     id: 'end-of-cold-sales-rep-outreach',
     title: 'Every Agent Conversation Should Generate a Lead. Most Don\'t.',
     date: 'May 18, 2026',
