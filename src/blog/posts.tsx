@@ -783,7 +783,7 @@ export const blogPosts: BlogPost[] = [
     id: 'meet-vee',
     title: 'Meet Vee: Your 24/7 AI Travel Companion',
     date: 'November 15, 2025',
-    imageUrl: '/imgs/traveliq-ai-avatar.png',
+    imageUrl: '/imgs/meet-vee.png',
     summary: 'Get to know Vee, TravelIQ\'s intelligent virtual assistant designed specifically for travel professionals.',
     author: 'TravelIQ Team',
     content: (
