@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# Third-party agent skills (installed via `npx skills add`, not part of the app)
+.agents/
+.claude/skills/
+agent/
+skills-lock.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
