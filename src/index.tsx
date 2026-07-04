@@ -14,7 +14,7 @@ const app = (
   </React.StrictMode>
 );
 
-// Build-time prerender (react-snap) writes fully-rendered HTML into each route's
+// Build-time prerender (scripts/prerender.mjs) writes fully-rendered HTML into each route's
 // index.html. When that snapshot is present, hydrate it instead of discarding it
 // with a fresh client render; otherwise mount normally (dev + non-prerendered).
 if (rootElement.hasChildNodes()) {
