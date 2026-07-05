@@ -10,6 +10,7 @@ import {
   VEE_LEAD_TOOL_NAME,
   VeeLeadParams,
   processVeeLeadCall,
+  spellOutEmail,
   veeLeadFunctionDeclaration,
 } from '../services/veeLeadTool.ts';
 
@@ -160,6 +161,10 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
     // Guards against duplicate lead submissions within one chat session.
     // A ref (not state) because it is read inside long-lived WebSocket handlers.
     const leadSubmittedRef = useRef(false);
+    // The email most recently returned for read-back. A confirmed save is only
+    // honoured if it matches — so the model cannot skip the read-back step and
+    // persist an unverified (possibly garbled) email.
+    const pendingConfirmEmailRef = useRef<string | null>(null);
 
     // Single entry point for structured lead capture from either mode.
     // Returns the message fed back to the model as the tool result.
@@ -168,7 +173,14 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
         return 'A lead has already been recorded for this session — no need to capture again.';
       }
       const result = processVeeLeadCall(params);
+
       if (result.ok && result.lead) {
+        // Defence in depth: a confirmed save must match an email that was just
+        // returned for read-back, otherwise force the read-back round first.
+        if (pendingConfirmEmailRef.current !== result.lead.email) {
+          pendingConfirmEmailRef.current = result.lead.email;
+          return `Before saving, read this email back to the visitor character by character and get their explicit "yes": "${spellOutEmail(result.lead.email)}". Then call capture_demo_lead again with confirmed true.`;
+        }
         addLead({
           type: 'AI Lead Capture',
           name: result.lead.name,
@@ -177,7 +189,14 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
           message: `${result.lead.message} | Captured via Vee ${source} (structured tool)`,
         });
         leadSubmittedRef.current = true;
+        pendingConfirmEmailRef.current = null;
         console.log('Vee structured lead captured:', { source, name: result.lead.name });
+        return result.message;
+      }
+
+      // First step validated but read-back still pending: remember the email.
+      if (result.needsConfirmation && result.normalizedEmail) {
+        pendingConfirmEmailRef.current = result.normalizedEmail;
       }
       return result.message;
     }, [addLead]);
@@ -243,6 +262,7 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
         setIsLoading(false);
         setLiveStatus('idle');
         leadSubmittedRef.current = false;
+        pendingConfirmEmailRef.current = null;
     }, [cleanupLiveSession]);
     
     const handleClose = useCallback(() => {
@@ -466,15 +486,18 @@ Your opening message already asked whether they're a travel agent or a supplier.
 3. "Great — may I take your name and company?"
 4. "And the best email to reach you?"
 5. "A phone number in case we need to reach you quickly?"
-6. Repeat ALL details back for confirmation, reading the email address back exactly as spelled
-7. Once the visitor confirms, call the capture_demo_lead tool with visitorType "supplier" and the confirmed details. Do NOT announce that you are using a tool — just save silently.
-8. If the tool reports a problem (e.g. the email looks invalid), re-confirm the exact spelling with the visitor and call the tool again with the corrected details
-9. After the tool confirms success: "Our team will be in touch within one business day. In the meantime, feel free to explore the platform — you can browse our live suppliers using the Suppliers link in the navigation."
+6. Repeat their name and company back for confirmation
+7. Call the capture_demo_lead tool with visitorType "supplier", the details, and confirmed=false — this validates but does NOT save. Do NOT announce that you are using a tool.
+8. The tool returns the email spelled out character by character. Read that exact spelling back to the visitor and ask "is that right?"
+9. If any part is wrong, collect the correction and call the tool again (confirmed=false) to re-check and get the new read-back
+10. ONLY once the visitor confirms the email is exactly correct, call capture_demo_lead again with the same details and confirmed=true to save
+11. After the tool confirms it saved: "Our team will be in touch within one business day. In the meantime, feel free to explore the platform — you can browse our live suppliers using the Suppliers link in the navigation."
 
 **capture_demo_lead rules:**
-- ONLY call it for a travel supplier who has agreed to a demo and confirmed their details
-- NEVER call it for travel agents, casual questions, or unconfirmed details — an agent asking about the affiliate programme is NOT a demo lead
-- Call it at most once per conversation (unless correcting a rejected submission)
+- ONLY call it for a travel supplier who has agreed to a demo — NEVER for travel agents or casual questions (an agent asking about the affiliate programme is NOT a demo lead)
+- ALWAYS do the two steps: confirmed=false first to trigger the email read-back, then confirmed=true only after the visitor confirms the email is correct
+- NEVER set confirmed=true until the visitor has heard the email read back and agreed
+- Save at most one lead per conversation
 
 ---
 
