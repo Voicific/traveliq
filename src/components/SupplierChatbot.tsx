@@ -6,6 +6,12 @@ import { useLeads } from '../context/LeadContext.tsx';
 import { Link, useNavigate } from 'react-router-dom';
 import { elevenLabsService } from '../services/elevenLabsVoiceService.ts';
 import { SEED_SUPPLIERS, VEE_ELEVENLABS_AGENT_ID, VEE_ELEVENLABS_VOICE_ID } from '../constants.ts';
+import {
+  VEE_LEAD_TOOL_NAME,
+  VeeLeadParams,
+  processVeeLeadCall,
+  veeLeadFunctionDeclaration,
+} from '../services/veeLeadTool.ts';
 
 interface SupplierChatbotProps {
   isOpen: boolean;
@@ -70,53 +76,11 @@ const getPhoneticallyCorrectedText = (text: string): string => {
     .replace(/\bTUI\b/gi, 'Too-ee');
 };
 
-// --- LEAD EXTRACTION UTILITY ---
-interface ExtractedLead {
-  name?: string;
-  email?: string;
-  phone?: string;
-  company?: string;
-}
-
-const extractContactDetails = (conversationText: string): ExtractedLead => {
-  const lead: ExtractedLead = {};
-  
-  // Email pattern
-  const emailMatch = conversationText.match(/[\w.-]+@[\w.-]+\.\w+/i);
-  if (emailMatch) lead.email = emailMatch[0];
-  
-  // Phone pattern (various formats)
-  const phoneMatch = conversationText.match(/(?:\+?[\d\s\-().]{10,})/);
-  if (phoneMatch) lead.phone = phoneMatch[0].trim();
-  
-  // Name patterns (looking for "my name is X" or "I'm X" patterns)
-  const namePatterns = [
-    /(?:my name is|i'm|i am|this is)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/i,
-    /(?:name[:\s]+)([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/i
-  ];
-  for (const pattern of namePatterns) {
-    const match = conversationText.match(pattern);
-    if (match) {
-      lead.name = match[1].trim();
-      break;
-    }
-  }
-  
-  // Company patterns
-  const companyPatterns = [
-    /(?:company is|work (?:at|for)|from)\s+([A-Z][A-Za-z\s&]+?)(?:\.|,|$|\s+and|\s+my)/i,
-    /(?:company[:\s]+)([A-Z][A-Za-z\s&]+?)(?:\.|,|$)/i
-  ];
-  for (const pattern of companyPatterns) {
-    const match = conversationText.match(pattern);
-    if (match) {
-      lead.company = match[1].trim();
-      break;
-    }
-  }
-  
-  return lead;
-};
+// Lead capture is now an explicit structured tool call (capture_demo_lead) —
+// see src/services/veeLeadTool.ts and VEE-LEAD-CAPTURE.md. The old regex
+// transcript-scraping approach was removed: it fired on any conversation
+// (including agent-redirects, misclassifying agents as supplier demo leads)
+// and silently missed spoken emails ("john dot smith at gmail dot com").
 
 const MessageContent: React.FC<{ text: string; onClose: () => void; }> = ({ text, onClose }) => {
     const navigate = useNavigate();
@@ -193,63 +157,34 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
     const [conversation, setConversation] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [leadCaptured, setLeadCaptured] = useState(false);
-    const lastCheckedLengthRef = useRef(0);
+    // Guards against duplicate lead submissions within one chat session.
+    // A ref (not state) because it is read inside long-lived WebSocket handlers.
+    const leadSubmittedRef = useRef(false);
 
-    // Effect to detect and capture leads from conversation
-    useEffect(() => {
-      if (conversation.length <= lastCheckedLengthRef.current || leadCaptured) return;
-      lastCheckedLengthRef.current = conversation.length;
-      
-      // Only check user messages for contact details
-      const userMessages = conversation.filter(m => m.sender === 'user');
-      if (userMessages.length < 2) return; // Need at least a few messages
-      
-      const fullConversation = userMessages.map(m => m.text).join(' ');
-      const extracted = extractContactDetails(fullConversation);
-      
-      // Capture lead if we have at least an email or phone
-      if (extracted.email || extracted.phone) {
-        const lead = {
-          type: 'AI Lead Capture' as const,
-          name: extracted.name || '',
-          email: extracted.email || '',
-          agency: extracted.company || '',
-          message: `Phone: ${extracted.phone || 'N/A'} | Captured via Vee chatbot`,
-        };
-        addLead(lead);
-        setLeadCaptured(true);
-        console.log('Lead captured from Vee conversation:', lead);
+    // Single entry point for structured lead capture from either mode.
+    // Returns the message fed back to the model as the tool result.
+    const submitVeeLead = useCallback((params: VeeLeadParams, source: 'chat' | 'voice'): string => {
+      if (leadSubmittedRef.current) {
+        return 'A lead has already been recorded for this session — no need to capture again.';
       }
-    }, [conversation, leadCaptured, addLead]);
+      const result = processVeeLeadCall(params);
+      if (result.ok && result.lead) {
+        addLead({
+          type: 'AI Lead Capture',
+          name: result.lead.name,
+          email: result.lead.email,
+          agency: result.lead.agency,
+          message: `${result.lead.message} | Captured via Vee ${source} (structured tool)`,
+        });
+        leadSubmittedRef.current = true;
+        console.log('Vee structured lead captured:', { source, name: result.lead.name });
+      }
+      return result.message;
+    }, [addLead]);
 
     // Live session state
     const [liveStatus, setLiveStatus] = useState<LiveStatus>('idle');
     const [transcript, setTranscript] = useState<TranscriptEntry[]>([]);
-
-    // Effect to detect and capture leads from live transcript
-    useEffect(() => {
-      if (transcript.length < 2 || leadCaptured) return;
-      
-      const userMessages = transcript.filter(t => t.speaker === 'You');
-      if (userMessages.length < 2) return;
-      
-      const fullTranscript = userMessages.map(t => t.text).join(' ');
-      const extracted = extractContactDetails(fullTranscript);
-      
-      if (extracted.email || extracted.phone) {
-        const lead = {
-          type: 'AI Lead Capture' as const,
-          name: extracted.name || '',
-          email: extracted.email || '',
-          agency: extracted.company || '',
-          message: `Phone: ${extracted.phone || 'N/A'} | Captured via Vee voice chat`,
-        };
-        addLead(lead);
-        setLeadCaptured(true);
-        console.log('Lead captured from Vee voice conversation:', lead);
-      }
-    }, [transcript, leadCaptured, addLead]);
     const [isAiSpeaking, setIsAiSpeaking] = useState(false);
     const { addMessage } = useVeeChat();
     
@@ -307,8 +242,7 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
         setInputValue('');
         setIsLoading(false);
         setLiveStatus('idle');
-        setLeadCaptured(false);
-        lastCheckedLengthRef.current = 0;
+        leadSubmittedRef.current = false;
     }, [cleanupLiveSession]);
     
     const handleClose = useCallback(() => {
@@ -524,20 +458,28 @@ Your opening message already asked whether they're a travel agent or a supplier.
 - Give them the platform overview and walkthrough above
 - After showing value: "The best next step is a quick 20-minute demo where we show you exactly what your profile would look like and answer your specific questions. Can I take your name, company, email, and phone number to get that booked?"
 - Collect: name, company name, email, phone
-- Confirm details back and assure them: "Our team will be in touch within one business day."
+- Confirm details back, then save them with the capture_demo_lead tool (see sequence below)
 
-**Lead capture sequence:**
+**Lead capture sequence (SUPPLIERS ONLY — never for travel agents):**
 1. Show value → platform walkthrough → onboarding path
 2. "Would you like to book a demo?"
 3. "Great — may I take your name and company?"
 4. "And the best email to reach you?"
 5. "A phone number in case we need to reach you quickly?"
-6. Confirm all details back
-7. "Our team will be in touch within one business day. In the meantime, feel free to explore the platform — you can browse our live suppliers using the Suppliers link in the navigation."
+6. Repeat ALL details back for confirmation, reading the email address back exactly as spelled
+7. Once the visitor confirms, call the capture_demo_lead tool with visitorType "supplier" and the confirmed details. Do NOT announce that you are using a tool — just save silently.
+8. If the tool reports a problem (e.g. the email looks invalid), re-confirm the exact spelling with the visitor and call the tool again with the corrected details
+9. After the tool confirms success: "Our team will be in touch within one business day. In the meantime, feel free to explore the platform — you can browse our live suppliers using the Suppliers link in the navigation."
+
+**capture_demo_lead rules:**
+- ONLY call it for a travel supplier who has agreed to a demo and confirmed their details
+- NEVER call it for travel agents, casual questions, or unconfirmed details — an agent asking about the affiliate programme is NOT a demo lead
+- Call it at most once per conversation (unless correcting a rejected submission)
 
 ---
 
 ## WHAT YOU NEVER DO
+- Call capture_demo_lead for anyone who is not a confirmed travel supplier requesting a demo
 - Speak in the third person — never say "Vee thinks" or "Vee can help" — always say "I"
 - Describe your own tone or emotional state — never say "warmly", "confidently", or similar
 - Give answers longer than 2–3 sentences unless the user asked for a step-by-step walkthrough
@@ -566,15 +508,35 @@ Your opening message already asked whether they're a travel agent or a supplier.
 
             const config: any = {
                 systemInstruction,
-                tools: [{ googleSearch: {} }, { googleMaps: {} }],
+                tools: [
+                    { googleSearch: {} },
+                    { googleMaps: {} },
+                    { functionDeclarations: [veeLeadFunctionDeclaration] },
+                ],
             };
 
             // Updated to use gemini-3-pro-preview for the chatbot as requested
-            const response = await ai.models.generateContent({
+            let response = await ai.models.generateContent({
                 model: "gemini-3-pro-preview",
                 contents: contents,
                 config: config,
             });
+
+            // Structured lead capture: if the model called capture_demo_lead,
+            // process it and let the model produce the final confirmation text.
+            const leadCall = response.functionCalls?.find(c => c.name === VEE_LEAD_TOOL_NAME);
+            if (leadCall) {
+                const toolMessage = submitVeeLead((leadCall.args || {}) as VeeLeadParams, 'chat');
+                response = await ai.models.generateContent({
+                    model: "gemini-3-pro-preview",
+                    contents: [
+                        ...contents,
+                        { role: 'model', parts: [{ functionCall: leadCall }] },
+                        { role: 'user', parts: [{ functionResponse: { name: VEE_LEAD_TOOL_NAME, response: { result: toolMessage } } }] },
+                    ],
+                    config: config,
+                });
+            }
 
             // Handle Text and Source response
             const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
@@ -595,7 +557,7 @@ Your opening message already asked whether they're a travel agent or a supplier.
                     sources = uniqueSources;
                 }
             }
-            
+
             if (response.text) {
               const aiMessage = { sender: 'ai' as const, text: response.text, sources };
               setConversation(prev => [...prev, aiMessage]);
@@ -608,7 +570,7 @@ Your opening message already asked whether they're a travel agent or a supplier.
         } finally {
             setIsLoading(false);
         }
-    }, [conversation, isLoading, addMessage, addLead, ai]);
+    }, [conversation, isLoading, addMessage, submitVeeLead, ai]);
     
     const handlePlayTTS = async (text: string, index: number) => {
         // Clicking the same message again stops playback
@@ -772,6 +734,27 @@ Your opening message already asked whether they're a travel agent or a supplier.
                         outputSourcesRef.current.clear();
                         nextStartTimeRef.current = 0; // Reset audio queue on interruption
                         setIsAiSpeaking(false);
+                    } else if (msg.type === 'client_tool_call' && msg.client_tool_call) {
+                        // Structured lead capture from the ElevenLabs agent. The
+                        // capture_demo_lead client tool must be registered on the
+                        // agent in the ElevenLabs dashboard — see VEE-LEAD-CAPTURE.md.
+                        const { tool_name, tool_call_id, parameters } = msg.client_tool_call;
+                        if (tool_name === VEE_LEAD_TOOL_NAME) {
+                            const resultMessage = submitVeeLead((parameters || {}) as VeeLeadParams, 'voice');
+                            ws.send(JSON.stringify({
+                                type: 'client_tool_result',
+                                tool_call_id,
+                                result: resultMessage,
+                                is_error: false,
+                            }));
+                        } else {
+                            ws.send(JSON.stringify({
+                                type: 'client_tool_result',
+                                tool_call_id,
+                                result: `Unknown client tool: ${tool_name}`,
+                                is_error: true,
+                            }));
+                        }
                     } else if (msg.type === 'ping') {
                         ws.send(JSON.stringify({ type: 'pong', event_id: msg.ping_event?.event_id }));
                     }
@@ -794,8 +777,8 @@ Your opening message already asked whether they're a travel agent or a supplier.
             console.error('Failed to start voice session:', error);
             setLiveStatus('error');
         }
-    }, [cleanupLiveSession, resetToIdle]);
-    
+    }, [cleanupLiveSession, resetToIdle, submitVeeLead]);
+
     const renderContent = () => {
         if (aiError) {
           return (
