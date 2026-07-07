@@ -65,7 +65,7 @@ const LeadSignatureMoment: React.FC = () => {
   return (
     <section className="relative overflow-hidden border-y border-cyan-400/10 bg-gradient-to-br from-[#0a1628] via-[#0d2d3d] to-[#0a1628] px-4 py-24 sm:py-32">
       <NetworkCanvas density={28} intensity={0.5} className="absolute inset-0 opacity-60" />
-      <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-16 lg:grid-cols-2">
+      <div className="relative z-10 mx-auto grid max-w-6xl grid-cols-1 items-center gap-16 lg:grid-cols-2">
         <div>
           <Reveal>
             <p className="text-xs font-bold uppercase tracking-[0.3em] text-cyan-400 sm:text-sm">

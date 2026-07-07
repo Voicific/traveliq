@@ -52,7 +52,7 @@ const AdvantageEditorial: React.FC = () => (
         </Reveal>
       </div>
 
-      <div className="mt-16 grid gap-16 lg:grid-cols-12 lg:gap-12">
+      <div className="mt-16 grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-12">
         {/* Agent side — narrow editorial list. */}
         <div className="lg:col-span-4">
           <h3 className="text-sm font-bold uppercase tracking-widest text-gray-400">For agents</h3>

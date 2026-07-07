@@ -106,7 +106,7 @@ const NetworkConstellation: React.FC = () => (
           <line x1="37.5" y1="55" x2="87.5" y2="58" className="constellation-line constellation-line-faint" />
         </svg>
 
-        <div className="relative grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="relative grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {CATEGORIES.map((node, i) => (
             <Reveal key={node.name} delay={i * 120} className={node.offset}>
               <Link

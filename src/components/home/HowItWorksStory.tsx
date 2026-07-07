@@ -60,11 +60,15 @@ const HowItWorksStory: React.FC = () => {
   const reduced = useReducedMotion();
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const { ref: videoInViewRef, inView: videoInView } = useInView<HTMLDivElement>({ threshold: 0.3 });
-  const { ref: agentRef, inView: agentInView } = useInView<HTMLDivElement>({ threshold: 0.3 });
-  const { ref: supplierRef, inView: supplierInView } = useInView<HTMLDivElement>({ threshold: 0.3 });
+  // Track which step group currently crosses the viewport's centre band.
+  const bandMargin = '-45% 0px -45% 0px';
+  const { ref: agentRef } = useInView<HTMLDivElement>({ threshold: 0, rootMargin: bandMargin });
+  const { ref: supplierRef, inView: supplierInView } = useInView<HTMLDivElement>({
+    threshold: 0,
+    rootMargin: bandMargin,
+  });
 
-  // Supplier side wins when both are visible (it's further down the story).
-  const activeSide: 'agents' | 'suppliers' = supplierInView && !agentInView ? 'suppliers' : 'agents';
+  const activeSide: 'agents' | 'suppliers' = supplierInView ? 'suppliers' : 'agents';
 
   useEffect(() => {
     const video = videoRef.current;
@@ -109,7 +113,7 @@ const HowItWorksStory: React.FC = () => {
           </Reveal>
         </div>
 
-        <div className="mt-20 grid gap-12 lg:grid-cols-[5fr_6fr] lg:gap-20">
+        <div className="mt-20 grid grid-cols-1 gap-12 lg:grid-cols-[5fr_6fr] lg:gap-20">
           {/* Pinned visual: watch voice AI work. */}
           <div ref={videoInViewRef} className="lg:sticky lg:top-24 lg:self-start">
             <Reveal>

@@ -27,6 +27,7 @@ export function useInView<T extends HTMLElement>({
       setInView(true);
       return;
     }
+    let scrollFallback: (() => void) | null = null;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -39,7 +40,23 @@ export function useInView<T extends HTMLElement>({
       { threshold, rootMargin },
     );
     observer.observe(el);
-    return () => observer.disconnect();
+    if (once) {
+      // Fast jumps (anchor links, End key, flick scrolls) can move an element
+      // from below to above the viewport between frames, so the observer never
+      // samples it. Catch anything that has fully passed above the viewport.
+      scrollFallback = () => {
+        if (el.getBoundingClientRect().bottom < 0) {
+          setInView(true);
+          observer.disconnect();
+          window.removeEventListener('scroll', scrollFallback!);
+        }
+      };
+      window.addEventListener('scroll', scrollFallback, { passive: true });
+    }
+    return () => {
+      observer.disconnect();
+      if (scrollFallback) window.removeEventListener('scroll', scrollFallback);
+    };
   }, [once, threshold, rootMargin]);
 
   return { ref, inView };
