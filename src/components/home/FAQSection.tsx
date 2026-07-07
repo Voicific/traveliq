@@ -103,11 +103,11 @@ const FAQSection: React.FC = () => (
         <GroupHeading>For Suppliers</GroupHeading>
         <FAQItem question="How do we get our brand's AI Sales Assistant set up?">
           <p>
-            It's fully self-service. Sign up at the Supplier Portal, log in to your dashboard, and
-            paste your knowledge base directly — agent FAQs, product details, fares, schedules,
-            training materials, even links to your trade portal. The AI uses only what you
-            provide, so every answer is on-brand and accurate. You stay in full control, and you
-            can publish your profile the moment you're ready.
+            TravelIQ handles setup and onboarding for you. Share your knowledge base — agent
+            FAQs, product details, fares, schedules, training materials, even links to your trade
+            portal — and we build and launch your AI Sales Assistant from it. The AI uses only
+            what you provide, so every answer is on-brand and accurate. You stay in full control
+            through your Supplier Portal dashboard, where you can update your content anytime.
           </p>
         </FAQItem>
         <FAQItem question="Can we update the information the AI provides?">
@@ -191,9 +191,10 @@ const FAQSection: React.FC = () => (
           <p>
             We are addressing a clear gap in the market by being Europe's first to offer
             dedicated, AI-driven B2B travel support. Our model is built on transparency and
-            supplier control: you self-onboard through the Supplier Portal, paste your own
-            knowledge base, and decide exactly what your AI shares — at any time, with no
-            middleman. Joining now secures you a first-mover advantage and positions you as a
+            supplier control: TravelIQ handles your setup and onboarding, your knowledge base
+            stays yours, and you decide exactly what your AI shares — updating it at any time
+            through your Supplier Portal, with no middleman. Joining now secures you a
+            first-mover advantage and positions you as a
             forward-thinking, 24/7 reliable partner to the UK and European travel trade.
           </p>
         </FAQItem>
