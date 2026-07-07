@@ -120,7 +120,8 @@ const HowItWorksStory: React.FC = () => {
               <div className="overflow-hidden rounded-2xl border border-cyan-400/20 shadow-[0_0_40px_rgba(0,212,255,0.15)]">
                 <video
                   ref={videoRef}
-                  src="/videos/promo.mp4"
+                  src="/videos/hero-loop.mp4"
+                  poster="/videos/hero-loop-poster.jpg"
                   muted
                   loop
                   playsInline
