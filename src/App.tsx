@@ -133,7 +133,7 @@ const AppContent: React.FC = () => {
       {!isVeeChatOpen && (
         <button
           onClick={openVeeChat}
-          className="fixed bottom-6 right-6 bg-gradient-to-r from-brand-primary to-brand-secondary border border-brand-light/20 text-white rounded-full shadow-lg flex items-center p-2 transform hover:scale-105 transition-transform duration-300 z-[90] gap-3 animate-fade-in"
+          className="vee-widget fixed bottom-6 right-6 bg-gradient-to-r from-brand-primary to-brand-secondary border border-brand-light/20 text-white rounded-full shadow-lg flex items-center p-2 transform hover:scale-105 transition-transform duration-300 z-[90] gap-3"
           aria-label="Speak to Vee"
         >
           <img

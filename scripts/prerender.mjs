@@ -38,6 +38,9 @@ console.log(`prerender: serving ${OUT_DIR} at ${base}`);
 
 const browser = await chromium.launch();
 const page = await browser.newPage();
+// Bake the static motion state: reveal/counter animations resolve to their
+// final, fully-visible form, so snapshots never capture mid-flight styles.
+await page.emulateMedia({ reducedMotion: 'reduce' });
 
 const failures = [];
 
