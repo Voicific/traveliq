@@ -668,3 +668,214 @@ html {
   padding: 8px;
   border-radius: 8px;
 }
+
+/* ========================================
+   HOMEPAGE MOTION SYSTEM
+   Shared tokens + choreography for the homepage redesign. Content is always
+   rendered visible by default; these classes are progressive enhancement
+   applied by JS (see components/home/Reveal.tsx) and never carry content.
+   ======================================== */
+
+:root {
+  --motion-fast: 200ms;
+  --motion-base: 400ms;
+  --motion-slow: 700ms;
+  --motion-cinematic: 1200ms;
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Viewport reveal (JS adds .reveal-wait after mount, .reveal-in on entry) */
+.reveal-wait {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.reveal-in {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--motion-slow) var(--ease-out-soft),
+    transform var(--motion-slow) var(--ease-out-soft);
+}
+
+/* Voice-wave bars (paused until hover / choreography runs) */
+.voice-wave {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+  padding-top: 2px;
+}
+
+.voice-wave i {
+  display: block;
+  width: 2px;
+  border-radius: 1px;
+  background: rgba(34, 211, 238, 0.85);
+  transform-origin: bottom;
+  animation: voice-bar 1.1s ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+.voice-wave i:nth-child(1) { height: 6px; animation-delay: 0ms; }
+.voice-wave i:nth-child(2) { height: 12px; animation-delay: 120ms; }
+.voice-wave i:nth-child(3) { height: 8px; animation-delay: 240ms; }
+.voice-wave i:nth-child(4) { height: 14px; animation-delay: 360ms; }
+.voice-wave i:nth-child(5) { height: 7px; animation-delay: 480ms; }
+
+.group:hover .voice-wave i,
+.lead-flow-run .voice-wave i {
+  animation-play-state: running;
+}
+
+@keyframes voice-bar {
+  0%, 100% { transform: scaleY(0.4); }
+  50% { transform: scaleY(1); }
+}
+
+/* Constellation connector lines (decorative SVG) */
+.constellation-line {
+  stroke: rgba(0, 212, 255, 0.18);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  animation: constellation-breathe 6s ease-in-out infinite alternate;
+}
+
+.constellation-line-faint {
+  stroke: rgba(0, 212, 255, 0.08);
+}
+
+@keyframes constellation-breathe {
+  from { opacity: 0.6; }
+  to { opacity: 1; }
+}
+
+/* Category node dot */
+.node-dot {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: rgba(0, 212, 255, 0.9);
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
+  animation: node-breathe 3s ease-in-out infinite;
+}
+
+@keyframes node-breathe {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Lead-flow choreography: voice query -> travelling pulse -> dashboard.
+   Without .lead-flow-run everything renders static and fully visible. */
+.lead-flow-dot {
+  display: block;
+  width: 6px;
+  height: 6px;
+  margin-left: -2.5px;
+  border-radius: 9999px;
+  background: rgb(0, 212, 255);
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.8);
+  opacity: 0;
+}
+
+.lead-flow-run .lead-flow-query {
+  animation: lead-query-pulse 1s var(--ease-out-soft);
+}
+
+.lead-flow-run .lead-flow-dot {
+  animation: lead-dot-travel 0.9s ease-in 0.4s both;
+}
+
+.lead-flow-run .lead-card {
+  opacity: 0;
+  animation: lead-card-in var(--motion-slow) var(--ease-out-soft) both;
+  animation-delay: var(--lead-delay, 1000ms);
+}
+
+.lead-flow-run .lead-card-first {
+  animation-name: lead-card-in-highlight;
+}
+
+@keyframes lead-query-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.5); }
+  100% { box-shadow: 0 0 0 18px rgba(0, 212, 255, 0); }
+}
+
+@keyframes lead-dot-travel {
+  0% { opacity: 0; transform: translateY(0); }
+  15% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(34px); }
+}
+
+@keyframes lead-card-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes lead-card-in-highlight {
+  0% { opacity: 0; transform: translateY(14px); box-shadow: none; }
+  40% { opacity: 1; transform: none; }
+  60% { box-shadow: 0 0 24px rgba(0, 212, 255, 0.45); }
+  100% { opacity: 1; transform: none; box-shadow: 0 0 0 rgba(0, 212, 255, 0); }
+}
+
+/* Vee widget: gentle entrance + soft ring pulse (visual polish only) */
+.vee-widget {
+  animation: vee-enter 0.8s var(--ease-out-soft) both;
+}
+
+.vee-widget::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 212, 255, 0.4);
+  pointer-events: none;
+  animation: vee-ring 3.5s ease-out infinite;
+}
+
+@keyframes vee-enter {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes vee-ring {
+  0% { transform: scale(0.96); opacity: 0.6; }
+  60% { transform: scale(1.1); opacity: 0; }
+  100% { transform: scale(1.1); opacity: 0; }
+}
+
+/* Reduced motion: the global clamp above already freezes animations; these
+   guards additionally ensure nothing is ever left hidden or pulsing. */
+@media (prefers-reduced-motion: reduce) {
+  .reveal-wait,
+  .reveal-in {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .voice-wave i,
+  .node-dot,
+  .constellation-line,
+  .vee-widget,
+  .vee-widget::after {
+    animation: none !important;
+  }
+
+  .vee-widget::after {
+    display: none;
+  }
+
+  .lead-flow-run .lead-card {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+
+  .lead-flow-run .lead-flow-query,
+  .lead-flow-run .lead-flow-dot {
+    animation: none !important;
+  }
+}
