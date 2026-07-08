@@ -12,7 +12,7 @@ export const SEED_SUPPLIERS: Supplier[] = [
     id: 'skyline-airways',
     name: 'Skyline Airways',
     type: SupplierType.Airline,
-    logoUrl: '/imgs/skyline_airways_logo.svg',
+    logoUrl: '/imgs/skyline_airways_logo.png',
     bannerUrl: 'https://images.unsplash.com/photo-1570299434827-c30b0a8c64b3?q=80&w=2070&auto=format&fit=crop',
     shortDescription: 'A fictional flagship carrier connecting the UK and Europe to long-haul destinations with award-style service and a generous trade programme.',
     longDescription: 'Skyline Airways is a demonstration airline created to showcase how TravelIQ\'s AI Sales Assistant supports travel agents. Operating from its primary hub at London Gateway (LGW-demo) with a secondary European base in Amsterdam, Skyline serves a fictional network of long-haul and short-haul destinations. It offers four cabins — First, Skyline Business, Premium and Economy — and a loyalty programme called SkyMiles Club. Ask the AI about routes, cabin features, baggage, fare rules, group bookings and trade commission.',
