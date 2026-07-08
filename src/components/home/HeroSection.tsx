@@ -119,13 +119,19 @@ const HeroSection: React.FC = () => {
               className="vee-hero-parallax pointer-events-none relative w-48 select-none sm:w-60 lg:w-full lg:max-w-sm"
             >
               <div className="vee-hero-glow" />
-              <img
-                src="/imgs/vee-hero.png"
-                alt=""
-                draggable={false}
-                decoding="async"
-                className="vee-hero-figure relative w-full"
-              />
+              {/* Sway wrapper: a slow idle drift on the whole figure, on a
+                  different period from the img's float so they never lock. */}
+              <div className="vee-hero-sway relative w-full">
+                <img
+                  src="/imgs/vee-hero.png"
+                  alt=""
+                  draggable={false}
+                  decoding="async"
+                  className="vee-hero-figure relative w-full"
+                />
+                {/* Soft pulsing glow over her raised hand/fingertips. */}
+                <div className="vee-hero-hand-glow" />
+              </div>
             </div>
           </Reveal>
         </div>

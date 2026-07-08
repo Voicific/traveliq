@@ -853,6 +853,45 @@ html {
   50% { opacity: 1; }
 }
 
+/* Idle sway on the whole figure. 3.7s vs the img's 7s float — a non-integer
+   ratio, plus a phase offset — so the two never sync into a mechanical bob.
+   Composes with the float (nested element) and the JS scroll parallax. */
+.vee-hero-sway {
+  animation: vee-hero-sway 3.7s ease-in-out infinite;
+  animation-delay: -1.2s;
+  will-change: transform;
+}
+
+@keyframes vee-hero-sway {
+  0%, 100% { transform: translateY(-4px); }
+  50% { transform: translateY(4px); }
+}
+
+/* Soft pulsing glow over her raised hand/fingertips — adds life to the
+   gesture without animating geometry. Offset period from the ambient glow. */
+.vee-hero-hand-glow {
+  position: absolute;
+  left: 4%;
+  top: 19%;
+  width: 28%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgba(0, 212, 255, 0.5),
+    rgba(0, 212, 255, 0.12) 45%,
+    transparent 70%
+  );
+  filter: blur(10px);
+  animation: vee-hand-pulse 4.3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes vee-hand-pulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.9); }
+  50% { opacity: 0.8; transform: scale(1.08); }
+}
+
 /* Vee widget: gentle entrance + soft ring pulse (visual polish only) */
 .vee-widget {
   animation: vee-enter 0.8s var(--ease-out-soft) both;
@@ -895,11 +934,14 @@ html {
   .vee-widget,
   .vee-widget::after,
   .vee-hero-figure,
-  .vee-hero-glow {
+  .vee-hero-glow,
+  .vee-hero-sway,
+  .vee-hero-hand-glow {
     animation: none !important;
   }
 
-  .vee-hero-parallax {
+  .vee-hero-parallax,
+  .vee-hero-sway {
     transform: none !important;
   }
 
