@@ -89,6 +89,13 @@ const HeroSection: React.FC = () => {
                 <Mic strokeWidth={1.5} className="h-5 w-5 text-cyan-400" />
                 See the Live Demo
               </button>
+              {/* Tertiary action: deliberately low-emphasis text link. */}
+              <Link
+                to="/suppliers"
+                className="flex items-center justify-center gap-1 px-2 py-3 text-sm font-semibold text-cyan-300 underline-offset-4 transition-colors hover:text-cyan-200 hover:underline sm:py-5"
+              >
+                Free for Agents <span aria-hidden="true">→</span>
+              </Link>
             </Reveal>
 
             <Reveal delay={600}>
