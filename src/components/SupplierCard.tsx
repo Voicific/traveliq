@@ -24,7 +24,31 @@ const SupplierCard: React.FC<SupplierCardProps> = ({ supplier }) => {
           <div className="flex items-center gap-4">
             <div className="relative bg-brand-light/90 rounded-xl p-2.5 flex-shrink-0 w-36 h-16 flex items-center justify-center overflow-hidden">
               <div className="absolute inset-0 rounded-xl bg-cyan-400 blur-md opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
-              <img className="relative max-w-full max-h-full object-contain opacity-95 group-hover:opacity-100 transition-all duration-300 transform group-hover:scale-105" src={supplier.logoUrl} alt={`${supplier.name} logo`} />
+              <img
+                className="relative max-w-full max-h-full object-contain opacity-95 group-hover:opacity-100 transition-all duration-300 transform group-hover:scale-105"
+                src={supplier.logoUrl}
+                alt={`${supplier.name} logo`}
+                onError={(e) => {
+                  // Graceful fallback for a missing/broken logo (bad path, 404,
+                  // stale DB URL): swap the <img> for a neutral initial tile so
+                  // the card never shows a broken-image icon.
+                  const img = e.currentTarget;
+                  if (img.dataset.fallbackApplied) return;
+                  img.dataset.fallbackApplied = 'true';
+                  const initial = (supplier.name.trim()[0] || '?').toUpperCase();
+                  img.style.display = 'none';
+                  const tile = img.parentElement?.querySelector<HTMLElement>('[data-logo-fallback]');
+                  if (tile) {
+                    tile.textContent = initial;
+                    tile.style.display = 'flex';
+                  }
+                }}
+              />
+              <span
+                data-logo-fallback
+                aria-hidden="true"
+                className="relative hidden h-full w-full items-center justify-center font-heading text-2xl font-extrabold text-brand-secondary"
+              />
             </div>
             <div>
               <h3 className="text-xl font-bold font-heading text-white">{supplier.name}</h3>
