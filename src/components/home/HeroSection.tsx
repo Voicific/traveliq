@@ -24,21 +24,21 @@ const HeroSection: React.FC = () => {
       <div className="relative z-10 mx-auto max-w-6xl">
         <Reveal>
           <p className="text-xs font-bold uppercase tracking-[0.3em] text-cyan-400 sm:text-sm">
-            The intelligent supplier network for the travel trade
+            Europe's first Voice AI sales support for the travel trade
           </p>
         </Reveal>
 
         <Reveal delay={120}>
           <h1 className="hero-gradient-animated mx-auto mt-8 max-w-5xl font-heading text-5xl font-extrabold leading-[1.04] tracking-tight text-balance sm:text-6xl lg:text-7xl xl:text-8xl">
-            Europe's AI voice network for the travel trade.
+            Your brand. Instantly available to the trade.
           </h1>
         </Reveal>
 
         <Reveal delay={280}>
           <p className="mx-auto mt-10 max-w-3xl text-lg leading-relaxed text-gray-300 sm:text-xl">
-            Airlines, cruise lines, hotels and tour operators answer every agent question — by
-            voice or chat, in 10+ languages, around the clock. Every conversation becomes a named
-            lead.
+            TravelIQ gives airlines, hotels, cruise lines, tour operators and DMCs a digital sales
+            team that answers travel agents instantly, 24/7 — using only your approved
+            information.
           </p>
         </Reveal>
 
@@ -47,21 +47,15 @@ const HeroSection: React.FC = () => {
             to="/pricing"
             className="group relative flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-10 py-5 font-bold text-white shadow-[0_0_30px_rgba(0,212,255,0.4)] transition-all duration-500 hover:scale-105 hover:shadow-[0_0_50px_rgba(0,212,255,0.7)]"
           >
-            <span className="relative z-10">List Your Brand →</span>
+            <span className="relative z-10">List Your Brand</span>
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
-          </Link>
-          <Link
-            to="/suppliers"
-            className="flex items-center justify-center rounded-xl border-2 border-cyan-400/40 bg-white/10 px-10 py-5 font-bold text-white shadow-[0_0_20px_rgba(0,212,255,0.2)] backdrop-blur-md transition-all duration-500 hover:scale-105 hover:border-cyan-400 hover:bg-cyan-400/20 hover:shadow-[0_0_40px_rgba(0,212,255,0.5)]"
-          >
-            Free for Agents →
           </Link>
           <button
             onClick={openVeeChat}
-            className="flex items-center justify-center gap-2 rounded-xl border border-cyan-400/20 bg-white/5 px-10 py-5 font-bold text-white backdrop-blur-md transition-all duration-500 hover:scale-105 hover:border-cyan-400/50 hover:bg-cyan-400/10"
+            className="flex items-center justify-center gap-2 rounded-xl border-2 border-cyan-400/40 bg-white/10 px-10 py-5 font-bold text-white shadow-[0_0_20px_rgba(0,212,255,0.2)] backdrop-blur-md transition-all duration-500 hover:scale-105 hover:border-cyan-400 hover:bg-cyan-400/20 hover:shadow-[0_0_40px_rgba(0,212,255,0.5)]"
           >
             <Mic strokeWidth={1.5} className="h-5 w-5 text-cyan-400" />
-            Try the AI Demo
+            See the Live Demo
           </button>
         </Reveal>
 
@@ -70,7 +64,8 @@ const HeroSection: React.FC = () => {
             <span className="text-cyan-400" aria-hidden="true">
               ●
             </span>{' '}
-            Live in 48 hours · Free for agents · GDPR compliant · No software required
+            Live in 48 hours · Built for the UK & European trade · GDPR compliant · No software to
+            install
           </p>
         </Reveal>
 
