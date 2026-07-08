@@ -837,7 +837,7 @@ html {
   position: absolute;
   inset: 8% 4% 2% 4%;
   border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(0, 212, 255, 0.28), transparent 72%);
+  background: radial-gradient(closest-side, rgba(0, 212, 255, 0.34), transparent 72%);
   filter: blur(28px);
   animation: vee-hero-glow-pulse 5s ease-in-out infinite;
   pointer-events: none;
