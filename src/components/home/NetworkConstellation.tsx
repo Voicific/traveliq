@@ -14,6 +14,11 @@ interface CategoryNode {
   offset: string;
 }
 
+// NOTE: the dedicated category pages (/airlines, /cruise, /hotels,
+// /tour-operators) don't exist yet — they're planned as a separate branch.
+// Until then all four cards point at /pricing (the supplier-facing "Work
+// With Us" page) so nothing lands on a blank route. Re-point `to` values
+// when the category pages ship.
 const CATEGORIES: CategoryNode[] = [
   {
     icon: 'airline',
@@ -21,7 +26,7 @@ const CATEGORIES: CategoryNode[] = [
     quote: 'Group booking process and long-haul commission?',
     copy: 'Fare families, baggage, trade programmes.',
     cta: 'For Airlines',
-    to: '/airlines',
+    to: '/pricing',
     offset: 'lg:mt-0',
   },
   {
@@ -30,7 +35,7 @@ const CATEGORIES: CategoryNode[] = [
     quote: "What's in the drinks package on Med sailings?",
     copy: 'Cabins, itineraries, inclusions.',
     cta: 'For Cruise Lines',
-    to: '/cruise',
+    to: '/pricing',
     offset: 'lg:mt-16',
   },
   {
@@ -39,7 +44,7 @@ const CATEGORIES: CategoryNode[] = [
     quote: 'Family rooms with half board in July?',
     copy: 'Room types, rate plans, child policies.',
     cta: 'For Hotel Groups',
-    to: '/hotels',
+    to: '/pricing',
     offset: 'lg:mt-4',
   },
   {
@@ -48,7 +53,7 @@ const CATEGORIES: CategoryNode[] = [
     quote: 'Is the Day 4 hike suitable for limited mobility?',
     copy: 'Itineraries, departures, terms.',
     cta: 'For Tour Operators',
-    to: '/tour-operators',
+    to: '/pricing',
     offset: 'lg:mt-20',
   },
 ];
