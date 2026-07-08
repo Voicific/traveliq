@@ -52,8 +52,8 @@ const HeroSection: React.FC = () => {
           {/* Text column — holds the left; Vee never overlaps it. */}
           <div className="text-center lg:text-left">
             <Reveal>
-              <p className="text-xs font-bold uppercase tracking-[0.3em] text-cyan-400 sm:text-sm">
-                Europe's first Voice AI sales support for the travel trade
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-cyan-400 sm:text-sm lg:whitespace-nowrap">
+                Europe's first Voice AI for the travel trade
               </p>
             </Reveal>
 
