@@ -34,7 +34,7 @@ const Header: React.FC = () => {
   );
 
   return (
-    <header className="bg-gradient-to-r from-[#0a1628] via-[#0d2d3d] to-[#0a1628] backdrop-blur-lg sticky top-0 z-50 border-b border-cyan-400/20">
+    <header className="bg-gradient-to-r from-[#0a1628] via-[#0d2d3d] to-[#0a1628] backdrop-blur-lg sticky top-0 z-50 overflow-x-clip border-b border-cyan-400/20">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-32 md:h-40 lg:h-48">
           <div className="flex-shrink-0">
@@ -50,7 +50,7 @@ const Header: React.FC = () => {
               </button>
             </div>
           </div>
-          <div className="-mr-2 flex md:hidden">
+          <div className="flex md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-300 hover:text-cyan-400 focus:outline-none"
