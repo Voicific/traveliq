@@ -821,6 +821,38 @@ html {
   100% { opacity: 1; transform: none; box-shadow: 0 0 0 rgba(0, 212, 255, 0); }
 }
 
+/* Vee hero figure: slow float/breathing, soft glow pulse, scroll parallax.
+   Decorative only — static (no float/pulse/parallax) under reduced motion. */
+.vee-hero-parallax {
+  transform: translateY(var(--vee-parallax, 0px));
+  will-change: transform;
+}
+
+.vee-hero-figure {
+  animation: vee-hero-float 7s var(--ease-out-soft) infinite;
+  filter: drop-shadow(0 0 24px rgba(0, 212, 255, 0.3));
+}
+
+.vee-hero-glow {
+  position: absolute;
+  inset: 8% 4% 2% 4%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 212, 255, 0.28), transparent 72%);
+  filter: blur(28px);
+  animation: vee-hero-glow-pulse 5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes vee-hero-float {
+  0%, 100% { transform: translateY(6px); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes vee-hero-glow-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
 /* Vee widget: gentle entrance + soft ring pulse (visual polish only) */
 .vee-widget {
   animation: vee-enter 0.8s var(--ease-out-soft) both;
@@ -861,8 +893,14 @@ html {
   .node-dot,
   .constellation-line,
   .vee-widget,
-  .vee-widget::after {
+  .vee-widget::after,
+  .vee-hero-figure,
+  .vee-hero-glow {
     animation: none !important;
+  }
+
+  .vee-hero-parallax {
+    transform: none !important;
   }
 
   .vee-widget::after {
