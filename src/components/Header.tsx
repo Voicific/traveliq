@@ -36,10 +36,10 @@ const Header: React.FC = () => {
   return (
     <header className="bg-gradient-to-r from-[#0a1628] via-[#0d2d3d] to-[#0a1628] backdrop-blur-lg sticky top-0 z-50 overflow-x-clip border-b border-cyan-400/20">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-32 md:h-40 lg:h-48">
+        <div className="flex items-center justify-between h-16 sm:h-20 lg:h-24">
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center" onClick={closeMenu}>
-                <LogoIcon className="h-24 w-auto md:h-36 lg:h-44" />
+                <LogoIcon className="h-12 w-auto sm:h-14 lg:h-16" />
             </Link>
           </div>
           <div className="hidden md:block">

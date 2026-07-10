@@ -47,7 +47,7 @@ const StatCounterRow: React.FC = () => {
   return (
     <div
       ref={ref}
-      className="mt-16 flex flex-wrap items-start justify-center gap-x-10 gap-y-6 border-t border-cyan-400/10 pt-8 sm:gap-x-14"
+      className="mt-10 flex flex-wrap items-start justify-center gap-x-10 gap-y-6 border-t border-cyan-400/10 pt-8 sm:gap-x-14"
     >
       {STATS.map((item) => (
         <div key={item.label} className="text-center">

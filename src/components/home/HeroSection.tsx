@@ -40,7 +40,7 @@ const HeroSection: React.FC = () => {
   }, [reduced]);
 
   return (
-    <section className="relative overflow-hidden bg-[#0a1628] px-4 pb-16 pt-24 sm:pb-24 sm:pt-32">
+    <section className="relative overflow-hidden bg-[#0a1628] px-4 pb-16 pt-8 sm:pb-20 sm:pt-12">
       <NetworkCanvas density={55} className="absolute inset-0" />
       <div
         className="absolute inset-0 bg-gradient-to-b from-[#0a1628]/60 via-transparent to-[#0a1628]"
@@ -48,7 +48,7 @@ const HeroSection: React.FC = () => {
       />
 
       <div className="relative z-10 mx-auto max-w-6xl">
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[7fr_5fr] lg:gap-8">
+        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-[7fr_5fr] lg:items-start lg:gap-8">
           {/* Text column — holds the left; Vee never overlaps it. */}
           <div className="text-center lg:text-left">
             <Reveal>
@@ -58,13 +58,13 @@ const HeroSection: React.FC = () => {
             </Reveal>
 
             <Reveal delay={120}>
-              <h1 className="hero-gradient-animated mt-8 font-heading text-5xl font-extrabold leading-[1.04] tracking-tight text-balance sm:text-6xl lg:text-7xl">
+              <h1 className="hero-gradient-animated mt-5 font-heading text-5xl font-extrabold leading-[1.04] tracking-tight text-balance sm:text-6xl lg:text-7xl">
                 Your brand. Instantly available to the trade.
               </h1>
             </Reveal>
 
             <Reveal delay={280}>
-              <p className="mx-auto mt-10 max-w-3xl text-lg leading-relaxed text-gray-300 sm:text-xl lg:mx-0">
+              <p className="mx-auto mt-6 max-w-3xl text-lg leading-relaxed text-gray-300 sm:text-xl lg:mx-0">
                 TravelIQ gives airlines, hotels, cruise lines, tour operators and DMCs a digital
                 sales team that answers travel agents instantly, 24/7 — using only your approved
                 information.
@@ -73,7 +73,7 @@ const HeroSection: React.FC = () => {
 
             <Reveal
               delay={440}
-              className="mt-12 flex flex-col justify-center gap-4 sm:flex-row sm:gap-6 lg:justify-start"
+              className="mt-8 flex flex-col justify-center gap-4 sm:flex-row sm:gap-6 lg:justify-start"
             >
               <Link
                 to="/pricing"
@@ -100,7 +100,7 @@ const HeroSection: React.FC = () => {
             </Reveal>
 
             <Reveal delay={600}>
-              <p className="mt-8 text-sm text-gray-400">
+              <p className="mt-6 text-sm text-gray-400">
                 <span className="text-cyan-400" aria-hidden="true">
                   ●
                 </span>{' '}
