@@ -831,6 +831,7 @@ html {
 .vee-hero-figure {
   animation: vee-hero-float 7s var(--ease-out-soft) infinite;
   filter: drop-shadow(0 0 24px rgba(0, 212, 255, 0.3));
+  transition: filter var(--motion-base) var(--ease-out-soft);
 }
 
 .vee-hero-glow {
@@ -841,6 +842,19 @@ html {
   filter: blur(28px);
   animation: vee-hero-glow-pulse 5s ease-in-out infinite;
   pointer-events: none;
+  transition: background var(--motion-base) var(--ease-out-soft);
+}
+
+/* Interactive affordance: intensify Vee's glow on hover / keyboard focus so
+   she reads as a clickable entry point, not just decoration. */
+.vee-hero-parallax:hover .vee-hero-glow,
+.vee-hero-parallax:focus-visible .vee-hero-glow {
+  background: radial-gradient(closest-side, rgba(0, 212, 255, 0.62), transparent 70%);
+}
+
+.vee-hero-parallax:hover .vee-hero-figure,
+.vee-hero-parallax:focus-visible .vee-hero-figure {
+  filter: drop-shadow(0 0 40px rgba(0, 212, 255, 0.6));
 }
 
 @keyframes vee-hero-float {

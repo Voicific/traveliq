@@ -15,7 +15,7 @@ import { useReducedMotion } from '../../hooks/useReducedMotion';
 const HeroSection: React.FC = () => {
   const { openVeeChat } = useUI();
   const reduced = useReducedMotion();
-  const veeRef = useRef<HTMLDivElement | null>(null);
+  const veeRef = useRef<HTMLButtonElement | null>(null);
 
   // Gentle scroll parallax on Vee (JS sets a CSS var; disabled under
   // prefers-reduced-motion; the figure is static without JS).
@@ -110,18 +110,22 @@ const HeroSection: React.FC = () => {
             </Reveal>
           </div>
 
-          {/* Vee — decorative holographic host. In front of the canvas, in her
-              own grid column so she stays clear of the text at every width. */}
+          {/* Vee — the interactive host AND the chat entry point. Clicking her
+              opens the same voice/text chat the old floating widget did
+              (openVeeChat); she is in her own grid column so she stays clear of
+              the text at every width. */}
           <Reveal delay={500} className="flex justify-center lg:justify-end">
-            <div
+            <button
               ref={veeRef}
-              aria-hidden="true"
-              className="vee-hero-parallax pointer-events-none relative w-48 select-none sm:w-60 lg:w-full lg:max-w-sm"
+              type="button"
+              onClick={openVeeChat}
+              aria-label="Talk to Vee — open the AI assistant"
+              className="vee-hero-parallax group relative block w-48 cursor-pointer select-none border-0 bg-transparent p-0 sm:w-60 lg:w-full lg:max-w-sm"
             >
-              <div className="vee-hero-glow" />
+              <div className="vee-hero-glow" aria-hidden="true" />
               {/* Sway wrapper: a slow idle drift on the whole figure, on a
                   different period from the img's float so they never lock. */}
-              <div className="vee-hero-sway relative w-full">
+              <div className="vee-hero-sway relative w-full" aria-hidden="true">
                 <img
                   src="/imgs/vee-hero.png"
                   alt=""
@@ -132,7 +136,15 @@ const HeroSection: React.FC = () => {
                 {/* Soft pulsing glow over her raised hand/fingertips. */}
                 <div className="vee-hero-hand-glow" />
               </div>
-            </div>
+              {/* Affordance: a "Talk to Vee" pill that fades in on hover/focus
+                  so visitors know she is clickable, not just decorative. */}
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full border border-cyan-400/40 bg-[#0a1628]/80 px-5 py-2 text-sm font-bold text-cyan-100 opacity-0 shadow-[0_0_25px_rgba(0,212,255,0.35)] backdrop-blur-md transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
+              >
+                <span className="text-cyan-400">▶</span> Talk to Vee
+              </span>
+            </button>
           </Reveal>
         </div>
 
