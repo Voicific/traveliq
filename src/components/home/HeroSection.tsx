@@ -120,7 +120,7 @@ const HeroSection: React.FC = () => {
               type="button"
               onClick={openVeeChat}
               aria-label="Talk to Vee — open the AI assistant"
-              className="vee-hero-parallax group relative block w-48 cursor-pointer select-none border-0 bg-transparent p-0 sm:w-60 lg:w-full lg:max-w-sm"
+              className="vee-hero-parallax group relative block w-44 cursor-pointer select-none border-0 bg-transparent p-0 sm:w-56 lg:w-full lg:max-w-xs"
             >
               <div className="vee-hero-glow" aria-hidden="true" />
               {/* Sway wrapper: a slow idle drift on the whole figure, on a
