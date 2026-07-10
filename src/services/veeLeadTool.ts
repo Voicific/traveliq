@@ -68,6 +68,18 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 const normalizePhone = (raw: string): string => raw.replace(/[^\d+]/g, '');
 
+/**
+ * Coerce any tool-call argument to a string before we run string methods on
+ * it. ElevenLabs delivers each parameter with the type declared on the agent,
+ * and a "phone number" is easily configured as a JSON number — which used to
+ * throw `raw.replace is not a function` inside the persist step and take down
+ * the whole confirmed save (the read-back step never reaches that code, so the
+ * failure only ever showed on the final confirmed=true call). Coercing here
+ * makes every field safe regardless of the type ElevenLabs sends.
+ */
+const asString = (v: unknown): string =>
+  v === undefined || v === null ? '' : String(v);
+
 const isConfirmed = (v: boolean | string | undefined): boolean =>
   v === true || (typeof v === 'string' && v.trim().toLowerCase() === 'true');
 
@@ -95,10 +107,10 @@ export const spellOutEmail = (email: string): string => {
 };
 
 export const processVeeLeadCall = (params: VeeLeadParams): VeeLeadResult => {
-  // 1. Intent gate. The typeof check makes a non-string value (e.g. JSON
+  // 1. Intent gate. asString() makes a non-string value (e.g. JSON
   //    boolean/number) reject cleanly instead of throwing on .trim() — which
   //    would otherwise leave the voice agent waiting for a tool result.
-  if (typeof params.visitorType !== 'string' || params.visitorType.trim().toLowerCase() !== 'supplier') {
+  if (asString(params.visitorType).trim().toLowerCase() !== 'supplier') {
     return {
       ok: false,
       message:
@@ -109,7 +121,7 @@ export const processVeeLeadCall = (params: VeeLeadParams): VeeLeadResult => {
   }
 
   // 2. Name.
-  const name = (params.name || '').trim();
+  const name = asString(params.name).trim();
   if (!name) {
     return {
       ok: false,
@@ -118,12 +130,12 @@ export const processVeeLeadCall = (params: VeeLeadParams): VeeLeadResult => {
   }
 
   // 3. Email shape.
-  const email = normalizeEmail(params.email || '');
+  const email = normalizeEmail(asString(params.email));
   if (!email || !EMAIL_RE.test(email)) {
     return {
       ok: false,
       message:
-        `The email "${params.email || ''}" does not look valid. ` +
+        `The email "${asString(params.email)}" does not look valid. ` +
         'Please re-confirm the exact spelling with the visitor (letter by letter if needed) and call the tool again.',
     };
   }
@@ -143,10 +155,11 @@ export const processVeeLeadCall = (params: VeeLeadParams): VeeLeadResult => {
     };
   }
 
-  // 5. Persist (visitor has confirmed the read-back).
-  const phone = normalizePhone(params.phone || '');
-  const company = (params.company || '').trim();
-  const notes = (params.notes || '').trim();
+  // 5. Persist (visitor has confirmed the read-back). asString() guards every
+  //    field so a numeric phone/company/notes from ElevenLabs cannot throw.
+  const phone = normalizePhone(asString(params.phone));
+  const company = asString(params.company).trim();
+  const notes = asString(params.notes).trim();
 
   return {
     ok: true,

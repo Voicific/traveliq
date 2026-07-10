@@ -181,13 +181,17 @@ const SupplierChatbot: React.FC<SupplierChatbotProps> = ({ isOpen, onClose, avat
           pendingConfirmEmailRef.current = result.lead.email;
           return `Before saving, read this email back to the visitor character by character and get their explicit "yes": "${spellOutEmail(result.lead.email)}". Then call capture_demo_lead again with confirmed true.`;
         }
+        // addLead handles its own Sheet-write failure (it queues the lead
+        // locally and resolves), so this never rejects into the tool result.
+        // The .catch is belt-and-braces so an unexpected throw surfaces in the
+        // console instead of becoming a silent unhandled rejection.
         addLead({
           type: 'AI Lead Capture',
           name: result.lead.name,
           email: result.lead.email,
           agency: result.lead.agency,
           message: `${result.lead.message} | Captured via Vee ${source} (structured tool)`,
-        });
+        }).catch((err) => console.error('Vee lead: addLead failed (lead queued locally):', err));
         leadSubmittedRef.current = true;
         pendingConfirmEmailRef.current = null;
         console.log('Vee structured lead captured:', { source, name: result.lead.name });
@@ -763,13 +767,30 @@ Your opening message already asked whether they're a travel agent or a supplier.
                         // agent in the ElevenLabs dashboard — see VEE-LEAD-CAPTURE.md.
                         const { tool_name, tool_call_id, parameters } = msg.client_tool_call;
                         if (tool_name === VEE_LEAD_TOOL_NAME) {
-                            const resultMessage = submitVeeLead((parameters || {}) as VeeLeadParams, 'voice');
-                            ws.send(JSON.stringify({
-                                type: 'client_tool_result',
-                                tool_call_id,
-                                result: resultMessage,
-                                is_error: false,
-                            }));
+                            // Always send a client_tool_result — a thrown exception
+                            // here would otherwise fall through to the generic
+                            // catch below, send nothing, and leave ElevenLabs to
+                            // time out and report "capture_demo_lead failed" with
+                            // no detail on our side.
+                            try {
+                                const resultMessage = submitVeeLead((parameters || {}) as VeeLeadParams, 'voice');
+                                ws.send(JSON.stringify({
+                                    type: 'client_tool_result',
+                                    tool_call_id,
+                                    result: resultMessage,
+                                    is_error: false,
+                                }));
+                            } catch (toolError) {
+                                console.error('capture_demo_lead handler threw:', toolError, { parameters });
+                                ws.send(JSON.stringify({
+                                    type: 'client_tool_result',
+                                    tool_call_id,
+                                    result:
+                                        'Sorry, there was a technical problem saving the lead. Apologise to the visitor, ' +
+                                        'ask them to repeat their email slowly, and try capture_demo_lead again.',
+                                    is_error: true,
+                                }));
+                            }
                         } else {
                             ws.send(JSON.stringify({
                                 type: 'client_tool_result',

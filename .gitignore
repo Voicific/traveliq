@@ -28,3 +28,6 @@ skills-lock.json
 *.njsproj
 *.sln
 *.sw?
+
+# Vee lead self-test transpile temp dirs
+.vee-selftest-*/
