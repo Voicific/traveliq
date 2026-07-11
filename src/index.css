@@ -959,3 +959,21 @@ html {
     animation: none !important;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   HOTFIX: mobile hamburger visibility.
+   LogoIcon derives a single fixed pixel height from its className and tests
+   `h-44` first, so — because the header passes `... md:h-36 lg:h-44` — it
+   returns ~80px on EVERY breakpoint, mobile included. That renders the logo
+   ~331px wide on phones, pushing the header's hamburger button past the right
+   edge where the header's overflow-x-clip hides it (fully off-screen at
+   ≤320px, partly clipped around 360px). Force a smaller logo below the md
+   breakpoint so the menu button stays on-screen. `!important` is required to
+   override LogoIcon's inline height style.
+   --------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  header .logo-container-3d,
+  header .logo-premium-3d {
+    height: 44px !important;
+  }
+}
