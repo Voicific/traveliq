@@ -6,7 +6,7 @@ import Reveal from './Reveal.tsx';
  * no personal identity (brief §1). Whitespace is the point.
  */
 const FounderBreak: React.FC = () => (
-  <section className="bg-[#0a1628] px-4 py-32 sm:py-44">
+  <section className="bg-[#0a1628] px-4 py-20 sm:py-28">
     <div className="mx-auto max-w-4xl text-center">
       <Reveal>
         <h2 className="font-heading text-4xl font-extrabold text-balance leading-tight sm:text-5xl lg:text-6xl">

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import HomePage from './pages/HomePage.tsx';
 import DirectoryPage from './pages/DirectoryPage.tsx';
 import SupplierProfilePage from './pages/SupplierProfilePage.tsx';
@@ -38,8 +38,32 @@ import AIStudioLayout from './pages/AIStudioLayout.tsx';
 
 import ImageEditPage from './pages/ImageEditPage.tsx';
 
+// Persistent "Speak to Vee" trigger, shown on every route EXCEPT the homepage
+// — there the Vee hologram in the hero is the entry point, so a floating
+// button would be a redundant second trigger. Route-aware, so it must render
+// inside BrowserRouter.
+const FloatingVeeWidget: React.FC = () => {
+  const location = useLocation();
+  const { isVeeChatOpen, openVeeChat } = useUI();
+  if (location.pathname === '/' || isVeeChatOpen) return null;
+  return (
+    <button
+      onClick={openVeeChat}
+      className="vee-widget fixed bottom-6 right-6 bg-gradient-to-r from-brand-primary to-brand-secondary border border-brand-light/20 text-white rounded-full shadow-lg flex items-center p-2 transform hover:scale-105 transition-transform duration-300 z-[90] gap-3"
+      aria-label="Speak to Vee"
+    >
+      <img
+        src="/imgs/vee-avatar.jpg"
+        alt="Vee, AI Assistant"
+        className="w-12 h-12 rounded-full object-cover border-2 border-brand-cyan"
+      />
+      <span className="font-bold text-lg pr-4">Speak to Vee</span>
+    </button>
+  );
+};
+
 const AppContent: React.FC = () => {
-  const { isContactModalOpen, closeContactModal, isVeeChatOpen, openVeeChat, closeVeeChat } = useUI();
+  const { isContactModalOpen, closeContactModal, isVeeChatOpen, closeVeeChat } = useUI();
   const { addLead } = useLeads();
 
   const handleContactSubmit = (details: { name: string; email: string; message: string; agency: string; }) => {
@@ -122,6 +146,9 @@ const AppContent: React.FC = () => {
             </Routes>
           </main>
           <Footer />
+          {/* Persistent chat trigger on every route EXCEPT the homepage, where
+              the Vee hologram in the hero is itself the entry point. */}
+          <FloatingVeeWidget />
         </div>
       </BrowserRouter>
       <ContactModal
@@ -130,20 +157,6 @@ const AppContent: React.FC = () => {
         onSubmit={handleContactSubmit}
       />
 
-      {!isVeeChatOpen && (
-        <button
-          onClick={openVeeChat}
-          className="vee-widget fixed bottom-6 right-6 bg-gradient-to-r from-brand-primary to-brand-secondary border border-brand-light/20 text-white rounded-full shadow-lg flex items-center p-2 transform hover:scale-105 transition-transform duration-300 z-[90] gap-3"
-          aria-label="Speak to Vee"
-        >
-          <img
-            src="/imgs/vee-avatar.jpg"
-            alt="Vee, AI Assistant"
-            className="w-12 h-12 rounded-full object-cover border-2 border-brand-cyan"
-          />
-          <span className="font-bold text-lg pr-4">Speak to Vee</span>
-        </button>
-      )}
       <SupplierChatbot isOpen={isVeeChatOpen} onClose={closeVeeChat} />
       <CookieConsent />
     </>

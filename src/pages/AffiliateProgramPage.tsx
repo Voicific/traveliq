@@ -296,7 +296,7 @@ const AffiliateProgramPage: React.FC = () => {
     <div className="bg-gradient-to-br from-[#0a1628] via-[#0f1c2e] to-[#0a1628] text-white">
 
       {/* Hero */}
-      <section className="relative text-center py-24 sm:py-36 px-4 overflow-hidden">
+      <section className="relative text-center pt-12 pb-8 sm:pt-16 sm:pb-10 px-4 overflow-hidden">
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/5 via-transparent to-blue-900/5 pointer-events-none" />
         <div className="relative max-w-4xl mx-auto animate-fade-in">

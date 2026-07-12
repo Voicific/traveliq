@@ -40,7 +40,7 @@ const PricingPage: React.FC = () => {
       )}
 
       {/* Hero */}
-      <section className="relative text-center py-20 sm:py-28 px-4 overflow-hidden bg-gradient-to-br from-[#0a1628] via-[#0d2d3d] to-[#0a1628]">
+      <section className="relative text-center pt-12 pb-8 sm:pt-16 sm:pb-10 px-4 overflow-hidden bg-gradient-to-br from-[#0a1628] via-[#0d2d3d] to-[#0a1628]">
         {/* Dark-theme brand panel — cyan glow on navy, no stock photo */}
         <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_50%_0%,rgba(34,211,238,0.18),transparent_60%)]" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0a1628] via-transparent to-transparent" />
@@ -58,7 +58,7 @@ const PricingPage: React.FC = () => {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:py-24 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:pb-24 lg:px-8">
 
         {/* Trust */}
         <section className="mt-16 text-center">

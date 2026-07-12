@@ -15,7 +15,7 @@ import { useReducedMotion } from '../../hooks/useReducedMotion';
 const HeroSection: React.FC = () => {
   const { openVeeChat } = useUI();
   const reduced = useReducedMotion();
-  const veeRef = useRef<HTMLDivElement | null>(null);
+  const veeRef = useRef<HTMLButtonElement | null>(null);
 
   // Gentle scroll parallax on Vee (JS sets a CSS var; disabled under
   // prefers-reduced-motion; the figure is static without JS).
@@ -40,7 +40,7 @@ const HeroSection: React.FC = () => {
   }, [reduced]);
 
   return (
-    <section className="relative overflow-hidden bg-[#0a1628] px-4 pb-16 pt-24 sm:pb-24 sm:pt-32">
+    <section className="relative overflow-hidden bg-[#0a1628] px-4 pb-16 pt-8 sm:pb-20 sm:pt-12">
       <NetworkCanvas density={55} className="absolute inset-0" />
       <div
         className="absolute inset-0 bg-gradient-to-b from-[#0a1628]/60 via-transparent to-[#0a1628]"
@@ -48,7 +48,7 @@ const HeroSection: React.FC = () => {
       />
 
       <div className="relative z-10 mx-auto max-w-6xl">
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[7fr_5fr] lg:gap-8">
+        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-[7fr_5fr] lg:items-start lg:gap-8">
           {/* Text column — holds the left; Vee never overlaps it. */}
           <div className="text-center lg:text-left">
             <Reveal>
@@ -58,13 +58,13 @@ const HeroSection: React.FC = () => {
             </Reveal>
 
             <Reveal delay={120}>
-              <h1 className="hero-gradient-animated mt-8 font-heading text-5xl font-extrabold leading-[1.04] tracking-tight text-balance sm:text-6xl lg:text-7xl">
+              <h1 className="hero-gradient-animated mt-5 font-heading text-5xl font-extrabold leading-[1.04] tracking-tight text-balance sm:text-6xl lg:text-7xl">
                 Your brand. Instantly available to the trade.
               </h1>
             </Reveal>
 
             <Reveal delay={280}>
-              <p className="mx-auto mt-10 max-w-3xl text-lg leading-relaxed text-gray-300 sm:text-xl lg:mx-0">
+              <p className="mx-auto mt-6 max-w-3xl text-lg leading-relaxed text-gray-300 sm:text-xl lg:mx-0">
                 TravelIQ gives airlines, hotels, cruise lines, tour operators and DMCs a digital
                 sales team that answers travel agents instantly, 24/7 — using only your approved
                 information.
@@ -73,7 +73,7 @@ const HeroSection: React.FC = () => {
 
             <Reveal
               delay={440}
-              className="mt-12 flex flex-col justify-center gap-4 sm:flex-row sm:gap-6 lg:justify-start"
+              className="mt-8 flex flex-col justify-center gap-4 sm:flex-row sm:gap-6 lg:justify-start"
             >
               <Link
                 to="/pricing"
@@ -100,7 +100,7 @@ const HeroSection: React.FC = () => {
             </Reveal>
 
             <Reveal delay={600}>
-              <p className="mt-8 text-sm text-gray-400">
+              <p className="mt-6 text-sm text-gray-400">
                 <span className="text-cyan-400" aria-hidden="true">
                   ●
                 </span>{' '}
@@ -110,18 +110,22 @@ const HeroSection: React.FC = () => {
             </Reveal>
           </div>
 
-          {/* Vee — decorative holographic host. In front of the canvas, in her
-              own grid column so she stays clear of the text at every width. */}
+          {/* Vee — the interactive host AND the chat entry point. Clicking her
+              opens the same voice/text chat the old floating widget did
+              (openVeeChat); she is in her own grid column so she stays clear of
+              the text at every width. */}
           <Reveal delay={500} className="flex justify-center lg:justify-end">
-            <div
+            <button
               ref={veeRef}
-              aria-hidden="true"
-              className="vee-hero-parallax pointer-events-none relative w-48 select-none sm:w-60 lg:w-full lg:max-w-sm"
+              type="button"
+              onClick={openVeeChat}
+              aria-label="Talk to Vee — open the AI assistant"
+              className="vee-hero-parallax group relative block w-44 cursor-pointer select-none border-0 bg-transparent p-0 sm:w-56 lg:w-full lg:max-w-xs"
             >
-              <div className="vee-hero-glow" />
+              <div className="vee-hero-glow" aria-hidden="true" />
               {/* Sway wrapper: a slow idle drift on the whole figure, on a
                   different period from the img's float so they never lock. */}
-              <div className="vee-hero-sway relative w-full">
+              <div className="vee-hero-sway relative w-full" aria-hidden="true">
                 <img
                   src="/imgs/vee-hero.png"
                   alt=""
@@ -132,7 +136,15 @@ const HeroSection: React.FC = () => {
                 {/* Soft pulsing glow over her raised hand/fingertips. */}
                 <div className="vee-hero-hand-glow" />
               </div>
-            </div>
+              {/* Affordance: a "Talk to Vee" pill that fades in on hover/focus
+                  so visitors know she is clickable, not just decorative. */}
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full border border-cyan-400/40 bg-[#0a1628]/80 px-5 py-2 text-sm font-bold text-cyan-100 opacity-0 shadow-[0_0_25px_rgba(0,212,255,0.35)] backdrop-blur-md transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
+              >
+                <span className="text-cyan-400">▶</span> Talk to Vee
+              </span>
+            </button>
           </Reveal>
         </div>
 
