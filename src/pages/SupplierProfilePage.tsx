@@ -2,9 +2,13 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { EyeOff } from 'lucide-react';
 import { useSuppliers } from '../context/SupplierContext.tsx';
+import { mapRowToSupplier } from '../lib/supplierMapping.ts';
 import { useAgent } from '../context/AgentContext.tsx';
 import { useLeads } from '../context/LeadContext.tsx';
+import { usePageMeta } from '../hooks/usePageMeta';
+import { supabase } from '../lib/supabase.ts';
 import { Supplier } from '../types.ts';
 import SupplierAIChat from '../components/SupplierAIChat.tsx';
 
@@ -120,19 +124,64 @@ function getVideoEmbedUrl(url: string): string | null {
     return url;
 }
 
-const SupplierProfilePage: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
+interface SupplierProfilePageProps {
+    /**
+     * 'preview' renders an unlisted profile reached via /preview/:token. The row is
+     * fetched by token through a SECURITY DEFINER RPC (it is invisible to RLS), the
+     * agent lead gate is skipped so testing never files a lead, and the page is
+     * marked noindex,nofollow.
+     */
+    mode?: 'public' | 'preview';
+}
+
+const SupplierProfilePage: React.FC<SupplierProfilePageProps> = ({ mode = 'public' }) => {
+    const { id, token } = useParams<{ id?: string; token?: string }>();
     const { getSupplierById } = useSuppliers();
     const { agentDetails, setAgentDetails } = useAgent();
     const { addLead } = useLeads();
+    const isPreview = mode === 'preview';
     const [supplier, setSupplier] = useState<Supplier | null>(null);
+    const [isResolving, setIsResolving] = useState(isPreview);
 
     useEffect(() => {
-        if (id) {
-            const currentSupplier = getSupplierById(id);
-            setSupplier(currentSupplier || null);
+        if (!isPreview) {
+            if (id) setSupplier(getSupplierById(id) || null);
+            return;
         }
-    }, [id, getSupplierById]);
+
+        // Preview: the row is unpublished, so RLS hides it from every normal
+        // query. The token-keyed RPC is the only way in.
+        let cancelled = false;
+        const loadPreview = async () => {
+            setIsResolving(true);
+            try {
+                const { data, error } = await supabase.rpc('get_supplier_by_preview_token', { token });
+                if (error) throw error;
+                const row = Array.isArray(data) ? data[0] : data;
+                if (!cancelled) setSupplier(row ? mapRowToSupplier(row as Record<string, unknown>) : null);
+            } catch (err) {
+                console.error('Failed to resolve preview supplier:', err);
+                if (!cancelled) setSupplier(null);
+            } finally {
+                if (!cancelled) setIsResolving(false);
+            }
+        };
+        loadPreview();
+        return () => { cancelled = true; };
+    }, [isPreview, id, token, getSupplierById]);
+
+    usePageMeta(
+        isPreview
+            ? {
+                title: supplier ? `${supplier.name} — private preview | TravelIQ` : 'Private preview | TravelIQ',
+                noindex: true,
+            }
+            : {
+                title: supplier ? `${supplier.name} | TravelIQ` : 'Supplier | TravelIQ',
+                description: supplier?.shortDescription,
+                canonical: id ? `/supplier/${id}` : undefined,
+            }
+    );
 
     const handleLeadSubmit = (details: { firstName: string; lastName: string; email: string; agency: string; }) => {
         setAgentDetails(details);
@@ -145,6 +194,14 @@ const SupplierProfilePage: React.FC = () => {
         }
     };
 
+    if (isResolving) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <p className="text-gray-300 text-xl">Loading preview…</p>
+            </div>
+        );
+    }
+
     if (!supplier) {
         return (
             <div className="flex items-center justify-center min-h-screen">
@@ -153,12 +210,27 @@ const SupplierProfilePage: React.FC = () => {
         );
     }
 
-    if (!agentDetails) {
+    // The lead gate is deliberately skipped in preview mode. A supplier testing
+    // their own profile is not an agent lead: gating them here would file a real
+    // 'Agent Chat' row in the Leads sheet and fire a notification email.
+    if (!agentDetails && !isPreview) {
         return <LeadCaptureModal supplierName={supplier.name} onSubmit={handleLeadSubmit} />;
     }
-    
+
     return (
         <div>
+            {isPreview && (
+                <div className="bg-amber-500/10 border-b border-amber-500/30">
+                    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-start gap-3">
+                        <EyeOff className="h-5 w-5 text-amber-300 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+                        <p className="text-sm text-amber-200">
+                            <span className="font-semibold">Private preview.</span> This profile is unlisted — it does not
+                            appear in the public supplier directory and is not indexed by search engines. Anyone with this
+                            link can view it, so please don't share it publicly.
+                        </p>
+                    </div>
+                </div>
+            )}
             <div
                 className="h-64 bg-cover bg-center"
                 style={{ backgroundImage: `url(${supplier.bannerUrl})` }}

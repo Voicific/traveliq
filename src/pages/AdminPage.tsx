@@ -66,7 +66,7 @@ const labelClass = 'block text-sm font-medium text-brand-gray';
 
 const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<void>; onCancel: () => void }> = ({ supplier, onSave, onCancel }) => {
   const { ai, error: aiError } = useAI();
-  const [formData, setFormData] = useState({ name: '', type: SupplierType.Airline, logoUrl: '', bannerUrl: '', videoUrl: '', shortDescription: '', longDescription: '', avatarImageUrl: '', websiteUrl: '', knowledgeBaseUrl: '', knowledgeBaseText: '', hedra_avatar_id: '', geminiVoiceName: 'Zephyr', useElevenLabs: false, elevenLabsAgentId: '', isDemo: true });
+  const [formData, setFormData] = useState({ name: '', type: SupplierType.Airline, logoUrl: '', bannerUrl: '', videoUrl: '', shortDescription: '', longDescription: '', avatarImageUrl: '', websiteUrl: '', knowledgeBaseUrl: '', knowledgeBaseText: '', hedra_avatar_id: '', geminiVoiceName: 'Zephyr', useElevenLabs: false, elevenLabsAgentId: '', isDemo: true, isPublished: false });
   const [isSaving, setIsSaving] = useState(false);
   const [isGeneratingShort, setIsGeneratingShort] = useState(false);
   const [isGeneratingLong, setIsGeneratingLong] = useState(false);
@@ -77,9 +77,9 @@ const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<
 
   useEffect(() => {
     if (supplier) {
-      setFormData({ name: supplier.name || '', type: supplier.type || SupplierType.Airline, logoUrl: supplier.logoUrl || '', bannerUrl: supplier.bannerUrl || '', videoUrl: supplier.videoUrl || '', shortDescription: supplier.shortDescription || '', longDescription: supplier.longDescription || '', avatarImageUrl: supplier.avatarImageUrl || '', websiteUrl: supplier.websiteUrl || '', knowledgeBaseUrl: supplier.knowledgeBaseUrl || '', knowledgeBaseText: supplier.knowledgeBaseText || '', hedra_avatar_id: supplier.hedra_avatar_id || '', geminiVoiceName: supplier.geminiVoiceName || 'Zephyr', useElevenLabs: !!supplier.useElevenLabs, elevenLabsAgentId: supplier.elevenLabsAgentId || '', isDemo: supplier.isDemo ?? true });
+      setFormData({ name: supplier.name || '', type: supplier.type || SupplierType.Airline, logoUrl: supplier.logoUrl || '', bannerUrl: supplier.bannerUrl || '', videoUrl: supplier.videoUrl || '', shortDescription: supplier.shortDescription || '', longDescription: supplier.longDescription || '', avatarImageUrl: supplier.avatarImageUrl || '', websiteUrl: supplier.websiteUrl || '', knowledgeBaseUrl: supplier.knowledgeBaseUrl || '', knowledgeBaseText: supplier.knowledgeBaseText || '', hedra_avatar_id: supplier.hedra_avatar_id || '', geminiVoiceName: supplier.geminiVoiceName || 'Zephyr', useElevenLabs: !!supplier.useElevenLabs, elevenLabsAgentId: supplier.elevenLabsAgentId || '', isDemo: supplier.isDemo ?? true, isPublished: supplier.isPublished === true });
     } else {
-      setFormData({ name: '', type: SupplierType.Airline, logoUrl: '', bannerUrl: '', videoUrl: '', shortDescription: '', longDescription: '', avatarImageUrl: '', websiteUrl: '', knowledgeBaseUrl: '', knowledgeBaseText: '', hedra_avatar_id: '', geminiVoiceName: 'Zephyr', useElevenLabs: false, elevenLabsAgentId: '', isDemo: true });
+      setFormData({ name: '', type: SupplierType.Airline, logoUrl: '', bannerUrl: '', videoUrl: '', shortDescription: '', longDescription: '', avatarImageUrl: '', websiteUrl: '', knowledgeBaseUrl: '', knowledgeBaseText: '', hedra_avatar_id: '', geminiVoiceName: 'Zephyr', useElevenLabs: false, elevenLabsAgentId: '', isDemo: true, isPublished: false });
     }
     setProcessingFiles([]);
   }, [supplier]);
@@ -205,6 +205,14 @@ const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<
     <form onSubmit={handleSubmit} className="space-y-4 bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 backdrop-blur-lg border border-cyan-400/10 p-6 rounded-lg shadow-md">
       <h2 className="text-xl font-bold font-heading text-white">{supplier ? 'Edit Supplier' : 'Add New Supplier'}</h2>
       {aiError && <p className="text-red-400 text-sm">Warning: AI content generation disabled due to API key error.</p>}
+      {/* Publication status — off by default so a new profile is never public by accident */}
+      <div className="flex items-center justify-between p-3 rounded-lg bg-cyan-500/10 border border-cyan-400/30">
+        <div className="flex items-center gap-3">
+          <input type="checkbox" id="isPublished" name="isPublished" checked={formData.isPublished} onChange={handleChange} className="w-4 h-4 accent-cyan-400" />
+          <label htmlFor="isPublished" className="text-sm font-semibold text-cyan-200">Published (listed in the public /suppliers directory)</label>
+        </div>
+        <span className="text-xs text-cyan-400/70">{formData.isPublished ? 'Publicly visible' : 'Unlisted — preview link only'}</span>
+      </div>
       {/* Demo status — uncheck once supplier has signed */}
       <div className="flex items-center justify-between p-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
         <div className="flex items-center gap-3">
@@ -624,7 +632,7 @@ const SetupInstructions: React.FC<{ onDismiss: () => void }> = ({ onDismiss }) =
 type Tab = 'suppliers' | 'leads' | 'blog' | 'affiliates' | 'supplier-accounts';
 
 const AdminPage: React.FC = () => {
-  const { suppliers, addSupplier, updateSupplier, deleteSupplier, resetToSeedData, isLoading: isSuppliersLoading, loadStatus } = useSuppliers();
+  const { suppliers, addSupplier, updateSupplier, deleteSupplier, restoreMissingSeedSuppliers, isLoading: isSuppliersLoading, loadStatus } = useSuppliers();
   const { leads, pendingCount, isSyncing, flushPending, refreshLeads } = useLeads();
   const [activeTab, setActiveTab] = useState<Tab>('suppliers');
 
@@ -708,8 +716,13 @@ const AdminPage: React.FC = () => {
     finally { setSupplierToDelete(null); }
   };
 
-  const handleConfirmReset = async () => {
-    try { await resetToSeedData(); showNotification('success', 'Reset to demo data.'); }
+  const handleConfirmRestore = async () => {
+    try {
+      const restored = await restoreMissingSeedSuppliers();
+      showNotification('success', restored === 0
+        ? 'Nothing to restore — all demo profiles are already present.'
+        : `Restored ${restored} demo profile${restored === 1 ? '' : 's'}.`);
+    }
     catch (error: any) { showNotification('error', `Failed: ${error.message}`); }
     finally { setIsResetting(false); }
   };
@@ -847,15 +860,15 @@ const AdminPage: React.FC = () => {
         </div>
       )}
 
-      {/* Confirm reset */}
+      {/* Confirm restore of missing demo profiles (additive only — deletes nothing) */}
       {isResetting && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-[#0d2d3d] p-8 rounded-lg shadow-xl border border-cyan-400/10 max-w-md w-full">
-            <h3 className="text-xl font-bold text-white">Reset to Demo Data?</h3>
-            <p className="text-gray-300 mt-2"><strong className="text-red-400">This will delete all existing suppliers.</strong></p>
+            <h3 className="text-xl font-bold text-white">Restore missing demo profiles?</h3>
+            <p className="text-gray-300 mt-2">Re-creates any of the built-in demo suppliers that are no longer in the database. <strong className="text-white">Existing suppliers are left untouched — nothing is deleted.</strong></p>
             <div className="flex justify-end gap-4 mt-6">
               <button onClick={() => setIsResetting(false)} className="bg-brand-light/10 text-white font-bold py-2 px-4 rounded-md hover:bg-brand-light/20">Cancel</button>
-              <button onClick={handleConfirmReset} className="bg-red-600 text-white font-bold py-2 px-4 rounded-md hover:bg-red-700">Confirm</button>
+              <button onClick={handleConfirmRestore} className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-2 px-4 rounded-md hover:opacity-90">Restore</button>
             </div>
           </div>
         </div>
@@ -916,7 +929,7 @@ const AdminPage: React.FC = () => {
             <div className="flex justify-between items-center mb-6 gap-4 flex-wrap">
               <h2 className="text-3xl font-bold font-heading text-white">Suppliers</h2>
               <div className="flex gap-4">
-                <button onClick={() => setIsResetting(true)} disabled={isReadOnly} className="bg-yellow-600/80 text-white font-bold py-2 px-4 rounded-md hover:bg-yellow-600 disabled:opacity-50">Reset to Demo</button>
+                <button onClick={() => setIsResetting(true)} disabled={isReadOnly} className="bg-brand-light/10 text-cyan-400 font-bold py-2 px-4 rounded-md hover:bg-brand-light/20 disabled:opacity-50">Restore demo profiles</button>
                 {!isFormVisible && <button onClick={() => { setEditingSupplier(undefined); setIsFormVisible(true); }} disabled={isReadOnly} className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-2 px-4 rounded-md hover:opacity-90 disabled:opacity-50">+ Add Supplier</button>}
               </div>
             </div>
@@ -942,7 +955,12 @@ const AdminPage: React.FC = () => {
                     <tr><td colSpan={3} className="text-center py-10 text-gray-300">No suppliers yet.</td></tr>
                   ) : suppliers.map(s => (
                     <tr key={s.id} className="hover:bg-white/5">
-                      <td className="px-6 py-4 text-white font-medium">{s.name}</td>
+                      <td className="px-6 py-4 text-white font-medium">
+                        {s.name}
+                        {s.isPublished !== true && (
+                          <span className="ml-2 align-middle text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">Unlisted</span>
+                        )}
+                      </td>
                       <td className="px-6 py-4 text-gray-300">{s.type}</td>
                       <td className="px-6 py-4 text-sm font-medium">
                         <button onClick={() => { setEditingSupplier(s); setIsFormVisible(true); }} disabled={isReadOnly} className="text-cyan-400 hover:opacity-70 disabled:opacity-30">Edit</button>

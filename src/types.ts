@@ -51,6 +51,14 @@ export interface Supplier {
   // When true (default for new profiles), shows "Demo" badge on card.
   // Admin unchecks this when a real supplier signs.
   isDemo?: boolean;
+  // Controls public visibility. False = unlisted: excluded from the /suppliers
+  // directory (and from the build-time prerender of it) and unreadable by anon
+  // under RLS. Reachable only via a /preview/:token link. Defaults to false so a
+  // newly created profile is never accidentally public.
+  isPublished?: boolean;
+  // Unguessable token backing the private /preview/:token link. Set in SQL, not
+  // through the admin form — the client never writes this column.
+  previewToken?: string;
 }
 
 export interface Message {
