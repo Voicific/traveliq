@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
+# Unlisted supplier preview links. Privacy comes from the unguessable token, not
+# from this line — it just stops well-behaved crawlers fetching one if a link leaks.
+Disallow: /preview/
+
 Sitemap: https://traveliq.biz/sitemap.xml

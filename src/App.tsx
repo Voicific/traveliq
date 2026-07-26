@@ -44,7 +44,23 @@ import ImageEditPage from './pages/ImageEditPage.tsx';
 // inside BrowserRouter.
 const FloatingVeeWidget: React.FC = () => {
   const location = useLocation();
-  const { isVeeChatOpen, openVeeChat } = useUI();
+  const { isVeeChatOpen, openVeeChat, closeVeeChat } = useUI();
+
+  // Unlisted supplier previews must not be able to reach Vee. She is a live lead
+  // source — booking a demo through her writes an 'AI Lead Capture' row to the
+  // Leads sheet and fires a notification email — and a supplier testing their own
+  // profile is not a lead. Same reasoning as skipping the agent gate on /preview.
+  // The widget is the only way to open her outside the homepage hero, which a
+  // preview visitor never sees.
+  const isPreviewRoute = location.pathname.startsWith('/preview/');
+
+  // Covers the client-side navigation case: Vee opened elsewhere, then a route
+  // change into a preview. Closing beats leaving a live lead funnel on the page.
+  React.useEffect(() => {
+    if (isPreviewRoute && isVeeChatOpen) closeVeeChat();
+  }, [isPreviewRoute, isVeeChatOpen, closeVeeChat]);
+
+  if (isPreviewRoute) return null;
   if (location.pathname === '/' || isVeeChatOpen) return null;
   return (
     <button
@@ -93,6 +109,11 @@ const AppContent: React.FC = () => {
               <Route path="/" element={<HomePage />} />
               <Route path="/suppliers" element={<DirectoryPage />} />
               <Route path="/supplier/:id" element={<SupplierProfilePage />} />
+              {/* Unlisted supplier preview. The token IS the credential: the row is
+                  unpublished and invisible to RLS, reachable only through the
+                  token-keyed RPC. Not linked from anywhere, noindex, and excluded
+                  from robots.txt, the sitemap and the prerender route list. */}
+              <Route path="/preview/:token" element={<SupplierProfilePage mode="preview" />} />
               <Route path="/pricing" element={<PricingPage />} />
               <Route path="/about" element={<AboutUsPage />} />
               <Route path="/blog" element={<BlogPage />} />

@@ -1,7 +1,9 @@
-import React, { createContext, useState, useContext, ReactNode, useEffect, useRef } from 'react';
-import { Supplier, SupplierType } from '../types.ts';
+import React, { createContext, useState, useContext, ReactNode, useEffect, useRef, useCallback } from 'react';
+import { Supplier } from '../types.ts';
 import { SEED_SUPPLIERS } from '../constants.ts';
 import { supabase } from '../lib/supabase.ts';
+import { mapRowToSupplier, mapSupplierToRow } from '../lib/supplierMapping.ts';
+import { useSupabaseAuth } from './SupabaseAuthContext.tsx';
 
 // Slug IDs used in constants.ts (e.g. 'british-airways') keyed by supplier name.
 // These never change at runtime since SEED_SUPPLIERS is a constant.
@@ -17,48 +19,9 @@ interface SupplierContextType {
   addSupplier: (supplier: Omit<Supplier, 'id'>) => Promise<void>;
   updateSupplier: (supplier: Supplier) => Promise<void>;
   deleteSupplier: (id: string) => Promise<void>;
-  resetToSeedData: () => Promise<void>;
+  /** Additive-only: inserts seed profiles missing by name. Never deletes. */
+  restoreMissingSeedSuppliers: () => Promise<number>;
 }
-
-const mapRowToSupplier = (row: Record<string, unknown>): Supplier => ({
-  id: row.id as string,
-  name: (row.name as string) || '',
-  type: (row.type as SupplierType) || SupplierType.OtherTravelSupplier,
-  logoUrl: (row.logo_url as string) || '',
-  bannerUrl: (row.banner_url as string) || '',
-  shortDescription: (row.short_description as string) || '',
-  longDescription: (row.long_description as string) || '',
-  avatarImageUrl: (row.avatar_image_url as string) || '',
-  websiteUrl: (row.website_url as string) || '',
-  knowledgeBaseUrl: (row.knowledge_base_url as string) || '',
-  knowledgeBaseText: (row.knowledge_base_text as string) || '',
-  geminiVoiceName: (row.gemini_voice_name as string) || 'Zephyr',
-  videoUrl: (row.video_url as string) || undefined,
-  elevenLabsAgentId: (row.eleven_labs_agent_id as string) || undefined,
-  useElevenLabs: (row.use_eleven_labs as boolean) || false,
-  hedra_avatar_id: (row.hedra_avatar_id as string) || undefined,
-  isDemo: row.is_demo !== false,
-});
-
-const mapSupplierToRow = (s: Omit<Supplier, 'id'>) => ({
-  name: s.name,
-  type: s.type,
-  logo_url: s.logoUrl || null,
-  banner_url: s.bannerUrl || null,
-  short_description: s.shortDescription || null,
-  long_description: s.longDescription || null,
-  avatar_image_url: s.avatarImageUrl || null,
-  website_url: s.websiteUrl || null,
-  knowledge_base_url: s.knowledgeBaseUrl || null,
-  knowledge_base_text: s.knowledgeBaseText || null,
-  gemini_voice_name: s.geminiVoiceName || 'Zephyr',
-  video_url: s.videoUrl || null,
-  eleven_labs_agent_id: s.elevenLabsAgentId || null,
-  use_eleven_labs: s.useElevenLabs || false,
-  hedra_avatar_id: s.hedra_avatar_id || null,
-  is_demo: s.isDemo !== false,
-  is_published: true,
-});
 
 const SupplierContext = createContext<SupplierContextType | undefined>(undefined);
 
@@ -66,61 +29,44 @@ export const SupplierProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadStatus, setLoadStatus] = useState<LoadStatus>('pending');
+  const { profile } = useSupabaseAuth();
+  const isAdmin = profile?.role === 'admin';
   // Maps the slug id used in local state (e.g. 'british-airways') → actual DB UUID.
   // Needed because seed suppliers are remapped to slug IDs so carousel links work,
   // but writes (UPDATE/DELETE) must use the real UUID or PostgreSQL rejects the cast.
   const dbIdBySlug = useRef<Record<string, string>>({});
+
+  // Applies the slug-id remapping used by carousel/directory links and records
+  // slug → UUID so writes can address the real row.
+  const toStateSupplier = useCallback((row: Record<string, unknown>): Supplier => {
+    const s = mapRowToSupplier(row);
+    const slugId = SEED_SLUG_BY_NAME[s.name];
+    if (slugId && slugId !== s.id) dbIdBySlug.current[slugId] = s.id;
+    return slugId ? { ...s, id: slugId } : s;
+  }, []);
 
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
       setLoadStatus('pending');
       try {
-        const { data, error } = await supabase
-          .from('suppliers')
-          .select('*')
-          .order('created_at', { ascending: false });
+        let query = supabase.from('suppliers').select('*');
 
+        // Belt-and-braces alongside RLS: never pull unpublished profiles into the
+        // list that feeds /suppliers. This matters most at build time — the
+        // prerender bakes the rendered directory into dist/suppliers/index.html,
+        // so anything visible here becomes crawler-readable static HTML.
+        // Admins keep the full list so they can find and edit unlisted profiles.
+        if (!isAdmin) query = query.eq('is_published', true);
+
+        const { data, error } = await query.order('created_at', { ascending: false });
         if (error) throw error;
 
-        const rawLoaded = (data || []).map(mapRowToSupplier);
-
-        // Remap Supabase UUIDs back to slug IDs for seed suppliers so that
-        // carousel links (which use slug IDs from constants.ts) resolve correctly.
-        // Record slug → UUID in dbIdBySlug so write operations can use the real UUID.
-        const loaded = rawLoaded.map(s => {
-          const slugId = SEED_SLUG_BY_NAME[s.name];
-          if (slugId && slugId !== s.id) dbIdBySlug.current[slugId] = s.id;
-          return slugId ? { ...s, id: slugId } : s;
-        });
-
-        const loadedNames = new Set(loaded.map(s => s.name));
-        const missingSeedSuppliers = SEED_SUPPLIERS.filter(s => !loadedNames.has(s.name));
-
-        if (missingSeedSuppliers.length > 0) {
-          // Seed any missing demo suppliers (handles first load and cases where DB had non-seed data).
-          // Supplier writes are RLS-locked to admins, so for anonymous/non-admin visitors this insert
-          // will be rejected — that's expected. Treat it as non-fatal: fall back to whatever loaded.
-          const rows = missingSeedSuppliers.map(s => ({ ...mapSupplierToRow(s), is_demo: true }));
-          const { data: inserted, error: insertError } = await supabase
-            .from('suppliers')
-            .insert(rows)
-            .select();
-          if (insertError) {
-            console.warn('Seeding missing suppliers skipped (writes are admin-only):', insertError.message);
-            setSuppliers(loaded);
-          } else {
-            const seeded = (inserted || []).map(row => {
-              const s = mapRowToSupplier(row as Record<string, unknown>);
-              const slugId = SEED_SLUG_BY_NAME[s.name];
-              if (slugId) dbIdBySlug.current[slugId] = s.id;
-              return slugId ? { ...s, id: slugId } : s;
-            });
-            setSuppliers([...seeded, ...loaded]);
-          }
-        } else {
-          setSuppliers(loaded);
-        }
+        // Deliberately no auto-seeding here. This used to insert any missing
+        // SEED_SUPPLIERS on load, which meant an admin visiting the site would
+        // silently resurrect demo profiles that had been deliberately deleted.
+        // Seeding is now an explicit admin action (restoreMissingSeedSuppliers).
+        setSuppliers((data || []).map(row => toStateSupplier(row as Record<string, unknown>)));
         setLoadStatus('success');
       } catch (err) {
         console.error('Failed to load suppliers from Supabase:', err);
@@ -130,7 +76,8 @@ export const SupplierProvider: React.FC<{ children: ReactNode }> = ({ children }
       }
     };
     loadData();
-  }, []);
+    // Reloads once the profile resolves, so an admin gets the unfiltered list.
+  }, [isAdmin, toStateSupplier]);
 
   const getSupplierById = (id: string) => suppliers.find(s => s.id === id);
 
@@ -159,30 +106,36 @@ export const SupplierProvider: React.FC<{ children: ReactNode }> = ({ children }
     setSuppliers(prev => prev.filter(s => s.id !== id));
   };
 
-  const resetToSeedData = async () => {
+  // Additive-only restore. The previous implementation deleted every supplier
+  // row before re-seeding, which with real supplier data in the table (profiles,
+  // knowledge bases, preview tokens) was one click away from irreversible data
+  // loss. This version only inserts seed profiles that are missing by name and
+  // never issues a DELETE. Returns how many were restored.
+  const restoreMissingSeedSuppliers = async (): Promise<number> => {
     setIsLoading(true);
     try {
-      // Delete all existing suppliers then re-insert seed data
-      await supabase.from('suppliers').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-      const rows = SEED_SUPPLIERS.map(s => ({ ...mapSupplierToRow(s), is_demo: true }));
+      const existingNames = new Set(suppliers.map(s => s.name));
+      const missing = SEED_SUPPLIERS.filter(s => !existingNames.has(s.name));
+      if (missing.length === 0) return 0;
+
+      const rows = missing.map(s => ({
+        ...mapSupplierToRow(s),
+        is_demo: true,
+        is_published: true, // demo profiles belong in the public directory
+      }));
       const { data, error } = await supabase.from('suppliers').insert(rows).select();
       if (error) throw error;
-      // Rebuild the slug→UUID map and remap IDs in state.
-      dbIdBySlug.current = {};
-      const seeded = (data || []).map(row => {
-        const s = mapRowToSupplier(row as Record<string, unknown>);
-        const slugId = SEED_SLUG_BY_NAME[s.name];
-        if (slugId) dbIdBySlug.current[slugId] = s.id;
-        return slugId ? { ...s, id: slugId } : s;
-      });
-      setSuppliers(seeded);
+
+      const restored = (data || []).map(row => toStateSupplier(row as Record<string, unknown>));
+      setSuppliers(prev => [...restored, ...prev]);
+      return restored.length;
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <SupplierContext.Provider value={{ suppliers, isLoading, loadStatus, getSupplierById, addSupplier, updateSupplier, deleteSupplier, resetToSeedData }}>
+    <SupplierContext.Provider value={{ suppliers, isLoading, loadStatus, getSupplierById, addSupplier, updateSupplier, deleteSupplier, restoreMissingSeedSuppliers }}>
       {children}
     </SupplierContext.Provider>
   );
