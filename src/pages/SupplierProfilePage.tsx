@@ -273,7 +273,10 @@ const SupplierProfilePage: React.FC<SupplierProfilePageProps> = ({ mode = 'publi
                             <p className="text-cyan-400 font-semibold">{supplier.type}</p>
                         </div>
                     </div>
-                    <p className="text-gray-300 mt-4">{supplier.longDescription}</p>
+                    {/* whitespace-pre-line preserves the paragraph breaks authors write
+                        into long_description. Without it HTML collapses the newlines and
+                        multi-paragraph copy renders as one wall of text. */}
+                    <p className="text-gray-300 mt-4 whitespace-pre-line">{supplier.longDescription}</p>
 
                     {supplier.videoUrl && (() => {
                         const embedUrl = getVideoEmbedUrl(supplier.videoUrl);
