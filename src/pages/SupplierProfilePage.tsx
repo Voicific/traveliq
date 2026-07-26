@@ -231,14 +231,43 @@ const SupplierProfilePage: React.FC<SupplierProfilePageProps> = ({ mode = 'publi
                     </div>
                 </div>
             )}
+            {/* A blank bannerUrl would render `url()` — invalid CSS and a bare
+                256px band. Fall back to the palette gradient instead. */}
             <div
-                className="h-64 bg-cover bg-center"
-                style={{ backgroundImage: `url(${supplier.bannerUrl})` }}
+                className={`h-64 bg-cover bg-center ${supplier.bannerUrl ? '' : 'bg-gradient-to-br from-[#0f1c2e] via-[#0d2d3d] to-[#0a1628]'}`}
+                style={supplier.bannerUrl ? { backgroundImage: `url(${supplier.bannerUrl})` } : undefined}
             ></div>
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 pb-12">
                  <div className="bg-[#0a1628]/50 backdrop-blur-lg border border-cyan-400/10 rounded-xl shadow-lg p-6">
                     <div className="flex items-start gap-4">
-                        <img src={supplier.logoUrl} alt={`${supplier.name} logo`} className="h-20 w-20 rounded-full border-4 border-brand-secondary object-contain bg-white p-1" />
+                        {/* Same initial-tile fallback SupplierCard uses, for the same
+                            reason: a missing or broken logo must never surface the
+                            browser's broken-image icon. Unlisted profiles never appear
+                            on a card, so without this the preview page is the one place
+                            a logo-less supplier is seen. */}
+                        {supplier.logoUrl ? (
+                            <img
+                                src={supplier.logoUrl}
+                                alt={`${supplier.name} logo`}
+                                className="h-20 w-20 rounded-full border-4 border-brand-secondary object-contain bg-white p-1 flex-shrink-0"
+                                onError={(e) => {
+                                    const img = e.currentTarget;
+                                    if (img.dataset.fallbackApplied) return;
+                                    img.dataset.fallbackApplied = 'true';
+                                    img.style.display = 'none';
+                                    const tile = img.parentElement?.querySelector<HTMLElement>('[data-logo-fallback]');
+                                    if (tile) tile.style.display = 'flex';
+                                }}
+                            />
+                        ) : null}
+                        <span
+                            data-logo-fallback
+                            aria-hidden="true"
+                            style={{ display: supplier.logoUrl ? 'none' : 'flex' }}
+                            className="h-20 w-20 rounded-full border-4 border-brand-secondary bg-white flex-shrink-0 items-center justify-center font-heading text-3xl font-extrabold text-brand-secondary"
+                        >
+                            {(supplier.name.trim()[0] || '?').toUpperCase()}
+                        </span>
                         <div>
                             <h1 className="text-3xl font-bold font-heading text-white">{supplier.name}</h1>
                             <p className="text-cyan-400 font-semibold">{supplier.type}</p>
