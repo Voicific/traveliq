@@ -191,6 +191,24 @@ const SupplierProfilePage: React.FC<SupplierProfilePageProps> = ({ mode = 'publi
                 ...details,
                 message: `Session started with ${supplier.name}`
             });
+            // Also record the lead against this supplier in Supabase. The Sheets
+            // copy above carries no supplier id, so this row is what the
+            // supplier dashboard counts (free tier) or lists (paid tiers).
+            // Insert only — anon may not read leads back, so no .select().
+            if (supplier.dbId) {
+                supabase.from('leads').insert({
+                    supplier_id: supplier.dbId,
+                    type: 'Agent Chat',
+                    first_name: details.firstName,
+                    last_name: details.lastName,
+                    email: details.email,
+                    agency: details.agency,
+                    message: `Session started with ${supplier.name}`,
+                    source: 'supplier-profile',
+                }).then(({ error }) => {
+                    if (error) console.error('Failed to record supplier lead:', error.message);
+                });
+            }
         }
     };
 

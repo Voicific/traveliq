@@ -2,10 +2,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { SEED_SUPPLIERS } from '../constants.ts';
+import { useSuppliers } from '../context/SupplierContext.tsx';
+import { TIER_RANK } from '../types.ts';
 
 const SupplierCarousel: React.FC = () => {
-  // Use static seed data so the carousel always shows the demo supplier logos regardless of DB state
-  const duplicatedSuppliers = [...SEED_SUPPLIERS, ...SEED_SUPPLIERS];
+  // Static seed data keeps the carousel populated regardless of DB state; the
+  // live list only supplies each supplier's tier, which sets the order
+  // (featured → priority → standard).
+  const { suppliers } = useSuppliers();
+  const tierById = new Map(suppliers.map(s => [s.id, s.tier ?? 'free']));
+  const ordered = [...SEED_SUPPLIERS].sort(
+    (a, b) => TIER_RANK[tierById.get(a.id) ?? 'free'] - TIER_RANK[tierById.get(b.id) ?? 'free'],
+  );
+  const duplicatedSuppliers = [...ordered, ...ordered];
 
   return (
     <div className="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">

@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { useSuppliers } from '../context/SupplierContext.tsx';
-import { SupplierType } from '../types.ts';
+import { SupplierType, TIER_RANK } from '../types.ts';
 import { usePageMeta } from '../hooks/usePageMeta';
 import SupplierCard from '../components/SupplierCard.tsx';
 
@@ -29,7 +29,11 @@ const DirectoryPage: React.FC = () => {
         supplier.shortDescription.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesType = selectedType === 'All' || supplier.type === selectedType;
       return matchesSearch && matchesType;
-    });
+    })
+      // Placement by tier: featured (growth) → priority (enhanced) → standard
+      // (free). Array.sort is stable, so the existing newest-first order is
+      // kept within each tier.
+      .sort((a, b) => TIER_RANK[a.tier ?? 'free'] - TIER_RANK[b.tier ?? 'free']);
   }, [suppliers, searchTerm, selectedType]);
 
   const inputClass = "w-full px-4 py-3 text-white bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 border border-cyan-400/20 rounded-md shadow-sm focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 transition-all";
