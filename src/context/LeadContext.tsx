@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect, useCallback } from 'react';
 import {
   postToSheet,
-  getFromSheet,
+  getLeadsForAdmin,
   addPendingLead,
   flushPendingLeads,
   getPendingCount,
@@ -22,6 +22,7 @@ export interface Lead {
 }
 
 interface LeadContextType {
+  /** Populated only for a signed-in admin, after refreshLeads(). */
   leads: Lead[];
   addLead: (lead: Omit<Lead, 'timestamp'>) => Promise<void>;
   pendingCount: number;
@@ -31,55 +32,48 @@ interface LeadContextType {
 }
 
 const LeadContext = createContext<LeadContextType | undefined>(undefined);
-const LEADS_STORAGE_KEY = 'collectedLeads';
+
+// Earlier versions fetched EVERY lead for every visitor and cached the list in
+// localStorage under this key. Leads are personal data and must never reach a
+// visitor's browser, so the fetch is gone and any cached copy is deleted the
+// next time the site loads. Do not start writing to this key again.
+const LEGACY_LEADS_STORAGE_KEY = 'collectedLeads';
 
 export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [pendingCount, setPendingCount] = useState<number>(getPendingCount);
   const [isSyncing, setIsSyncing] = useState(false);
 
-  const mergeAndStore = useCallback((local: Lead[], remote: Lead[]) => {
-    const map = new Map<string, Lead>();
-    local.forEach(l => map.set(l.timestamp, l));
-    remote.forEach(l => map.set(l.timestamp, l));
-    const merged = Array.from(map.values()).sort(
-      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-    );
-    setLeads(merged);
-    localStorage.setItem(LEADS_STORAGE_KEY, JSON.stringify(merged));
-    return merged;
-  }, []);
-
-  const loadLeads = useCallback(async () => {
-    let local: Lead[] = [];
-    try {
-      const stored = localStorage.getItem(LEADS_STORAGE_KEY);
-      if (stored) local = JSON.parse(stored);
-    } catch {}
-    setLeads(local);
-
-    const remote = (await getFromSheet('getLeads')) as Lead[] | null;
-    if (remote) mergeAndStore(local, remote);
-  }, [mergeAndStore]);
-
   useEffect(() => {
-    loadLeads();
+    try {
+      localStorage.removeItem(LEGACY_LEADS_STORAGE_KEY);
+    } catch {
+      // Storage blocked (private mode): nothing was cached, nothing to clear.
+    }
+    // Retry any of this visitor's own submissions that failed to send earlier.
     flushPendingLeads().then(flushed => {
       if (flushed > 0) setPendingCount(getPendingCount());
     });
-  }, [loadLeads]);
+  }, []);
+
+  // Admin only. The server checks the caller is a signed-in admin; for anyone
+  // else it returns nothing and the list simply stays empty.
+  const loadLeads = useCallback(async () => {
+    const remote = await getLeadsForAdmin();
+    if (!remote) return;
+    const sorted = [...(remote as Lead[])].sort(
+      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
+    setLeads(sorted);
+  }, []);
 
   const addLead = useCallback(async (data: Omit<Lead, 'timestamp'>) => {
     const lead: Lead = { ...data, timestamp: new Date().toISOString() };
 
-    setLeads(prev => {
-      const updated = [lead, ...prev];
-      localStorage.setItem(LEADS_STORAGE_KEY, JSON.stringify(updated));
-      return updated;
-    });
-
     const ok = await postToSheet('addLead', { lead });
     if (!ok) {
+      // Kept in this visitor's own browser (it is their own submission) and
+      // retried on their next visit.
       addPendingLead(lead);
       setPendingCount(getPendingCount());
     }

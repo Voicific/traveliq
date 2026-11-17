@@ -1,4 +1,5 @@
 import { GOOGLE_SCRIPT_URL } from '../config.ts';
+import { supabase } from '../lib/supabase.ts';
 
 export interface PendingLead {
   type: 'Newsletter' | 'Demo Request' | 'Agent Chat' | 'Contact Inquiry' | 'AI Lead Capture' | 'Affiliate Inquiry';
@@ -53,8 +54,16 @@ export async function postToSheet(action: string, payload: object): Promise<bool
   return postWithRetry({ action, payload });
 }
 
-export async function getFromSheet(action: string): Promise<any> {
-  if (!GOOGLE_SCRIPT_URL) return null;
+/**
+ * PUBLIC, unauthenticated read. Anything fetched this way is readable by anyone
+ * on the internet, so it is restricted to actions that return public content.
+ * Never add an action here that returns personal data (leads, agents, chat
+ * history): those go through an admin-checked /api/admin-* function instead.
+ */
+const PUBLIC_READ_ACTIONS = ['getBlogPosts'] as const;
+
+export async function getFromSheet(action: (typeof PUBLIC_READ_ACTIONS)[number]): Promise<any> {
+  if (!GOOGLE_SCRIPT_URL || !PUBLIC_READ_ACTIONS.includes(action)) return null;
   try {
     const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=${action}&t=${Date.now()}`, {
       method: 'GET',
@@ -65,6 +74,49 @@ export async function getFromSheet(action: string): Promise<any> {
     return result.success ? result.data : null;
   } catch {
     return null;
+  }
+}
+
+// --- Admin-only calls (via Cloudflare functions that verify a Supabase admin) ---
+
+async function adminHeaders(): Promise<Record<string, string> | null> {
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  return token ? { Authorization: `Bearer ${token}` } : null;
+}
+
+/**
+ * All leads, for the admin dashboard. Returns null for anyone who is not a
+ * signed-in admin (the server decides), or if the endpoint is unavailable
+ * (e.g. plain `vite dev`, where Pages Functions do not run).
+ */
+export async function getLeadsForAdmin(): Promise<PendingLead[] | null> {
+  try {
+    const headers = await adminHeaders();
+    if (!headers) return null;
+    const res = await fetch('/api/admin-leads', { headers });
+    if (!res.ok) return null;
+    const result = await res.json();
+    return result.success && Array.isArray(result.data) ? result.data : null;
+  } catch {
+    return null;
+  }
+}
+
+async function adminBlogWrite(body: object): Promise<boolean> {
+  try {
+    const headers = await adminHeaders();
+    if (!headers) return false;
+    const res = await fetch('/api/admin-blog', {
+      method: 'POST',
+      headers: { ...headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) return false;
+    const result = await res.json();
+    return result.success === true;
+  } catch {
+    return false;
   }
 }
 
@@ -113,11 +165,11 @@ export async function getBlogPostsFromSheet(): Promise<ManagedBlogPost[] | null>
 }
 
 export async function saveBlogPostToSheet(post: ManagedBlogPost): Promise<boolean> {
-  return postToSheet('saveBlogPost', { post });
+  return adminBlogWrite({ action: 'saveBlogPost', post });
 }
 
 export async function deleteBlogPostFromSheet(id: string): Promise<boolean> {
-  return postToSheet('deleteBlogPost', { id });
+  return adminBlogWrite({ action: 'deleteBlogPost', id });
 }
 
 export async function getAllBlogPostsFromSheet(): Promise<ManagedBlogPost[] | null> {

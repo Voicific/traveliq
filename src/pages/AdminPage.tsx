@@ -422,26 +422,48 @@ const APPS_SCRIPT_CODE = `// ═════════════════
 // Paste this entire file into your Apps Script editor, replacing
 // all existing content, then deploy as a Web App (Execute as Me,
 // access: Anyone). Copy the deployment URL into src/config.ts.
+//
+// ACCESS CONTROL: the web app is public so the site can file leads,
+// which makes every action public unless it is listed in
+// ADMIN_ACTIONS. Those are refused without the shared secret, which
+// only TravelIQ's server (/api/admin-* after an admin check) holds.
+// Set it in Project Settings > Script Properties:
+//   ADMIN_SECRET = same value as Cloudflare's SHEETS_ADMIN_SECRET
 // ═══════════════════════════════════════════════════════════════
+
+var ADMIN_ACTIONS = ['getLeads', 'saveBlogPost', 'deleteBlogPost'];
+
+function isAdminRequest(secret) {
+  var expected = PropertiesService.getScriptProperties().getProperty('ADMIN_SECRET');
+  // No secret configured = nobody is an admin. Never fall open.
+  return !!expected && typeof secret === 'string' && secret === expected;
+}
 
 function doPost(e) {
   try {
-    var payload = JSON.parse(e.postData.contents);
-    var action = payload.action;
+    var body = JSON.parse(e.postData.contents);
+    var action = body.action;
+    // The site sends { action, payload: {...} }.
+    var payload = body.payload || body;
+    if (ADMIN_ACTIONS.indexOf(action) !== -1 && !isAdminRequest(body.secret)) {
+      return respond({ success: false, message: 'Not authorised' });
+    }
     if (action === 'addLead') return respond(addLead(payload));
+    if (action === 'addNewsletterSubscriber') return respond(addNewsletterSubscriber(payload));
+    if (action === 'getLeads') return respond(getLeads());
     if (action === 'saveBlogPost') return respond(saveBlogPost(payload));
     if (action === 'deleteBlogPost') return respond(deleteBlogPost(payload));
-    if (action === 'addNewsletterSubscriber') return respond(addNewsletterSubscriber(payload));
     return respond({ success: false, message: 'Unknown action: ' + action });
   } catch(err) {
     return respond({ success: false, message: err.toString() });
   }
 }
 
+// PUBLIC reads only. Leads are personal data and are never served here.
 function doGet(e) {
   try {
     var action = e.parameter.action;
-    if (action === 'getLeads') return respond(getLeads());
+    if (ADMIN_ACTIONS.indexOf(action) !== -1) return respond({ success: false, message: 'Not authorised' });
     if (action === 'getBlogPosts') return respond(getBlogPosts());
     return respond({ success: false, message: 'Unknown action: ' + action });
   } catch(err) {
@@ -675,6 +697,10 @@ const AdminPage: React.FC = () => {
   }, [notification]);
 
   const showNotification = (type: 'success' | 'error', message: string) => setNotification({ type, message });
+
+  // Leads are fetched only here, for a signed-in admin, through the
+  // admin-checked /api/admin-leads endpoint.
+  useEffect(() => { refreshLeads(); }, [refreshLeads]);
 
   const loadBlogPosts = useCallback(async () => {
     setIsBlogLoading(true);
