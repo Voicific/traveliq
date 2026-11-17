@@ -7,7 +7,10 @@
  * 1. Select ALL code in the Apps Script editor (Ctrl+A / Cmd+A)
  * 2. Delete it, then paste this entire file
  * 3. Click Save (floppy disk icon)
- * 4. Click Deploy > Manage deployments > edit existing > Deploy
+ * 4. Project Settings (gear) > Script Properties > add ADMIN_SECRET
+ *    (see ACCESS CONTROL below — without it every admin action is refused)
+ * 5. Click Deploy > Manage deployments > edit (pencil) > Version: New version
+ *    > Execute as: Me > Who has access: Anyone > Deploy
  *    (The URL stays the same — no changes needed in your app)
  *
  * SHEETS USED:
@@ -36,18 +39,50 @@ const SHEETS = {
 // HTTP HANDLERS
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// ACCESS CONTROL
+// ----------------------------------------------------------------------------
+// This web app is deployed with access "Anyone" so the public site can file
+// leads. That means every action is callable by anyone on the internet unless
+// it is listed here. ADMIN actions are refused unless the request carries the
+// shared secret, which only TravelIQ's server (the Cloudflare /api/admin-*
+// functions, after checking the caller is a signed-in admin) knows.
+//
+// The secret is NOT in this file. Set it in the Apps Script editor:
+//   Project Settings (gear icon) > Script Properties > Add script property
+//     Property: ADMIN_SECRET     Value: <the same value as Cloudflare's SHEETS_ADMIN_SECRET>
+//
+// Admin actions are POST-only: Apps Script cannot read request headers, and a
+// secret in a GET URL would end up in logs and browser history.
+// ----------------------------------------------------------------------------
+const ADMIN_ACTIONS = [
+  'getLeads',           // personal data: agent names, emails, agencies
+  'getVeeChatHistory',  // every visitor's chat with Vee
+  'getSuppliers',       // legacy sheet, not used by the site
+  'saveSuppliers',      // legacy write, not used by the site
+  'saveBlogPost',
+  'deleteBlogPost'
+];
+
+function isAdminRequest(secret) {
+  const expected = PropertiesService.getScriptProperties().getProperty('ADMIN_SECRET');
+  // No secret configured = nobody is an admin. Never fall open.
+  return !!expected && typeof secret === 'string' && secret === expected;
+}
+
+function denied() {
+  return createJsonResponse({ success: false, message: 'Not authorised' });
+}
+
+// PUBLIC, unauthenticated reads. Only content that is meant to be public.
 function doGet(e) {
   try {
     const action = e.parameter.action;
 
+    if (ADMIN_ACTIONS.indexOf(action) !== -1) return denied();
+
     switch (action) {
-      case 'getLeads':
-        return createJsonResponse(getLeads());
-      case 'getVeeChatHistory':
-        return createJsonResponse(getVeeChatHistory());
-      case 'getSuppliers':
-        return createJsonResponse(getSuppliers());
-      case 'getBlogPosts':                          // ← NEW
+      case 'getBlogPosts':
         return createJsonResponse(getBlogPosts());
       default:
         return createJsonResponse({ success: false, message: 'Unknown action: ' + action });
@@ -61,18 +96,29 @@ function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
     const action = data.action;
-    const payload = data.payload;
+    const payload = data.payload || {};
+
+    if (ADMIN_ACTIONS.indexOf(action) !== -1 && !isAdminRequest(data.secret)) return denied();
 
     switch (action) {
+      // ---- public writes (the site's visitors) ----
       case 'addLead':
         return createJsonResponse(addLead(payload.lead));
       case 'addVeeChatMessage':
         return createJsonResponse(addVeeChatMessage(payload.message));
+
+      // ---- admin only (secret checked above) ----
+      case 'getLeads':
+        return createJsonResponse(getLeads());
+      case 'getVeeChatHistory':
+        return createJsonResponse(getVeeChatHistory());
+      case 'getSuppliers':
+        return createJsonResponse(getSuppliers());
       case 'saveSuppliers':
         return createJsonResponse(saveSuppliers(payload.suppliers));
-      case 'saveBlogPost':                          // ← NEW
+      case 'saveBlogPost':
         return createJsonResponse(saveBlogPost(payload.post));
-      case 'deleteBlogPost':                        // ← NEW
+      case 'deleteBlogPost':
         return createJsonResponse(deleteBlogPost(payload.id));
       default:
         return createJsonResponse({ success: false, message: 'Unknown action: ' + action });
