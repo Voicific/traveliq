@@ -1,4 +1,6 @@
-import { Supplier, SupplierType } from '../types.ts';
+import { Supplier, SupplierTier, SupplierType } from '../types.ts';
+
+const TIERS: SupplierTier[] = ['free', 'enhanced', 'growth'];
 
 /**
  * Row ⇄ Supplier mapping for the `suppliers` table.
@@ -10,6 +12,10 @@ import { Supplier, SupplierType } from '../types.ts';
 
 export const mapRowToSupplier = (row: Record<string, unknown>): Supplier => ({
   id: row.id as string,
+  dbId: row.id as string,
+  // Anything unrecognised (including a database that predates migration 007)
+  // is treated as free, the most restrictive tier.
+  tier: TIERS.includes(row.tier as SupplierTier) ? (row.tier as SupplierTier) : 'free',
   name: (row.name as string) || '',
   type: (row.type as SupplierType) || SupplierType.OtherTravelSupplier,
   logoUrl: (row.logo_url as string) || '',
@@ -31,6 +37,10 @@ export const mapRowToSupplier = (row: Record<string, unknown>): Supplier => ({
 });
 
 export const mapSupplierToRow = (s: Omit<Supplier, 'id'>) => ({
+  // Only sent when explicitly set (the admin form). Omitting it leaves the
+  // column untouched on update and lets the DB default apply on insert. The
+  // database ignores this field for non-admins (guard_supplier_tier).
+  ...(s.tier ? { tier: s.tier } : {}),
   name: s.name,
   type: s.type,
   logo_url: s.logoUrl || null,

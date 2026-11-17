@@ -11,7 +11,7 @@
 class ElevenLabsVoiceService {
   private proxyUrl = '/api/elevenlabs-tts';
 
-  private async synthesize(text: string, voiceId: string, modelId: string): Promise<string> {
+  private async synthesize(text: string, voiceId: string, modelId: string, supplierId?: string): Promise<string> {
     if (!voiceId) {
       throw new Error('Voice ID is required');
     }
@@ -19,12 +19,12 @@ class ElevenLabsVoiceService {
     const response = await fetch(this.proxyUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, voiceId, modelId }),
+      body: JSON.stringify({ text, voiceId, modelId, supplierId }),
     });
 
     if (!response.ok) {
-      // 503 = key not configured, 404 = function not deployed (e.g. plain vite dev),
-      // 502 = upstream error. In every case fall back to Gemini TTS.
+      // 503 = not configured, 404 = function not deployed (e.g. plain vite dev),
+      // 403 = supplier's tier does not include premium voice, 502 = upstream error. In every case fall back to Gemini TTS.
       throw new Error(`ElevenLabs proxy error: ${response.status} ${response.statusText}`);
     }
 
@@ -33,8 +33,13 @@ class ElevenLabsVoiceService {
     return URL.createObjectURL(audioBlob);
   }
 
-  async generateSpeech(text: string, voiceId: string): Promise<string> {
-    return this.synthesize(text, voiceId, 'eleven_monolingual_v1');
+  /**
+   * `supplierId` (the supplier's database UUID) is required for supplier
+   * voices: the proxy checks the supplier's tier server-side. Omit it only for
+   * TravelIQ's own assistant voice.
+   */
+  async generateSpeech(text: string, voiceId: string, supplierId?: string): Promise<string> {
+    return this.synthesize(text, voiceId, 'eleven_monolingual_v1', supplierId);
   }
 
   async generateSpeechWithAgent(agentId: string, text: string): Promise<string> {

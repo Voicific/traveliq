@@ -28,8 +28,20 @@ export enum SupplierType {
   OtherTravelSupplier = 'Other Travel Supplier',
 }
 
+export type SupplierTier = 'free' | 'enhanced' | 'growth';
+
+/** Directory ordering: featured (growth) → priority (enhanced) → standard (free). */
+export const TIER_RANK: Record<SupplierTier, number> = { growth: 0, enhanced: 1, free: 2 };
+
+export const isPaidTier = (tier?: SupplierTier): boolean => tier === 'enhanced' || tier === 'growth';
+
 export interface Supplier {
   id: string;
+  // The real database UUID. `id` is remapped to a slug for seed suppliers so
+  // public links stay readable, but server calls (voice-gate, leads) need this.
+  dbId?: string;
+  // Commercial tier. Set by admins only; the database ignores owner changes.
+  tier?: SupplierTier;
   name: string;
   type: SupplierType;
   logoUrl: string;
