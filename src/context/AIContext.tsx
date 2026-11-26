@@ -21,10 +21,16 @@ export const AIProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
     const initAI = () => {
       try {
-        if (!import.meta.env.VITE_GOOGLE_API_KEY || import.meta.env.VITE_GOOGLE_API_KEY === 'demo_key_replace_with_real') {
-          throw new Error("Google AI API key is missing or not properly configured. The chatbot requires VITE_GOOGLE_API_KEY environment variable to be set in Cloudflare. Please contact support to resolve this configuration issue.");
-        }
-        const genAI = new GoogleGenAI({ apiKey: import.meta.env.VITE_GOOGLE_API_KEY });
+        // The Google AI key is NOT shipped to the browser. Instead we point the
+        // SDK at our own same-origin reverse proxy (functions/api/gemini), which
+        // injects the real key server-side. The apiKey below is a throwaway
+        // placeholder — the proxy strips it and never forwards it upstream.
+        // If the server key is unconfigured the proxy returns 503 and the error
+        // surfaces per-request where each chat already handles it.
+        const genAI = new GoogleGenAI({
+          apiKey: 'proxied-server-side',
+          httpOptions: { baseUrl: `${window.location.origin}/api/gemini` },
+        });
         setAi(genAI);
       } catch (e: any) {
         console.error("Failed to initialize GoogleGenAI:", e);
