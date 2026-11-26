@@ -117,7 +117,7 @@ const PricingPage: React.FC = () => {
                     <ul className="space-y-3 text-gray-300 text-sm">
                       <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-1" /><span><strong className="text-white">AI Sales Support:</strong> 24/7 answers trained on your brand's knowledge.</span></li>
                       <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-1" /><span><strong className="text-white">Multilingual Voice AI:</strong> Responds in the agent's own language automatically.</span></li>
-                      <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-1" /><span><strong className="text-white">Agent Database:</strong> Interaction counts on Starter; named leads (name, email, agency) on Growth+.</span></li>
+                      <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-1" /><span><strong className="text-white">Agent Database:</strong> Named leads (name, email, agency) on every paid plan; a monthly enquiry count on the free listing.</span></li>
                       <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-1" /><span><strong className="text-white">Dashboard & Analytics:</strong> Insights into agent queries and engagement patterns.</span></li>
                     </ul>
                   </div>
@@ -149,6 +149,7 @@ const PricingPage: React.FC = () => {
         <div className="text-center mt-24">
           <h2 className="text-3xl font-extrabold font-heading text-white">Simple, Transparent Pricing</h2>
           <p className="mt-4 max-w-2xl mx-auto text-xl text-gray-300">Choose the plan that's right for your brand.</p>
+          <p className="mt-3 max-w-2xl mx-auto text-sm text-gray-400">Just getting started? A free listing includes text AI chat, 30 minutes of voice a month and a monthly count of agent enquiries. Upgrade when you want unlimited voice and to see who's asking.</p>
         </div>
 
         <div className="mt-16 max-w-6xl mx-auto grid gap-8 md:grid-cols-3 items-start">
@@ -156,16 +157,17 @@ const PricingPage: React.FC = () => {
           {/* Starter */}
           <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 backdrop-blur-lg border border-cyan-400/10 rounded-xl p-8 shadow-lg flex flex-col transition-all duration-300 hover:shadow-2xl hover:shadow-brand-cyan/10 hover:-translate-y-1">
             <h3 className="text-2xl font-bold font-heading text-white">Starter</h3>
-            <p className="mt-2 text-gray-400 text-sm">List your brand and start conversations with agents.</p>
+            <p className="mt-2 text-gray-400 text-sm">Unlimited voice AI and named leads from every agent conversation.</p>
             <div className="mt-6">
               <span className="text-3xl font-extrabold text-white">From £399<span className="text-lg font-medium text-gray-400">/month</span></span>
             </div>
             <ul className="mt-8 space-y-3 text-gray-300 text-sm flex-grow">
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Live in 48 hours</li>
-              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Directory listing with full profile</li>
-              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> AI Chat Support (standard)</li>
-              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Agent interaction count</li>
-              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Standard voice options</li>
+              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Full profile with priority directory placement</li>
+              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /><span><strong className="text-white">Unlimited voice AI</strong> plus text chat</span></li>
+              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> 10+ languages</li>
+              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /><span><strong className="text-white">Named leads</strong> — name, email, agency — with export</span></li>
+              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Dashboard & analytics</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Email support</li>
             </ul>
             <button
@@ -179,15 +181,16 @@ const PricingPage: React.FC = () => {
           {/* Growth */}
           <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 backdrop-blur-lg border border-cyan-400/20 rounded-xl p-8 shadow-lg flex flex-col transition-all duration-300 hover:shadow-2xl hover:shadow-brand-cyan/10 hover:-translate-y-1">
             <h3 className="text-2xl font-bold font-heading text-white">Growth</h3>
-            <p className="mt-2 text-gray-400 text-sm">Build your agent database with named leads and full analytics.</p>
+            <p className="mt-2 text-gray-400 text-sm">Leads delivered straight to your CRM, with advanced analytics and featured placement.</p>
             <div className="mt-6">
               <a href="mailto:hello@beeancy.com" className="text-3xl font-extrabold text-white hover:text-cyan-400 transition-colors">Tailored</a>
               <p className="text-sm font-medium text-gray-400 mt-1">book a consultation</p>
             </div>
             <ul className="mt-8 space-y-3 text-gray-300 text-sm flex-grow">
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /><span><strong className="text-white">Everything in Starter, plus:</strong></span></li>
-              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /><span><strong className="text-white">Named leads</strong> — name, email, agency, question</span></li>
-              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Dashboard & analytics</li>
+              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /><span><strong className="text-white">Lead delivery</strong> to your CRM or by API</span></li>
+              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Advanced analytics & benchmarking</li>
+              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Featured directory placement</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Knowledge base management</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Custom voice options</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5" /> Video presentation embed</li>
@@ -211,15 +214,14 @@ const PricingPage: React.FC = () => {
             <h3 className="text-2xl font-bold font-heading text-white">Enterprise</h3>
             <p className="mt-2 text-gray-400 text-sm">Your complete AI trade marketing partner, fully branded.</p>
             <div className="mt-6">
-              <span className="text-4xl font-extrabold text-white">Custom</span>
+              <a href="mailto:hello@beeancy.com" className="text-3xl font-extrabold text-white hover:text-cyan-400 transition-colors">Tailored</a>
+              <p className="text-sm font-medium text-gray-400 mt-1">book a consultation</p>
             </div>
             <ul className="mt-8 space-y-3 text-gray-300 text-sm flex-grow">
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5 text-cyan-400" /><span><strong className="text-white">Everything in Growth, plus:</strong></span></li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5 text-cyan-400" /> Custom branded voice</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5 text-cyan-400" /> Live speaking avatar</li>
-              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5 text-cyan-400" /> Advanced analytics & insights</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5 text-cyan-400" /> AI-produced video presentation</li>
-              <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5 text-cyan-400" /> Featured placement on platform</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5 text-cyan-400" /> Dedicated onboarding & SLA</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5 text-cyan-400" /> Priority phone & email support</li>
               <li className="flex items-start gap-3"><CheckIcon className="flex-shrink-0 mt-0.5 h-5 w-5 text-cyan-400" /> Feature of the week / month</li>
@@ -236,7 +238,7 @@ const PricingPage: React.FC = () => {
         {/* Add-ons note */}
         <div className="mt-12 text-center">
           <p className="text-gray-400 text-sm max-w-2xl mx-auto">
-            All plans include multilingual Voice AI and the choice of fully managed or self-serve setup. Vertical Playbooks for airlines, cruise lines, hotel groups and tour operators are included on Growth and above. Custom add-ons — targeted agent email campaigns, interactive training sessions, website AI integration — are available on any plan.{' '}
+            All paid plans include unlimited multilingual Voice AI and the choice of fully managed or self-serve setup. Vertical Playbooks for airlines, cruise lines, hotel groups and tour operators are included on Growth and above. Custom add-ons — targeted agent email campaigns, interactive training sessions, website AI integration — are available on any plan.{' '}
             <a href="mailto:hello@beeancy.com" className="text-cyan-400 hover:underline">Get in touch</a> to discuss your needs.
           </p>
         </div>

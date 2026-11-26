@@ -1,9 +1,18 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Content, LiveServerMessage, Modality, Blob } from '@google/genai';
-import { Supplier } from '../types.ts';
+import { Content, GoogleGenAI, LiveServerMessage, Modality, Blob } from '@google/genai';
+import { Supplier, isPaidTier } from '../types.ts';
 import { LiveAvatar } from './LiveAvatar.tsx';
 import { useAI } from '../context/AIContext.tsx';
 import { elevenLabsService } from '../services/elevenLabsVoiceService.ts';
+import { checkVoice, getVoiceStatus, logVoice, VOICE_LIMIT_MESSAGE, VOICE_UNAVAILABLE_MESSAGE } from '../services/voiceGate.ts';
+
+// Languages the assistant may answer in, by tier. This is a prompt-level
+// product rule, not a security control.
+const CORE_LANGUAGES = ['English', 'French', 'German'];
+const ALL_LANGUAGES = ['English', 'French', 'German', 'Spanish', 'Italian', 'Portuguese', 'Dutch', 'Polish', 'Swedish', 'Danish', 'Norwegian', 'Greek'];
+
+// How often an open voice session reports in so the server can meter it.
+const VOICE_HEARTBEAT_MS = 30_000;
 
 // --- ICONS ---
 const MicrophoneIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
@@ -79,6 +88,12 @@ const SupplierAIChat: React.FC<{ supplier: Supplier }> = ({ supplier }) => {
     // TTS state
     const [playingMessageIndex, setPlayingMessageIndex] = useState<number | null>(null);
 
+    // Voice gate state. `voiceBlocked` mirrors the server's answer; it only
+    // changes what the UI offers — the server is what actually refuses voice.
+    const [voiceBlocked, setVoiceBlocked] = useState(false);
+    const voiceSessionIdRef = useRef<string | null>(null);
+    const voiceHeartbeatRef = useRef<number | null>(null);
+
     const chatEndRef = useRef<HTMLDivElement>(null);
     const sessionPromiseRef = useRef<Promise<any> | null>(null);
     const audioStreamRef = useRef<MediaStream | null>(null);
@@ -114,6 +129,9 @@ const SupplierAIChat: React.FC<{ supplier: Supplier }> = ({ supplier }) => {
 ---\n${supplier.knowledgeBaseText}\n---`;
       }
 
+      const languages = isPaidTier(supplier.tier) ? ALL_LANGUAGES : CORE_LANGUAGES;
+      instruction += `\n\n**Languages:** You may converse in these languages only: ${languages.join(', ')}. Reply in the agent's language when it is on this list. If the agent writes or speaks in any other language, reply in English and politely explain that you currently support ${languages.join(', ')}.`;
+
       const welcomeText = `Hi! I'm the AI Sales Support assistant for ${supplier.name}. How can I help you today?`;
 
       systemInstructionRef.current = instruction;
@@ -123,12 +141,44 @@ const SupplierAIChat: React.FC<{ supplier: Supplier }> = ({ supplier }) => {
       setConversation([{ role: 'model', parts: [{ text: welcomeText }] }]);
       setInputValue('');
     }, [supplier]);
+
+    // Ask the gate up front whether voice is available, so a supplier that has
+    // used its monthly allowance does not offer audio playback it cannot give.
+    useEffect(() => {
+        let cancelled = false;
+        setVoiceBlocked(false);
+        getVoiceStatus(supplier.dbId).then(status => {
+            if (!cancelled && !status.allow && status.reason === 'limit_reached') setVoiceBlocked(true);
+        });
+        return () => { cancelled = true; };
+    }, [supplier.dbId]);
+
+    // Tell the server the voice session is over. Safe to call repeatedly: the
+    // session id is cleared on first use, so only one final log is ever sent.
+    const endVoiceSession = useCallback(() => {
+        if (voiceHeartbeatRef.current !== null) {
+            window.clearInterval(voiceHeartbeatRef.current);
+            voiceHeartbeatRef.current = null;
+        }
+        const sessionId = voiceSessionIdRef.current;
+        voiceSessionIdRef.current = null;
+        if (sessionId) logVoice(sessionId, true);
+    }, []);
+
+    // Drop back to text chat with an explanation in the conversation.
+    const fallBackToText = useCallback((text: string) => {
+        setMode('text');
+        setLiveStatus('idle');
+        setTranscript([]);
+        setDisplayConversation(prev => (prev[prev.length - 1]?.text === text ? prev : [...prev, { role: 'model', text }]));
+    }, []);
     
     useEffect(() => {
         chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [displayConversation, isLoading, transcript]);
     
     const cleanupLiveSession = useCallback(async () => {
+        endVoiceSession();
         if (sessionPromiseRef.current) {
             try { const session = await sessionPromiseRef.current; session.close(); } catch (e) { console.error("Error closing session:", e); }
         }
@@ -142,7 +192,27 @@ const SupplierAIChat: React.FC<{ supplier: Supplier }> = ({ supplier }) => {
         nextStartTimeRef.current = 0;
         sessionPromiseRef.current = null;
         setIsAiSpeaking(false);
-    }, []);
+    }, [endVoiceSession]);
+
+    // Tab closing or backgrounded: make sure usage so far reaches the server.
+    // pagehide/beforeunload end the session (the socket dies with the page); a
+    // hidden tab may keep talking, so that only sends an interim heartbeat.
+    useEffect(() => {
+        const onPageHide = () => endVoiceSession();
+        const onVisibility = () => {
+            if (document.visibilityState === 'hidden' && voiceSessionIdRef.current) {
+                logVoice(voiceSessionIdRef.current, false);
+            }
+        };
+        window.addEventListener('pagehide', onPageHide);
+        window.addEventListener('beforeunload', onPageHide);
+        document.addEventListener('visibilitychange', onVisibility);
+        return () => {
+            window.removeEventListener('pagehide', onPageHide);
+            window.removeEventListener('beforeunload', onPageHide);
+            document.removeEventListener('visibilitychange', onVisibility);
+        };
+    }, [endVoiceSession]);
     
     const stopLiveSession = useCallback(() => {
         cleanupLiveSession();
@@ -221,7 +291,7 @@ const SupplierAIChat: React.FC<{ supplier: Supplier }> = ({ supplier }) => {
             setPlayingMessageIndex(null);
             return;
         }
-        if (!ai) return;
+        if (!ai || voiceBlocked) return;
         setPlayingMessageIndex(index);
 
         const correctedText = getPhoneticallyCorrectedText(text);
@@ -229,9 +299,9 @@ const SupplierAIChat: React.FC<{ supplier: Supplier }> = ({ supplier }) => {
         // Try ElevenLabs first when supplier opts in and a voice ID is configured.
         // The key now lives server-side in /api/elevenlabs-tts; if that proxy is
         // unavailable the call throws and we fall back to Gemini TTS below.
-        if (supplier.useElevenLabs && supplier.elevenLabsAgentId) {
+        if (supplier.useElevenLabs && supplier.elevenLabsAgentId && isPaidTier(supplier.tier)) {
             try {
-                const audioUrl = await elevenLabsService.generateSpeech(correctedText, supplier.elevenLabsAgentId);
+                const audioUrl = await elevenLabsService.generateSpeech(correctedText, supplier.elevenLabsAgentId, supplier.dbId);
                 const audio = new Audio(audioUrl);
                 ttsHtmlAudioRef.current = audio;
                 audio.onended = () => {
@@ -296,6 +366,33 @@ const SupplierAIChat: React.FC<{ supplier: Supplier }> = ({ supplier }) => {
         if (liveStatus !== 'idle' || !ai) return;
         setLiveStatus('connecting');
         setTranscript([]);
+
+        // The gate decides. Nothing voice-related (greeting audio, microphone,
+        // live socket) starts until the server has opened a session for this
+        // supplier and handed back the single-use token the socket needs.
+        const grant = await checkVoice(supplier.dbId);
+        if (!grant.allow || !grant.token || !grant.sessionId) {
+            const limitReached = grant.reason === 'limit_reached';
+            if (limitReached) setVoiceBlocked(true);
+            fallBackToText(limitReached ? VOICE_LIMIT_MESSAGE : VOICE_UNAVAILABLE_MESSAGE);
+            return;
+        }
+        const sessionId = grant.sessionId;
+        voiceSessionIdRef.current = sessionId;
+        voiceHeartbeatRef.current = window.setInterval(async () => {
+            const ended = await logVoice(sessionId, false);
+            // Server says the monthly allowance ran out mid-conversation.
+            if (ended && voiceSessionIdRef.current === sessionId) {
+                voiceSessionIdRef.current = null; // already closed server-side
+                setVoiceBlocked(true);
+                cleanupLiveSession();
+                fallBackToText(VOICE_LIMIT_MESSAGE);
+            }
+        }, VOICE_HEARTBEAT_MS);
+
+        // Ephemeral tokens are only accepted on the v1alpha Live endpoint.
+        const liveAi = new GoogleGenAI({ apiKey: grant.token, httpOptions: { apiVersion: 'v1alpha' } });
+
         try {
             if (!outputAudioContextRef.current || outputAudioContextRef.current.state === 'closed') {
                 outputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
@@ -339,7 +436,7 @@ const SupplierAIChat: React.FC<{ supplier: Supplier }> = ({ supplier }) => {
             // Supplier voice continuation instruction, derived from the supplier's own system instruction.
             const liveSystemInstruction = systemInstructionRef.current.replace(/Start the conversation by warmly welcoming the user by saying ".*?" and then listen for their response\./, 'You have already greeted the user. Now, listen for their response and continue the conversation.');
 
-            sessionPromiseRef.current = ai.live.connect({
+            sessionPromiseRef.current = liveAi.live.connect({
                 model: 'gemini-2.5-flash-native-audio-preview-09-2025',
                 callbacks: {
                     onopen: () => {
@@ -393,8 +490,8 @@ const SupplierAIChat: React.FC<{ supplier: Supplier }> = ({ supplier }) => {
                     inputAudioTranscription: {}, outputAudioTranscription: {},
                 },
             });
-        } catch (error) { console.error('Failed to start session:', error); setLiveStatus('error'); setIsAiSpeaking(false);}
-    }, [supplier, liveStatus, cleanupLiveSession, ai]);
+        } catch (error) { console.error('Failed to start session:', error); endVoiceSession(); setLiveStatus('error'); setIsAiSpeaking(false);}
+    }, [supplier, liveStatus, cleanupLiveSession, endVoiceSession, fallBackToText, ai]);
 
     if (aiError) {
         return (
@@ -415,7 +512,7 @@ const SupplierAIChat: React.FC<{ supplier: Supplier }> = ({ supplier }) => {
                 </div>
                 <div className="ml-auto flex items-center gap-2 p-1 bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80/50 rounded-lg border border-cyan-400/10">
                     <button onClick={() => { if (mode === 'live') stopLiveSession(); setMode('text'); }} className={`p-2 rounded-md transition-colors ${mode === 'text' ? 'bg-brand-cyan text-white' : 'text-brand-gray hover:bg-brand-light/10'}`} aria-label="Text Mode"><KeyboardIcon className="w-5 h-5" /></button>
-                    <button onClick={() => setMode('live')} className={`p-2 rounded-md transition-colors ${mode === 'live' ? 'bg-brand-cyan text-white' : 'text-brand-gray hover:bg-brand-light/10'}`} aria-label="Voice Mode"><MicrophoneIcon className="w-5 h-5" /></button>
+                    <button onClick={() => { if (voiceBlocked) { fallBackToText(VOICE_LIMIT_MESSAGE); return; } setMode('live'); }} title={voiceBlocked ? VOICE_LIMIT_MESSAGE : undefined} className={`p-2 rounded-md transition-colors ${mode === 'live' ? 'bg-brand-cyan text-white' : 'text-brand-gray hover:bg-brand-light/10'} ${voiceBlocked ? 'opacity-50' : ''}`} aria-label="Voice Mode"><MicrophoneIcon className="w-5 h-5" /></button>
                 </div>
             </div>
 
@@ -441,7 +538,7 @@ const SupplierAIChat: React.FC<{ supplier: Supplier }> = ({ supplier }) => {
                                             </ul>
                                         </div>
                                     )}
-                                    {msg.role === 'model' && !isLoading && (
+                                    {msg.role === 'model' && !isLoading && !voiceBlocked && (
                                         <button
                                             onClick={() => handlePlayTTS(msg.text, index)}
                                             className="mt-2 text-gray-300 hover:text-cyan-400 transition-colors"

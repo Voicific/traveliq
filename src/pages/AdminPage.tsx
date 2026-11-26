@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSuppliers } from '../context/SupplierContext.tsx';
-import { Supplier, SupplierType, GEMINI_VOICES } from '../types.ts';
+import { Supplier, SupplierTier, SupplierType, GEMINI_VOICES } from '../types.ts';
 import { useLeads, Lead } from '../context/LeadContext.tsx';
 import { useAI } from '../context/AIContext.tsx';
 import { supabase } from '../lib/supabase.ts';
@@ -66,7 +66,7 @@ const labelClass = 'block text-sm font-medium text-brand-gray';
 
 const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<void>; onCancel: () => void }> = ({ supplier, onSave, onCancel }) => {
   const { ai, error: aiError } = useAI();
-  const [formData, setFormData] = useState({ name: '', type: SupplierType.Airline, logoUrl: '', bannerUrl: '', videoUrl: '', shortDescription: '', longDescription: '', avatarImageUrl: '', websiteUrl: '', knowledgeBaseUrl: '', knowledgeBaseText: '', hedra_avatar_id: '', geminiVoiceName: 'Zephyr', useElevenLabs: false, elevenLabsAgentId: '', isDemo: true, isPublished: false });
+  const [formData, setFormData] = useState({ name: '', type: SupplierType.Airline, logoUrl: '', bannerUrl: '', videoUrl: '', shortDescription: '', longDescription: '', avatarImageUrl: '', websiteUrl: '', knowledgeBaseUrl: '', knowledgeBaseText: '', hedra_avatar_id: '', geminiVoiceName: 'Zephyr', useElevenLabs: false, elevenLabsAgentId: '', isDemo: true, isPublished: false, tier: 'free' as SupplierTier });
   const [isSaving, setIsSaving] = useState(false);
   const [isGeneratingShort, setIsGeneratingShort] = useState(false);
   const [isGeneratingLong, setIsGeneratingLong] = useState(false);
@@ -77,9 +77,9 @@ const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<
 
   useEffect(() => {
     if (supplier) {
-      setFormData({ name: supplier.name || '', type: supplier.type || SupplierType.Airline, logoUrl: supplier.logoUrl || '', bannerUrl: supplier.bannerUrl || '', videoUrl: supplier.videoUrl || '', shortDescription: supplier.shortDescription || '', longDescription: supplier.longDescription || '', avatarImageUrl: supplier.avatarImageUrl || '', websiteUrl: supplier.websiteUrl || '', knowledgeBaseUrl: supplier.knowledgeBaseUrl || '', knowledgeBaseText: supplier.knowledgeBaseText || '', hedra_avatar_id: supplier.hedra_avatar_id || '', geminiVoiceName: supplier.geminiVoiceName || 'Zephyr', useElevenLabs: !!supplier.useElevenLabs, elevenLabsAgentId: supplier.elevenLabsAgentId || '', isDemo: supplier.isDemo ?? true, isPublished: supplier.isPublished === true });
+      setFormData({ name: supplier.name || '', type: supplier.type || SupplierType.Airline, logoUrl: supplier.logoUrl || '', bannerUrl: supplier.bannerUrl || '', videoUrl: supplier.videoUrl || '', shortDescription: supplier.shortDescription || '', longDescription: supplier.longDescription || '', avatarImageUrl: supplier.avatarImageUrl || '', websiteUrl: supplier.websiteUrl || '', knowledgeBaseUrl: supplier.knowledgeBaseUrl || '', knowledgeBaseText: supplier.knowledgeBaseText || '', hedra_avatar_id: supplier.hedra_avatar_id || '', geminiVoiceName: supplier.geminiVoiceName || 'Zephyr', useElevenLabs: !!supplier.useElevenLabs, elevenLabsAgentId: supplier.elevenLabsAgentId || '', isDemo: supplier.isDemo ?? true, isPublished: supplier.isPublished === true, tier: supplier.tier ?? 'free' });
     } else {
-      setFormData({ name: '', type: SupplierType.Airline, logoUrl: '', bannerUrl: '', videoUrl: '', shortDescription: '', longDescription: '', avatarImageUrl: '', websiteUrl: '', knowledgeBaseUrl: '', knowledgeBaseText: '', hedra_avatar_id: '', geminiVoiceName: 'Zephyr', useElevenLabs: false, elevenLabsAgentId: '', isDemo: true, isPublished: false });
+      setFormData({ name: '', type: SupplierType.Airline, logoUrl: '', bannerUrl: '', videoUrl: '', shortDescription: '', longDescription: '', avatarImageUrl: '', websiteUrl: '', knowledgeBaseUrl: '', knowledgeBaseText: '', hedra_avatar_id: '', geminiVoiceName: 'Zephyr', useElevenLabs: false, elevenLabsAgentId: '', isDemo: true, isPublished: false, tier: 'free' as SupplierTier });
     }
     setProcessingFiles([]);
   }, [supplier]);
@@ -244,6 +244,7 @@ const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<
       <div><div className={labelContainerClass}><label className={labelClass}>Fallback Avatar Image URL</label><Tooltip text="Square image for the AI avatar if Hedra is not configured." /></div><input type="text" name="avatarImageUrl" value={formData.avatarImageUrl} onChange={handleChange} required className={inputClass} /></div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div><div className={labelContainerClass}><label className={labelClass}>Hedra Avatar ID</label><Tooltip text="Optional: Unique ID for a Hedra live avatar." /></div><input type="text" name="hedra_avatar_id" value={formData.hedra_avatar_id} onChange={handleChange} className={inputClass} /></div>
+        <div><div className={labelContainerClass}><label className={labelClass}>Tier</label><Tooltip text="Free: text chat, 30 voice minutes a month, lead count only. Enhanced: unlimited voice, named leads, priority placement. Growth: featured placement. Only admins can change this." /></div><select name="tier" value={formData.tier} onChange={handleChange} className={inputClass}><option value="free">Free</option><option value="enhanced">Enhanced</option><option value="growth">Growth</option></select></div>
         <div><div className={labelContainerClass}><label className={labelClass}>Gemini Voice</label><Tooltip text="Pre-built voice used when ElevenLabs is not configured." /></div><select name="geminiVoiceName" value={formData.geminiVoiceName} onChange={handleChange} className={inputClass}>{GEMINI_VOICES.map(v => <option key={v} value={v}>{v}</option>)}</select></div>
       </div>
       <div className="border border-cyan-400/20 rounded-lg p-4 bg-[#0a1628]/40">

@@ -2,7 +2,22 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase.ts';
 import { useSupabaseAuth } from '../context/SupabaseAuthContext.tsx';
-import { SupplierType } from '../types.ts';
+import { Lock, Mic, Download, Users } from 'lucide-react';
+import { SupplierType, SupplierTier, isPaidTier } from '../types.ts';
+
+const FREE_VOICE_SECONDS = 30 * 60;
+const TIER_LABEL: Record<SupplierTier, string> = { free: 'Free', enhanced: 'Enhanced', growth: 'Growth' };
+const currentPeriod = () => new Date().toISOString().slice(0, 7); // YYYY-MM, UTC
+
+// Placeholder rows for the locked-leads teaser. Deliberately fake: a free
+// supplier's browser never receives real lead details, so there is nothing
+// real behind the blur to un-blur.
+const TEASER_ROWS = [
+  { name: 'Alex Morgan', email: 'alex@agency-name.co.uk', agency: 'Independent Travel Agency' },
+  { name: 'Sam Taylor', email: 'sam@agency-name.co.uk', agency: 'Luxury Travel Specialists' },
+  { name: 'Jordan Lee', email: 'jordan@agency-name.co.uk', agency: 'Corporate Travel Group' },
+  { name: 'Chris Walker', email: 'chris@agency-name.co.uk', agency: 'Cruise & Tour Experts' },
+];
 
 interface SupplierRow {
   id: string;
@@ -20,6 +35,7 @@ interface SupplierRow {
   use_eleven_labs: boolean;
   eleven_labs_agent_id: string | null;
   gemini_voice_name: string;
+  tier?: SupplierTier;
 }
 
 interface LeadRow {
@@ -47,6 +63,11 @@ const SupplierDashboardPage: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [logoUploading, setLogoUploading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [leadCount, setLeadCount] = useState(0);
+  const [voiceSecondsUsed, setVoiceSecondsUsed] = useState(0);
+
+  const tier: SupplierTier = supplier?.tier ?? 'free';
+  const isPaid = isPaidTier(tier);
 
   useEffect(() => {
     if (!authLoading && !user) navigate('/supplier-portal/login');
@@ -63,12 +84,34 @@ const SupplierDashboardPage: React.FC = () => {
     setSupplier(supplierData as SupplierRow | null);
 
     if (supplierData) {
-      const { data: leadData } = await supabase
-        .from('leads')
-        .select('*')
+      const period = currentPeriod();
+
+      // Lead count for this month. The RPC returns a bare number, which is all
+      // a free supplier is ever entitled to.
+      const { data: count } = await supabase.rpc('get_my_lead_count', { p_period: period });
+      setLeadCount(typeof count === 'number' ? count : 0);
+
+      // Named leads are requested for paid tiers only. This is a convenience,
+      // not the control: row-level security returns no rows to a free owner
+      // whatever the client asks for.
+      if (isPaidTier(supplierData.tier)) {
+        const { data: leadData } = await supabase
+          .from('leads')
+          .select('*')
+          .eq('supplier_id', supplierData.id)
+          .order('created_at', { ascending: false });
+        setLeads((leadData ?? []) as LeadRow[]);
+      } else {
+        setLeads([]);
+      }
+
+      const { data: usage } = await supabase
+        .from('supplier_usage')
+        .select('voice_seconds_used')
         .eq('supplier_id', supplierData.id)
-        .order('created_at', { ascending: false });
-      setLeads((leadData ?? []) as LeadRow[]);
+        .eq('period', period)
+        .maybeSingle();
+      setVoiceSecondsUsed(usage?.voice_seconds_used ?? 0);
     }
     setLoading(false);
   }, [user]);
@@ -120,6 +163,27 @@ const SupplierDashboardPage: React.FC = () => {
     if (error) { setMessage(`Error: ${error.message}`); return; }
     setMessage('Saved.');
     setTimeout(() => setMessage(null), 3000);
+  };
+
+  const downloadLeadsCsv = () => {
+    const esc = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+    const header = ['Date', 'Type', 'First name', 'Last name', 'Email', 'Agency', 'Message'].join(',');
+    const rows = leads.map(l => [
+      l.created_at,
+      l.type,
+      l.first_name ?? l.name ?? '',
+      l.last_name ?? '',
+      l.email,
+      l.agency ?? '',
+      l.message ?? '',
+    ].map(esc).join(','));
+    const blob = new Blob([[header, ...rows].join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `traveliq_leads_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -232,9 +296,53 @@ const SupplierDashboardPage: React.FC = () => {
                   onClick={() => setTab(t)}
                   className={`px-5 py-3 font-semibold capitalize transition-colors ${tab === t ? 'text-cyan-400 border-b-2 border-cyan-400' : 'text-gray-400 hover:text-white'}`}
                 >
-                  {t === 'leads' ? `Leads (${leads.length})` : t}
+                  {t === 'leads' ? `Leads (${isPaid ? leads.length : leadCount})` : t}
                 </button>
               ))}
+            </div>
+
+            {/* Plan summary + upgrade prompts */}
+            <div className="mb-6 bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 border border-cyan-400/10 rounded-xl p-6">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <p className="text-white font-bold">
+                  Your plan: <span className="text-cyan-400">{TIER_LABEL[tier]}</span>
+                </p>
+                {!isPaid && (
+                  <Link to="/pricing" className="text-sm text-cyan-400 hover:underline">Compare plans</Link>
+                )}
+              </div>
+              {!isPaid && (
+                <div className="mt-4 grid sm:grid-cols-2 gap-4">
+                  <div className="border border-cyan-400/20 rounded-lg p-4 bg-[#0a1628]/40">
+                    <div className="flex items-center gap-2 text-white font-semibold">
+                      <Mic className="h-5 w-5 text-cyan-400" strokeWidth={1.5} />
+                      Voice AI
+                    </div>
+                    <p className="mt-2 text-sm text-gray-300">
+                      {Math.min(30, Math.floor(voiceSecondsUsed / 60))} of 30 free voice minutes used this month.
+                      {voiceSecondsUsed >= FREE_VOICE_SECONDS ? ' Your assistant is answering by text only until next month.' : ' After that your assistant answers by text only.'}
+                    </p>
+                    <div className="mt-3 h-2 rounded-full bg-cyan-400/10 overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-cyan-500 to-blue-600" style={{ width: `${Math.min(100, (voiceSecondsUsed / FREE_VOICE_SECONDS) * 100)}%` }} />
+                    </div>
+                    <Link to="/pricing" className="mt-4 inline-block bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-bold py-2 px-4 rounded-lg hover:opacity-90">
+                      Add voice — upgrade
+                    </Link>
+                  </div>
+                  <div className="border border-cyan-400/20 rounded-lg p-4 bg-[#0a1628]/40">
+                    <div className="flex items-center gap-2 text-white font-semibold">
+                      <Users className="h-5 w-5 text-cyan-400" strokeWidth={1.5} />
+                      Named leads
+                    </div>
+                    <p className="mt-2 text-sm text-gray-300">
+                      {leadCount === 1 ? '1 agent has' : `${leadCount} agents have`} asked about you this month. Names, emails and agencies are included on paid plans.
+                    </p>
+                    <Link to="/pricing" className="mt-4 inline-block bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-bold py-2 px-4 rounded-lg hover:opacity-90">
+                      See who&apos;s asking — upgrade
+                    </Link>
+                  </div>
+                </div>
+              )}
             </div>
 
             {tab === 'profile' && (
@@ -312,9 +420,10 @@ const SupplierDashboardPage: React.FC = () => {
                     </div>
                     <div className="flex flex-col">
                       <label className="inline-flex items-center gap-2 mt-7">
-                        <input type="checkbox" checked={supplier.use_eleven_labs} onChange={e => setSupplier({ ...supplier, use_eleven_labs: e.target.checked })} className="w-4 h-4 accent-cyan-400" />
-                        <span className="text-white text-sm">Use ElevenLabs voice (premium)</span>
+                        <input type="checkbox" checked={supplier.use_eleven_labs} disabled={!isPaid} onChange={e => setSupplier({ ...supplier, use_eleven_labs: e.target.checked })} className="w-4 h-4 accent-cyan-400" />
+                        <span className={`text-sm ${isPaid ? 'text-white' : 'text-gray-400'}`}>Use ElevenLabs voice (premium)</span>
                       </label>
+                      {!isPaid && <p className="mt-1 text-xs text-gray-400">Premium voice is included on paid plans.</p>}
                     </div>
                   </div>
                   <div><label className={labelClass}>ElevenLabs voice ID</label><input value={supplier.eleven_labs_agent_id ?? ''} onChange={e => setSupplier({ ...supplier, eleven_labs_agent_id: e.target.value })} disabled={!supplier.use_eleven_labs} placeholder="Your ElevenLabs voice ID" className={inputClass + (supplier.use_eleven_labs ? '' : ' opacity-50')} /></div>
@@ -329,8 +438,57 @@ const SupplierDashboardPage: React.FC = () => {
               </form>
             )}
 
-            {tab === 'leads' && (
+            {tab === 'leads' && !isPaid && (
               <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 border border-cyan-400/10 rounded-xl p-6">
+                <p className="text-2xl font-extrabold font-heading text-white">
+                  {leadCount === 1 ? '1 agent' : `${leadCount} agents`} asked about you this month
+                </p>
+                <p className="mt-1 text-gray-400 text-sm">Your plan shows the count. Upgrade to see who they are and export the list.</p>
+                <div className="relative mt-6">
+                  <div className="overflow-hidden select-none pointer-events-none blur-sm" aria-hidden="true">
+                    <table className="w-full text-left text-sm">
+                      <thead className="text-gray-400 border-b border-cyan-400/10">
+                        <tr>
+                          <th className="py-3 pr-4">Name</th>
+                          <th className="py-3 pr-4">Email</th>
+                          <th className="py-3 pr-4">Agency</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-cyan-400/10">
+                        {TEASER_ROWS.map(r => (
+                          <tr key={r.email}>
+                            <td className="py-3 pr-4 text-white">{r.name}</td>
+                            <td className="py-3 pr-4 text-cyan-400">{r.email}</td>
+                            <td className="py-3 pr-4 text-gray-300">{r.agency}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center bg-[#0a1628]/60 rounded-lg">
+                    <Lock className="h-8 w-8 text-cyan-400" strokeWidth={1.5} />
+                    <p className="mt-3 text-white font-semibold">Named leads are locked on the Free plan</p>
+                    <Link to="/pricing" className="mt-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:opacity-90">
+                      Upgrade to see them
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {tab === 'leads' && isPaid && (
+              <div className="bg-gradient-to-br from-[#0f1c2e]/80 to-[#0d2d3d]/80 border border-cyan-400/10 rounded-xl p-6">
+                <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                  <p className="text-white font-semibold">
+                    {leadCount === 1 ? '1 agent' : `${leadCount} agents`} asked about you this month
+                  </p>
+                  {leads.length > 0 && (
+                    <button type="button" onClick={downloadLeadsCsv} className="inline-flex items-center gap-2 text-sm text-cyan-400 border border-cyan-400/20 hover:bg-cyan-400/10 px-4 py-2 rounded-lg transition-colors">
+                      <Download className="h-4 w-4" strokeWidth={1.5} />
+                      Export CSV
+                    </button>
+                  )}
+                </div>
                 {leads.length === 0 ? (
                   <p className="text-gray-400 text-center py-12">No leads yet. They'll appear here when agents engage with your AI Sales Assistant.</p>
                 ) : (

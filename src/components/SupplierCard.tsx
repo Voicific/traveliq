@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Star } from 'lucide-react';
 import { Supplier } from '../types.ts';
 
 interface SupplierCardProps {
@@ -14,6 +15,13 @@ const SupplierCard: React.FC<SupplierCardProps> = ({ supplier }) => {
       {supplier.isDemo !== false && (
         <span className="absolute top-3 right-3 z-10 bg-amber-500/20 text-amber-300 text-xs font-semibold px-2 py-0.5 rounded-full border border-amber-500/30 tracking-wide">
           Demo
+        </span>
+      )}
+      {/* Featured badge — Growth tier placement */}
+      {supplier.tier === 'growth' && (
+        <span className="absolute top-3 left-3 z-10 inline-flex items-center gap-1 bg-cyan-400/10 text-cyan-400 text-xs font-semibold px-2 py-0.5 rounded-full border border-cyan-400/30 tracking-wide">
+          <Star className="h-3 w-3" strokeWidth={1.5} />
+          Featured
         </span>
       )}
       {/* The main flex container that organizes the card's content vertically */}
