@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GoogleGenAI } from '@google/genai';
+import { useAI } from '../context/AIContext';
 
 // Helper to convert file to base64
 const fileToBase64 = (file: File): Promise<string> => {
@@ -36,7 +36,9 @@ const UploadIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 
 
 const VideoGenPage: React.FC = () => {
-    const [hasApiKey, setHasApiKey] = useState(false);
+    const { ai } = useAI();
+    // The key lives server-side behind the /api/gemini proxy, so it is always "present".
+    const [hasApiKey, setHasApiKey] = useState(true);
     const [apiKeyError, setApiKeyError] = useState(false);
     const [prompt, setPrompt] = useState('A cinematic, stunning aerial shot of the Santorini coast at sunset, with whitewashed villages and blue-domed churches.');
     const [aspectRatio, setAspectRatio] = useState('16:9');
@@ -99,9 +101,14 @@ const VideoGenPage: React.FC = () => {
             setLoadingMessage(loadingMessages[messageIndex]);
         }, 8000);
 
+        if (!ai) {
+            setError("AI is still initialising. Please try again in a moment.");
+            setIsLoading(false);
+            clearInterval(interval);
+            return;
+        }
+
         try {
-            const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GOOGLE_API_KEY });
-            
             const generationPayload: any = {
                 model: 'veo-3.1-fast-generate-preview',
                 prompt: prompt,
@@ -129,7 +136,13 @@ const VideoGenPage: React.FC = () => {
 
             const downloadLink = operation.response?.generatedVideos?.[0]?.video?.uri;
             if (downloadLink) {
-                const response = await fetch(`${downloadLink}&key=${import.meta.env.VITE_GOOGLE_API_KEY}`);
+                // Route the download through our proxy so the key stays server-side
+                // (the proxy injects it); never append a client-side &key=.
+                const proxiedLink = downloadLink.replace(
+                    'https://generativelanguage.googleapis.com',
+                    `${window.location.origin}/api/gemini`,
+                );
+                const response = await fetch(proxiedLink);
                 if (!response.ok) {
                     throw new Error(`Failed to fetch video: ${response.statusText}`);
                 }

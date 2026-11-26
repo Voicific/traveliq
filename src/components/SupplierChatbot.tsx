@@ -542,9 +542,10 @@ Your opening message already asked whether they're a travel agent or a supplier.
                 ],
             };
 
-            // Updated to use gemini-3-pro-preview for the chatbot as requested
+            // Vee uses an evergreen pro-tier alias so she stays premium and does
+            // not break when a pinned model version is retired.
             let response = await ai.models.generateContent({
-                model: "gemini-3-pro-preview",
+                model: "gemini-pro-latest",
                 contents: contents,
                 config: config,
             });
@@ -555,7 +556,7 @@ Your opening message already asked whether they're a travel agent or a supplier.
             if (leadCall) {
                 const toolMessage = submitVeeLead((leadCall.args || {}) as VeeLeadParams, 'chat');
                 response = await ai.models.generateContent({
-                    model: "gemini-3-pro-preview",
+                    model: "gemini-pro-latest",
                     contents: [
                         ...contents,
                         { role: 'model', parts: [{ functionCall: leadCall }] },

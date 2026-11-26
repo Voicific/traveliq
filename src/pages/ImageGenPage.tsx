@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GoogleGenAI } from '@google/genai';
+import { useAI } from '../context/AIContext';
 
 // Icons for the UI
 const ImageIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
@@ -20,7 +20,9 @@ const LoadingSpinner: React.FC = () => (
 );
 
 const ImageGenPage: React.FC = () => {
-    const [hasApiKey, setHasApiKey] = useState(false);
+    const { ai } = useAI();
+    // The key lives server-side behind the /api/gemini proxy, so it is always "present".
+    const [hasApiKey, setHasApiKey] = useState(true);
     const [apiKeyError, setApiKeyError] = useState(false);
     const [prompt, setPrompt] = useState('A majestic lion with a golden mane, standing on a rocky outcrop overlooking a vast savanna at sunset. The style should be hyper-realistic, like a National Geographic photograph.');
     const [aspectRatio, setAspectRatio] = useState('16:9');
@@ -56,8 +58,13 @@ const ImageGenPage: React.FC = () => {
         setGeneratedImageUrl(null);
         setError(null);
 
+        if (!ai) {
+            setError("AI is still initialising. Please try again in a moment.");
+            setIsLoading(false);
+            return;
+        }
+
         try {
-            const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GOOGLE_API_KEY });
             const response = await ai.models.generateImages({
                 model: 'imagen-4.0-generate-001',
                 prompt: prompt,
