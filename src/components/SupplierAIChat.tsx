@@ -171,7 +171,7 @@ const SupplierAIChat: React.FC<{ supplier: Supplier }> = ({ supplier }) => {
 
         try {
             const response = await ai.models.generateContent({
-                model: 'gemini-2.5-flash',
+                model: 'gemini-flash-latest',
                 contents: newApiConversation,
                 config: { 
                     systemInstruction: systemInstructionRef.current,

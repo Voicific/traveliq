@@ -130,7 +130,7 @@ const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<
     if (!formData.name || !formData.type) { alert('Please enter a name and select a type first.'); return; }
     if (type === 'short') setIsGeneratingShort(true); else setIsGeneratingLong(true);
     try {
-      const model = type === 'short' ? 'gemini-flash-lite-latest' : 'gemini-2.5-pro';
+      const model = type === 'short' ? 'gemini-flash-lite-latest' : 'gemini-pro-latest';
       const prompt = type === 'short'
         ? `Write a compelling, one-sentence tagline for a travel supplier. Keep it under 150 characters. Name: "${formData.name}", Type: "${formData.type}".`
         : `You are an expert travel trade copywriter. Write a detailed, professional description for a travel supplier, aimed at travel agents. Around 3-4 paragraphs. Highlight key selling points and services. Do not use markdown. Supplier Name: "${formData.name}", Type: "${formData.type}".`;
@@ -149,7 +149,7 @@ const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<
       const summaries = [];
       for (const url of urls) {
         try {
-          const response = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: `Analyze the content of ${url} and create a comprehensive summary for a travel agent's knowledge base.`, config: { tools: [{ googleSearch: {} }] } });
+          const response = await ai.models.generateContent({ model: 'gemini-flash-latest', contents: `Analyze the content of ${url} and create a comprehensive summary for a travel agent's knowledge base.`, config: { tools: [{ googleSearch: {} }] } });
           summaries.push(`--- CONTENT FROM ${url} ---\n${response.text}\n`);
         } catch { summaries.push(`--- FAILED TO SCRAPE ${url} ---\n`); }
       }
@@ -162,7 +162,7 @@ const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<
     if (!ai || !formData.knowledgeBaseText.trim()) { alert('No content to enhance.'); return; }
     setIsEnhancing(true);
     try {
-      const response = await ai.models.generateContent({ model: 'gemini-2.5-pro', contents: `Rewrite this as a perfect AI knowledge base with clear headings and bullet points:\n\n${formData.knowledgeBaseText}` });
+      const response = await ai.models.generateContent({ model: 'gemini-pro-latest', contents: `Rewrite this as a perfect AI knowledge base with clear headings and bullet points:\n\n${formData.knowledgeBaseText}` });
       setFormData(prev => ({ ...prev, knowledgeBaseText: response.text.trim() }));
     } catch { alert('Failed to enhance content.'); }
     finally { setIsEnhancing(false); }
@@ -180,7 +180,7 @@ const SupplierForm: React.FC<{ supplier?: Supplier; onSave: (s: any) => Promise<
         if (file.size > 20 * 1024 * 1024) throw new Error('File exceeds 20MB limit.');
         const base64Data = await fileToBase64(file);
         setProcessingFiles(prev => prev.map(f => f.name === file.name ? { ...f, message: 'Processing with AI...' } : f));
-        const response = await ai.models.generateContent({ model: 'gemini-2.5-pro', contents: [{ parts: [{ inlineData: { mimeType: file.type, data: base64Data } }, { text: `Extract and summarize all key travel agent information from this document (${file.name}). Use clear headings and bullet points.` }] }] });
+        const response = await ai.models.generateContent({ model: 'gemini-pro-latest', contents: [{ parts: [{ inlineData: { mimeType: file.type, data: base64Data } }, { text: `Extract and summarize all key travel agent information from this document (${file.name}). Use clear headings and bullet points.` }] }] });
         setFormData(prev => ({ ...prev, knowledgeBaseText: `${prev.knowledgeBaseText ? prev.knowledgeBaseText + '\n\n' : ''}--- CONTENT FROM ${file.name} ---\n${response.text}`.trim() }));
         setProcessingFiles(prev => prev.map(f => f.name === file.name ? { ...f, status: 'success' } : f));
       } catch (error: any) {

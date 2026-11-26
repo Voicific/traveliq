@@ -116,7 +116,7 @@ const TravelCompanionPage: React.FC = () => {
             }
 
             const response = await ai.models.generateContent({
-                model: 'gemini-2.5-pro',
+                model: 'gemini-pro-latest',
                 contents: prompt,
                 config,
             });
